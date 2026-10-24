@@ -665,14 +665,17 @@ html[data-motion="less"] .doors{display:none}
 .today-act{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:4px}
 .tool.sos{background:#B3362A;color:#fff;box-shadow:none}
 /* 家族のお知らせ: 1 行の帯（ポスターの下） */
-.news{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r-sm);padding:10px 8px 10px 14px;box-shadow:0 1px 0 var(--hair),inset 3px 0 0 var(--amber)}
+.news{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px 12px;background:var(--surface);border-radius:var(--r-sm);padding:12px 48px 12px 14px;box-shadow:0 1px 0 var(--hair),inset 3px 0 0 var(--amber)}
 .news .av{width:34px;height:34px;font-size:.75rem}
 .news-t{font-size:.875rem;line-height:1.5}
 .news-t b{font-family:var(--maru)}
 .news-t small{display:block;font-size:.75rem;color:var(--muted)}
-.news-act{display:flex;align-items:center;gap:2px}
-.news-act .icon-btn{background:transparent}
-.news-act .icon-btn.star{color:#D9901C}
+.news-act{grid-column:2;display:flex}
+.news-x{position:absolute;top:4px;right:4px;background:transparent}
+.cheer-btn{min-height:44px;background:color-mix(in srgb,var(--amber) 18%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--amber)}
+.cheer-btn .ic{color:#D9901C}
+.nw{white-space:nowrap}
+
 @media (min-width:900px){#v-home .today,#v-home .news{grid-column:1/-1}}
 /* ---------- 第 3 回 ---------- */
 [tabindex="-1"]:focus{outline:none}
@@ -954,14 +957,19 @@ html[data-size="lg"] .fam-act{grid-template-columns:1fr}
 /* 閉じるボタンを隠した画面（修了）では、路線は左端から */
 .stage-bar .icon-btn[hidden] + .lrail{margin-left:0}
 /* 集中練習の導入: 出てくる場面の写真 */
-.mini-posters{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin-top:8px}
+.mini-posters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .mini-posters figure{margin:0;padding:4px;border-radius:6px;background:var(--frame)}
-.mini-posters .photo{height:64px;border-radius:2px}
+.mini-posters .photo{height:clamp(84px,26vw,120px);border-radius:2px}
 .mini-posters figcaption{font-family:var(--maru);font-weight:700;font-size:.6875rem;color:#fff;padding:4px 2px 0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 家族で会話の役の札: その場面の写真を左右に分けて */
-.duo-roles .role{position:relative;overflow:hidden;padding:0 0 12px;border-top:0;border-radius:12px;background:var(--surface);box-shadow:0 1px 0 var(--hair)}
-.role-ph{height:84px;width:100%;margin-bottom:8px}
-.role.s .role-ph img{object-position:0% 50%!important}
-.role.c .role-ph img{object-position:100% 50%!important}
+.duo-roles .role{padding:14px 8px 16px;border-top:0;border-radius:12px;background:var(--surface);box-shadow:0 1px 0 var(--hair)}
+.duo-roles .role .ic{width:24px;height:24px}
 .role.s{box-shadow:0 1px 0 var(--hair),inset 0 -4px 0 var(--navy)}
 .role.c{box-shadow:0 1px 0 var(--hair),inset 0 -4px 0 var(--line)}
+
+/* ---------- 第 4 版・レビュー 4 回目 ---------- */
+/* 復習: ポスターと切符をひとまとまりにして、空いた所の中央に */
+.stage-body > .wall-poster:has(+ .ticketcard){margin-top:auto}
+.stage-body > .wall-poster + .ticketcard{margin-bottom:auto}
+/* ダークの誤りの帯は重くしない */
+.stage-foot.fb.ng{background:color-mix(in srgb,var(--ng) 16%,var(--surface))}

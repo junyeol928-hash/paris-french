@@ -200,16 +200,16 @@
     c.setAttribute("role", "status");
     const first = news[0];
     c.innerHTML = `<span class="av" style="${App.avStyle(familyAt().find((f) => f.id === first.id)?.c || "#888")}" aria-hidden="true">${esc(ini(first.name))}</span>
-      <p class="news-t"><b>${esc(first.name)}</b> さんが<wbr><b>${esc(first.st.ja)}</b>に<wbr>着きました${news.length > 1 ? `<wbr>（ほか ${news.length - 1} 人）` : ""}</p>`;
+      <p class="news-t"><b>${esc(first.name)}</b> さんが<wbr><b>${esc(first.st.ja)}</b>に<wbr>着きました${news.length > 1 ? `<wbr><span class="nw">（ほか ${news.length - 1} 人）</span>` : ""}</p>`;
     const me = Store.cur();
     const row = el("div", "news-act");
-    row.appendChild(button("icon-btn star", icon("star"), () => {
+    row.appendChild(button("btn small cheer-btn", icon("star") + "<span>応援する</span>", () => {
       markSeen(news); c.remove();
       const url = Store.cardUrl(me.id, true);
       if (navigator.share) navigator.share({ title: `${me.name}から応援`, text: `Bravo ! ${me.name}から応援が届きました。`, url }).catch(() => {});
       else App.goTab("family");
-    }, "Bravo を送る（応援）"));
-    row.appendChild(button("icon-btn", icon("close"), () => { markSeen(news); c.remove(); }, "お知らせを閉じる"));
+    }, "応援する（Bravo を送る）"));
+    c.appendChild(button("icon-btn news-x", icon("close"), () => { markSeen(news); c.remove(); }, "お知らせを閉じる"));
     c.appendChild(row);
     return c;
   }
