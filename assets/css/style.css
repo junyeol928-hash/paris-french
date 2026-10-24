@@ -1135,3 +1135,49 @@ h2{font-size:1.3125rem}
 .lh-ph{border-radius:2px}
 /* 答えたあとは聞くボタンを小さくして、選択肢と答えの帯が重ならないように */
 .answered .hearbtn{width:84px;height:84px;box-shadow:none;transition:width .25s var(--ease-out),height .25s var(--ease-out)}
+/* ---------- 第 5 版・レビュー 2 回目 ---------- */
+/* 大きな文字: 欧文の見出しは番号だけ、駅番号は幅に合わせる */
+html[data-size="lg"] .k-long{display:none}
+.aff-cartel > div{flex:1}
+html[data-size="lg"] .aff-no{font-size:2rem}
+html[data-size="lg"] .aff-no small{font-size:.625rem}
+/* ホーム: 絵を少し低くし、今日の課題の名前まで最初の画面に */
+.aff-art{height:min(84vw,400px)}
+.aff-q{font-size:1.25rem;margin-top:10px}
+.ticket .tk-top{padding:14px 0 8px;border-bottom:0}
+.ticket .ring{width:auto;height:auto;background:none;border-radius:0}
+.ticket .ring span{width:auto;height:auto;background:none;border-radius:0;flex-direction:row;align-items:baseline;gap:4px}
+.ticket .ring b{font-size:2rem;color:var(--line-ink)}
+.ticket .ring small{font-size:.75rem}
+/* 学ぶ・確認問題: カードをやめ、紙の頁に罫 */
+.lcard{background:none;box-shadow:none;border-radius:0;padding:4px 0 0}
+.lcard > .stband{margin:0 0 12px;border-radius:0}
+.quiz > .stband{justify-self:stretch;border-radius:0;padding-right:0}
+.lcard .fr{font-size:2rem;line-height:1.2}
+.opts{gap:0;border-top:1px solid var(--line-gray)}
+.opt{background:none;box-shadow:none;border-radius:0;border-bottom:1px solid var(--line-gray);min-height:62px;padding:10px 6px}
+.opt.right{background:color-mix(in srgb,var(--ok) 9%,transparent);box-shadow:inset 4px 0 0 var(--ok)}
+.opt.wrong{background:color-mix(in srgb,var(--ng) 8%,transparent);box-shadow:inset 4px 0 0 var(--ng)}
+/* 答えたあとは出題を小さく、答えの帯は低く */
+.answered .hearbtn{width:64px;height:64px}
+.answered .hearbtn .ic{width:28px;height:28px}
+.stage-foot.fb{border-radius:0;padding-top:12px;box-shadow:0 -1px 0 var(--line-gray)}
+/* 復習の札: 切符ではなく解説札。上の空きを詰める */
+.ticketcard{border-radius:2px;box-shadow:0 0 0 1px var(--line-gray);background:var(--surface)}
+.tc-stripe{height:4px}
+.ticketcard::before,.ticketcard::after{display:none}
+.stage-body > .wall-poster:has(+ .ticketcard){margin-top:8px}
+.grades button{border-radius:4px}
+/* 角の決まり: 丸は音声・マイク・人だけ */
+.search input,.say,.sos-btn,.me-chip{border-radius:4px}
+.say.round{border-radius:50%}
+/* 場面一覧の「表示中」は左の縦線 */
+.pscene.on .ps-t b{text-decoration:none}
+.pscene.on .ps-t{box-shadow:inset 3px 0 0 var(--line);padding-left:10px}
+/* はじめに: 作品名は絵の下の紙の上に */
+.ob-hero figcaption{top:auto;bottom:6px;left:20px;font-family:var(--ui);font-style:normal;font-size:.6875rem;letter-spacing:.02em;color:var(--muted);text-shadow:none}
+.ob-hero::after{background:linear-gradient(180deg,transparent 50%,var(--bg) 92%)}
+/* 2 つ目のボタンの枠を見えるように */
+.btn.ghost{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 45%,transparent)}
+.ob-hero{margin-bottom:18px}
+.ticket .ring b{font-family:var(--ui);font-weight:500;font-size:1.75rem}

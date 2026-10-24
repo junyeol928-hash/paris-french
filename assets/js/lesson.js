@@ -78,7 +78,7 @@
     const prev = st[s.idx - 1], next = st[s.idx + 1];
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
-    const nn = String(s.num).padStart(2, "0"), all = String(st.length).padStart(2, "0");
+    const nn = String(s.num).padStart(2, "0"), all = String(st.length - 1).padStart(2, "0");
     box.innerHTML = `<figure class="aff-art arr-art">${App.photo(s.id)}<figcaption class="aff-kick" lang="fr">Station ${nn} / ${all}</figcaption></figure>
       <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
       <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(s.id))}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>

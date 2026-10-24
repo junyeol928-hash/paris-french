@@ -94,8 +94,8 @@
       const i = cur.lessons.indexOf(next) + 1;
       const p = Course.stationProgress(cur);
       const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? { fr: DATA.dialogs.find((d) => d.id === next.dlg).lines[0].fr } : null;
-      const nn = String(cur.num).padStart(2, "0"), all = String(stations.length).padStart(2, "0");
-      hero.innerHTML = `<figure class="aff-art">${App.photo(cur.id)}${kick(`Prochaine station · ${nn} / ${all}`)}</figure>
+      const nn = String(cur.num).padStart(2, "0"), all = String(stations.length - 1).padStart(2, "0");
+      hero.innerHTML = `<figure class="aff-art">${App.photo(cur.id)}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
         <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
         <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(cur.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
         ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}

@@ -15,12 +15,12 @@ OUT = ROOT / "assets" / "img" / "st"
 # 駅 id → 画面で切り抜くときの中心（CSS の object-position）。縦長に切るので、人物や見せ場の横位置を決める
 FOCUS = {
     "welcome": "66% 50%", "bonjour": "40% 40%", "lire": "50% 40%", "comprendre": "34% 45%",
-    "aeroport": "50% 55%", "taxi": "50% 60%", "hotel": "35% 50%", "cafe": "56% 55%",
+    "aeroport": "46% 50%", "taxi": "50% 60%", "hotel": "35% 50%", "cafe": "56% 55%",
     "metro": "40% 50%", "musee": "50% 50%", "resto": "38% 50%", "carte": "50% 40%",
     "boutique": "50% 40%", "urgence": "50% 60%", "paris": "50% 50%",
 }
 # 元の絵から使う範囲（左・上・右・下の割合）。縦長に切ると見せ場が暗がりに隠れる絵だけ、先に切る
-CROP = {"aeroport": (0.12, 0.3, 0.88, 1)}
+CROP = {}
 # 解説札（カルテル）に出す 画家・作品名・年
 ART = {
     "welcome": ("Gustave Caillebotte", "Rue de Paris, temps de pluie", "1877"),

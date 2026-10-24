@@ -59,9 +59,9 @@ window.DATA.photos = {
 },
 "aeroport": {
 "src": "assets/img/st/aeroport.webp",
-"pos": "50% 55%",
+"pos": "46% 50%",
 "w": 1200,
-"h": 822,
+"h": 893,
 "artist": "Claude Monet",
 "work": "La Gare Saint-Lazare",
 "year": "1877",
