@@ -11,8 +11,8 @@
       root.style.setProperty("--line", c);
       root.style.setProperty("--on-line", App.onColor(c));
       /* 路線色を文字に使う所（読みのカタカナなど）は、ライト・ダークそれぞれで 4.5:1 以上になる色を計算して使う */
-      root.style.setProperty("--line-ink-l", App.inkOn(c, "#F6F5F1", "#14213D"));
-      root.style.setProperty("--line-ink-d", App.inkOn(c, "#151C2E", "#FFFFFF"));
+      root.style.setProperty("--line-ink-l", App.inkOn(c, "#F4EFE5", "#1C1915"));
+      root.style.setProperty("--line-ink-d", App.inkOn(c, "#1C1814", "#FFFFFF"));
     }
     const pr = me ? Store.prefs() : null;
     root.dataset.size = pr ? pr.size : "md";
@@ -35,6 +35,9 @@
     document.addEventListener("profile-changed", () => { applyProfile(); App.renderHeader(); goTab(App.currentTab() || "home"); });
     document.addEventListener("prefs-changed", applyProfile);
     applyProfile();
+    /* ホームの上では見出し帯を透明にして絵の上に重ねる。少し下へ送ったら紙の帯に戻す */
+    const solid = () => document.documentElement.classList.toggle("hd-solid", window.scrollY > 24);
+    window.addEventListener("scroll", solid, { passive: true }); solid();
     /* 保存できなかったときは一度だけ知らせる（何度も出すと邪魔なので） */
     let warned = false;
     document.addEventListener("save-failed", () => { if (warned) return; warned = true; toast("記録を保存できませんでした。プライベートブラウズを切るか、端末の空きを確かめてください"); });

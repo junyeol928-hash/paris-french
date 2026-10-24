@@ -1,4 +1,4 @@
-# パリ旅のフランス語（« Ma ligne »、デザイン第 4 版）
+# パリ旅のフランス語（« Ma ligne »、デザイン第 5 版 « Affiche »）
 
 家族 3 人（本人・母・弟）がパリ旅行に向けて、フランス語ほぼゼロから「旅で困らない」まで進む Web アプリ。
 GitHub Pages で公開し、記録は人ごと・端末ごとに localStorage に保存する（クラウドなし）。手組みの静的 HTML / CSS / JS。
@@ -18,10 +18,10 @@ assets/js/onboard.js    はじめての人の流れ・人の切り替え   main.
 assets/js/srs.js        SRS（純関数）   numbers.js  0〜100 の数（純関数）
 data/phrases.js         場面と表現   listen.js 言われる文（4 択）   pron.js 発音のきまり   days.js 旅のしおり（日付は持たない）
 data/dialogs.js         会話ロールプレイの台本   audio.js 生成物（tools/gen-audio.py）。文の FNV-1a → MP3 の data URI
-data/photos.js          生成物（tools/make-photos.py）。駅の写真のパス・切り抜きの中心・出典
-assets/img/st/          駅の写真 <駅id>.webp（Wikimedia Commons の自由ライセンス）。元の写真と credits.json は _src/（git 管理外）
+data/photos.js          生成物（tools/make-photos.py）。駅の絵のパス・切り抜きの中心・画家・作品名・年・出典
+assets/img/st/          駅の絵 <駅id>.webp（パリを描いた名画、Wikimedia Commons のパブリックドメイン）。元の画像と credits.json は _src/（git 管理外）
 tools/validate.mjs      データ検査（個人情報の検査語は git 管理外の tools/private-words.txt）   tools/gen-audio.py 音声生成
-tools/make-photos.py    写真をそろえて data/photos.js を作る   tools/gen-sw.mjs  オフライン用の sw.js（--check で作り直し忘れを検出）
+tools/make-photos.py    絵をそろえて data/photos.js を作る   tools/gen-sw.mjs  オフライン用の sw.js（--check で作り直し忘れを検出）
 build.py                1 ファイル版（dist/site.html、旧）
 tests/                  node --test
 ```
@@ -32,7 +32,7 @@ tests/                  node --test
 - 記録は `Store.LS`（いまの人）経由。キーは `store.js` の `KEYS`。キーを足したら `mergeKey` の合わせ方も考える。
 - フレーズ・レッスン・会話の id は変えない（記録のキー）。カードは `s:<id>`（言う）/ `h:<id>`（聞く）。
 - フランス語の文を足したり直したりしたら `python tools/gen-audio.py`。
-- 写真を足す・替えるときは `assets/img/st/_src/` に元の写真と credits.json の出典を置き、`python tools/make-photos.py`。出典は設定の「写真の出典」に必ず出る（CC BY / BY-SA の条件）。
+- 絵を足す・替えるときは `assets/img/st/_src/` に元の画像と credits.json の出典を置き、tools/make-photos.py の FOCUS・ART（画家・作品名・年）に足して `python tools/make-photos.py`。出典は設定の「絵の出典」に出る。
 - 画面やデータを変えたら `node tools/gen-sw.mjs`（作り直さないと家族の端末に古い版が残る）。
 - 絵文字は使わない（線のアイコン `App.icon`）。押せる所は 44px 以上。動きは `prefers-reduced-motion` で止まること。
 

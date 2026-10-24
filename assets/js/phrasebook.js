@@ -27,7 +27,7 @@
       DATA.scenes.slice().sort((a, b) => +lineOf(a.id)[0] - +lineOf(b.id)[0]).forEach((s) => {
         const n = DATA.phrases.filter((p) => p.s === s.id).length;
         const [num, col] = lineOf(s.id);
-        const b = button("pscene" + (s.id === cur && !q ? " on" : ""), `${App.photo(SCENE_ST[s.id], "ps-ph")}<span class="ps-t"><b>${esc(s.ja)}</b><span class="fr-s">${esc(s.fr)}</span><small>${s.id === cur && !q ? "表示中" : n + " 表現"}</small></span>`, () => { $("phQ").value = ""; LS.set("phScene", s.id); cur = s.id; draw(); $("phHead").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); const h = $("phHead").querySelector("h2"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } });
+        const b = button("pscene" + (s.id === cur && !q ? " on" : ""), `${App.photo(SCENE_ST[s.id], "ps-ph")}<span class="ps-t"><b>${esc(s.ja)}</b><span class="fr-s">${esc(s.fr)}</span><small>${s.id === cur && !q ? "前回見た場面" : n + " 表現"}</small></span>`, () => { $("phQ").value = ""; LS.set("phScene", s.id); cur = s.id; draw(); $("phHead").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); const h = $("phHead").querySelector("h2"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } });
         b.setAttribute("aria-pressed", s.id === cur && !q ? "true" : "false");
         b.setAttribute("aria-label", `${s.ja}（${s.fr}）、${n} 表現`);
         const li = el("li"); li.appendChild(b); signs.appendChild(li);

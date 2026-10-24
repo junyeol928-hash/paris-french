@@ -24,7 +24,7 @@
     const LINE_C = { listen: "#1F5FAF", nums: "#E5A800", weak: "#D9701C", talk: "#3F9160", rules: "#9B2F8F" };
     const grid = el("div", "pgrid");
     for (const t of tiles) {
-      const b = button("ptile p-" + t.k, `<span class="pt-ic"${LINE_C[t.k] ? ` style="background:${LINE_C[t.k]};color:${App.onColor(LINE_C[t.k])}"` : ""}>${icon(t.ic)}</span><span class="pt-t"><b>${esc(t.t)}</b><span class="pt-fr">${DEST[t.k]}</span><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
+      const b = button("ptile p-" + t.k, `<span class="pt-ic"${LINE_C[t.k] ? ` style="color:${LINE_C[t.k]}"` : ""}>${icon(t.ic)}</span><span class="pt-t"><b>${esc(t.t)}</b><span class="pt-fr">${DEST[t.k]}</span><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
       grid.appendChild(b);
     }
     root.appendChild(grid);
@@ -66,7 +66,7 @@
         body.innerHTML = "";
         body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || "")} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
         const card = el("div", "ticketcard");
-        card.innerHTML = `<div class="tc-hd"><span>TICKET</span><span>${esc((App.scene(p.s) || {}).ja || "")} · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
+        card.innerHTML = `<div class="tc-hd"><span>RÉVISION</span><span>${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
         if (mode === "s") { front.innerHTML = `<p class="hint">フランス語で言うと？</p><p class="tc-ja" data-head tabindex="-1">${esc(p.ja)}</p>`; }
         else { front.innerHTML = `<p class="hint" data-head tabindex="-1">聞いて、意味を思い浮かべる</p>`; front.appendChild(button("hearbtn", icon("say"), () => TTS.speak(p.fr), "もう一度聞く")); TTS.speak(p.fr); }
