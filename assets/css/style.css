@@ -1498,3 +1498,6 @@ body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;ba
 .lrail b.big{width:9px;height:9px;top:9.5px;margin-left:-4.5px}
 .btn:disabled{opacity:.45}
 .member .av,.fam .av{color:var(--ink)!important}
+.member .av{font-size:.8125rem;letter-spacing:-.02em}
+.stage-foot.fb{box-shadow:inset 0 1px 0 var(--ok)}
+.stage-foot.fb.ng{box-shadow:inset 0 1px 0 var(--ng)}

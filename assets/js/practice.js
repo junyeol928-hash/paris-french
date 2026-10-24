@@ -66,7 +66,7 @@
         body.innerHTML = "";
         body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || "")} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
         const card = el("div", "ticketcard");
-        card.innerHTML = `<div class="tc-hd"><span>RÉVISION</span><span>${mode === "s" ? "言う" : "聞く"}</span></div>`;
+        card.innerHTML = `<div class="tc-hd"><span>RÉVISION · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
         if (mode === "s") { front.innerHTML = `<p class="hint">フランス語で言うと？</p><p class="tc-ja" data-head tabindex="-1">${esc(p.ja)}</p>`; }
         else { front.innerHTML = `<p class="hint" data-head tabindex="-1">聞いて、意味を思い浮かべる</p>`; front.appendChild(button("hearbtn", icon("say"), () => TTS.speak(p.fr), "もう一度聞く")); TTS.speak(p.fr); }
