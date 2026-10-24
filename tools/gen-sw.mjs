@@ -1,5 +1,5 @@
 /* オフライン用の service worker（sw.js）を作る: node tools/gen-sw.mjs [--list]
-   index.html が読むローカルの CSS・JS と、index.html・manifest・アイコンを全部先に保存（precache）する。
+   index.html が読むローカルの CSS・JS と、index.html・manifest・アイコン・駅の写真を全部先に保存（precache）する。
    版は中身のハッシュ。画面やデータを変えたら必ず作り直す（作り直さないと、家族の端末に古い版が残る） */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -12,7 +12,9 @@ export function files() {
   const local = (u) => u && !/^(https?:)?\/\//.test(u) && !u.startsWith("data:");
   const refs = [...html.matchAll(/<(?:script[^>]+src|link[^>]+href)="([^"]+)"/g)].map((m) => m[1]).filter(local);
   const icons = existsSync(join(ROOT, "assets/img/icon")) ? readdirSync(join(ROOT, "assets/img/icon")).filter((f) => f.endsWith(".png")).map((f) => "assets/img/icon/" + f) : [];
-  return ["./", "index.html", ...new Set(refs), ...icons.filter((f) => !refs.includes(f))].filter((f, i, a) => a.indexOf(f) === i);
+  /* 駅の写真（data/photos.js が参照する）も旅先で電波がなくても出るように先に保存する */
+  const photos = existsSync(join(ROOT, "assets/img/st")) ? readdirSync(join(ROOT, "assets/img/st")).filter((f) => f.endsWith(".webp")).sort().map((f) => "assets/img/st/" + f) : [];
+  return ["./", "index.html", ...new Set(refs), ...icons.filter((f) => !refs.includes(f)), ...photos].filter((f, i, a) => a.indexOf(f) === i);
 }
 
 const list = files();

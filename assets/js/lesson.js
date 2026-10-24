@@ -7,14 +7,37 @@
   const { el, esc, button, icon, shuffle, sayBtn, TTS, sfx, haptic, stage, phrase } = App;
 
   /* 上の進み具合 */
-  function railbar(root, close, total, label) {
+  function railbar(root, close, total, label, mark) {
     const bar = el("div", "stage-bar");
     bar.appendChild(button("icon-btn", icon("close"), () => close(), label || "レッスンをやめる"));
     const rail = el("div", "lrail"); rail.setAttribute("role", "progressbar"); rail.setAttribute("aria-valuemin", "0"); rail.setAttribute("aria-valuemax", String(total)); rail.setAttribute("aria-label", "進み具合");
     const fill = el("i"); rail.appendChild(fill);
+    const dots = [];
+    const at = (f) => `calc(14px + (100% - 14px) * ${f})`;
+    if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b", k === mark || k === total ? "big" : ""); d.style.left = at(k / total); d.dataset.k = k; rail.appendChild(d); dots.push(d); }
+    const me = el("span", "lr-me", esc(App.ini ? App.ini(Store.cur().name) : "")); rail.appendChild(me);
+    if (mark) {
+      rail.classList.add("staged");
+      const c1 = el("small", "lr-cap", "聞く"); c1.style.left = "14px"; rail.appendChild(c1);
+      const c2 = el("small", "lr-cap", "確認問題"); c2.style.left = at(mark / total); rail.appendChild(c2);
+    }
     bar.appendChild(rail);
     root.appendChild(bar);
-    return (n) => { fill.style.width = Math.min(100, (n / total) * 100) + "%"; rail.setAttribute("aria-valuenow", String(Math.round(n))); };
+    const set = (n) => {
+      const f = Math.min(1, n / total);
+      fill.style.width = `calc((100% - 14px) * ${f})`; me.style.left = at(f);
+      for (const d of dots) d.classList.toggle("on", +d.dataset.k <= n);
+      rail.setAttribute("aria-valuenow", String(Math.round(n)));
+    };
+    set.hop = () => { me.classList.remove("hop"); void me.offsetWidth; me.classList.add("hop"); };
+    return set;
+  }
+  /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
+  function stband(s, label) {
+    const b = el("div", "stband");
+    b.innerHTML = `<span>${esc(label || s.fr)}</span>${s && !label ? `<b class="roundel" aria-hidden="true">${s.num}</b>` : ""}`;
+    b.setAttribute("aria-hidden", "true");
+    return b;
   }
   /* 画面の下に固定する操作欄 */
   function footer(body) { const f = el("div", "stage-foot"); body.appendChild(f); return f; }
@@ -55,18 +78,19 @@
     const prev = st[s.idx - 1], next = st[s.idx + 1];
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
-    box.innerHTML = `<div class="train" aria-hidden="true"><svg viewBox="0 0 320 112">
-          <rect class="tr-in" x="96" y="22" width="44" height="64" rx="4"/><rect class="tr-in" x="196" y="22" width="44" height="64" rx="4"/>
-          <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
-          <rect class="tr-win" x="26" y="26" width="56" height="26" rx="6"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="6"/><rect class="tr-win" x="254" y="26" width="38" height="26" rx="10"/>
+    box.innerHTML = `<div class="arr-scene"><figure class="arr-poster">${App.photo(s.id, "arr-photo")}</figure>
+        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 96">
+          <rect class="tr-in" x="96" y="22" width="44" height="62" rx="3"/><rect class="tr-in" x="196" y="22" width="44" height="62" rx="3"/>
+          <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
+          <rect class="tr-skirt" x="10" y="78" width="300" height="14" rx="0"/>
+          <rect class="tr-win" x="24" y="26" width="58" height="26" rx="4"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="4"/><rect class="tr-win" x="252" y="26" width="42" height="26" rx="8"/>
           <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="20" rx="2"/></g>
           <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="20" rx="2"/></g>
           <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="20" rx="2"/></g>
           <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="20" rx="2"/></g>
-          <circle class="tr-lamp" cx="296" cy="74" r="5"/>
-          <circle class="tr-wh" cx="64" cy="98" r="9"/><circle class="tr-wh" cx="100" cy="98" r="9"/><circle class="tr-wh" cx="226" cy="98" r="9"/><circle class="tr-wh" cx="262" cy="98" r="9"/>
-          <rect class="tr-rail" x="0" y="106" width="320" height="4" rx="2"/>
-        </svg></div>
+          <circle class="tr-lamp" cx="298" cy="70" r="4"/>
+          <rect class="tr-under" x="44" y="92" width="64" height="4" rx="1"/><rect class="tr-under" x="212" y="92" width="64" height="4" rx="1"/>
+        </svg></div></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
         <span class="ride-st cur"><i></i><small>${esc(s.fr)}</small></span>
@@ -88,7 +112,7 @@
     const items = l.ids.map(phrase).filter(Boolean);
     const quiz = buildQuiz(items);
     const total = items.length + quiz.length;
-    const setP = railbar(root, close, total);
+    const setP = railbar(root, close, total, null, items.length);
     const body = el("div", "stage-body"); root.appendChild(body);
     let results = {};
     saveTo = l.id;
@@ -106,7 +130,8 @@
       const p = items[i];
       body.innerHTML = "";
       const card = el("div", "lcard");
-      card.innerHTML = `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`;
+      card.appendChild(stband(s));
+      card.insertAdjacentHTML("beforeend", `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`);
       const fr = el("p", "l-fr fr", esc(p.fr)); fr.setAttribute("data-head", "");
       card.appendChild(fr);
       card.appendChild(el("p", "l-kana", esc(p.kana)));
@@ -137,6 +162,7 @@
       const q = list[qi];
       body.innerHTML = "";
       const box = el("div", "quiz");
+      box.appendChild(stband(s));
       const head = el("p", "eyebrow q-head", retry ? "もう一度 · " + (q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする")
         : q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする");
       head.setAttribute("data-head", "");
@@ -148,6 +174,7 @@
         else if (!ok) results[q.p.id] = false;
         if (!ok) q.wrong = true;
         (ok ? sfx.ok : sfx.ng)(); haptic(ok ? 10 : 30);
+        if (ok && setP.hop) setP.hop();
         box.classList.add("answered");
         foot.classList.add("fb", ok ? "ok" : "ng");
         foot.innerHTML = "";
@@ -348,7 +375,7 @@
     const later = (fn, ms) => { clearTimeout(timer); const my = ++gen; timer = setTimeout(() => { if (my === gen && root.isConnected) fn(); }, ms); };
     const cancel = () => { clearTimeout(timer); gen++; };
     root.closest(".stage").addEventListener("stage-closed", cancel);
-    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.appendChild(chat); line(0); });
+    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.insertAdjacentHTML("beforeend", `<figure class="wall-poster">${App.photo(s.id)}<figcaption>${esc(s.fr)} · ${esc(d.ja)}</figcaption></figure>`); body.appendChild(chat); line(0); });
     const chat = el("div", "chat"); chat.setAttribute("aria-live", "polite"); chat.setAttribute("aria-label", "会話");
     let foot = null;
     function bubble(who, fr, ja, n) {
@@ -454,6 +481,8 @@
       const setP = railbar(root, close, quiz.length, "練習をやめる");
       const body = el("div", "stage-body"); root.appendChild(body);
       const box0 = el("div", "arrive"); box0.innerHTML = `<div class="sign big"><span>${kind === "rehearse" ? "RÉPÉTITION" : "RÉVISION"}</span></div><p class="eyebrow">${esc(sub)}</p><h1 data-head>${esc(title)}</h1><p class="lede">${items.length} 問 · 約 ${Math.max(2, Math.round(items.length * 0.5))} 分${kind === "rehearse" ? " · その日に出会う順番で" : ""}</p>`;
+      const scenes = [...new Set(items.map((p) => p.s))].slice(0, 4);
+      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.photo(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
       body.appendChild(box0);
       footer(body).appendChild(button("btn big wide", "<span>はじめる</span>" + icon("arrow"), () => ask(0)));
       const results = {};
@@ -514,6 +543,7 @@
       const body = el("div", "stage-body"); root.appendChild(body);
       const intro = el("div", "arrive");
       intro.innerHTML = `<div class="sign big"><span>EN FAMILLE</span></div><p class="eyebrow">家族で会話</p><h1 data-head>${esc(d.ja)}</h1><p class="lede">2 人で 1 台のスマホを渡し合います。<b>店員役</b>は画面のフランス語を声に出して読み、<b>お客役</b>はそれを聞いて答えを選び、声に出して返します。</p>
+        ${(() => { const st = Course.stations().find((x) => x.lessons.some((l) => l.dlg === id)); return st ? `<figure class="wall-poster">${App.photo(st.id)}<figcaption>${esc(st.fr)} · ${esc(d.ja)}</figcaption></figure>` : ""; })()}
         <div class="duo-roles"><span class="role s">${icon("chat")}<b>店員役</b><small>読む人</small></span><span class="role c">${icon("family")}<b>お客役</b><small>答える人</small></span></div>`;
       body.appendChild(intro);
       footer(body).appendChild(button("btn big wide", "<span>店員役の人から始める</span>" + icon("arrow"), () => step(0)));
