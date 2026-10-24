@@ -1260,3 +1260,20 @@ html[data-size="lg"] .aff-q{display:none}
 .missed-box .missed{margin-bottom:0}
 /* 答えたあと: 選択肢と答えの帯を続けて読めるように */
 .stage-body:has(> .quiz.answered) > .stage-foot.fb{margin-top:16px}
+/* ---------- 第 5 版・レビュー 6 回目 ---------- */
+/* 絵の帯が空いた高さを吸う（余白を名画に置き換える）。中身は帯の下から上詰め */
+.stage-body > .stband.art{flex:1 1 84px;height:auto;min-height:84px;max-height:280px}
+.stage-body > .stband.art ~ .lcard,.stage-body > .stband.art ~ .quiz,.stage-body > .stband.art ~ .quiz:not(.answered){margin:20px 0 0}
+.stage-body > .stband.art ~ .lcard + .speakbox{margin-bottom:0}
+.stage-body > .wall-poster:has(+ .ticketcard){flex:1 1 120px;display:flex}
+.stage-body > .wall-poster:has(+ .ticketcard) .photo{height:auto;flex:1;max-height:300px;min-height:110px}
+.stage-body > .wall-poster + .ticketcard{margin:16px 0 0}
+.stband.art::after{background:linear-gradient(180deg,rgba(14,11,8,0) 45%,rgba(14,11,8,.55)),linear-gradient(90deg,rgba(14,11,8,.3),rgba(14,11,8,0) 70%)}
+.stband.art b{font-size:.875rem}
+.stband.art .sb-art img{transition:transform 1.2s var(--ease-out)}
+.stband.art.cheer .sb-art img{animation:glow 1.4s var(--ease-out)}
+@keyframes glow{0%{transform:none}35%{transform:scale(1.07)}100%{transform:none}}
+[data-motion="less"] .stband.art.cheer .sb-art img{animation:none}
+@media (prefers-reduced-motion:reduce){.stband.art.cheer .sb-art img{animation:none}}
+/* 操作欄の上のぼかしはやめる（送らない画面で中身がぼけて見えるため） */
+.stage-foot:not(.fb)::before{display:none}

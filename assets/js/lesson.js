@@ -40,6 +40,11 @@
     b.setAttribute("aria-hidden", "true");
     return b;
   }
+  /* 正解したら駅の絵がふっと寄って戻る（ポスターの絵が手応えになる） */
+  function glow(body) {
+    const a = body.querySelector(".stband.art"); if (!a) return;
+    a.classList.remove("cheer"); void a.offsetWidth; a.classList.add("cheer");
+  }
   /* 画面の下に固定する操作欄 */
   function footer(body) { const f = el("div", "stage-foot"); body.appendChild(f); return f; }
   /* 答えた結果のパネル。フォーカスを移すと、読み上げソフトが「正解／正しくは」から文まで読む */
@@ -166,6 +171,7 @@
         if (!ok) q.wrong = true;
         (ok ? sfx.ok : sfx.ng)(); haptic(ok ? 10 : 30);
         if (ok && setP.hop) setP.hop();
+        if (ok) glow(body);
         box.classList.add("answered");
         foot.classList.add("fb", ok ? "ok" : "ng");
         foot.innerHTML = "";
@@ -247,6 +253,7 @@
       check.disabled = true; box.querySelectorAll(".tile").forEach((b) => (b.disabled = true));
       const ok = picked.map((x) => x.w).join(" ") === q.words.join(" ");
       ans.classList.add(ok ? "right" : "wrong");
+      if (ok) glow(box.parentNode || box);
       done(ok);
     });
     const draw = (focusFrom) => {
