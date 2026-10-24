@@ -1467,3 +1467,34 @@ h2{font-weight:500}
 .tl::before{width:1px;background:var(--line-gray)}
 .show-sub,.show-kana-box{border-radius:4px}
 .sheet{border-radius:10px 10px 0 0}
+/* ---------- 高級感・レビュー 10 回目 ---------- */
+/* 紙の粒子は画面全体に 1 枚だけ重ねる（帯ごとの継ぎ目をなくす） */
+body,.stage{background-image:none}
+body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;background-image:var(--grain);background-size:180px 180px;mix-blend-mode:multiply;opacity:.9}
+:root[data-theme="dark"] body::after{mix-blend-mode:screen;opacity:.35}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body::after{mix-blend-mode:screen;opacity:.35}}
+/* 金の小さな文字も 4.5:1 以上に */
+:root{--gilt:#7D5F2D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gilt:#CDB07A}}
+:root[data-theme="dark"]{--gilt:#CDB07A}
+/* 選択肢: 正誤の印は文の右下に小さく（文の幅を削らない） */
+.opt{position:relative}
+.opt span:not(.k){text-wrap:balance}
+.opt.right::after,.opt.wrong::after{position:absolute;right:6px;bottom:4px;padding:0;font-size:.625rem}
+/* 和文のボタンは字間を控えめに（広い字間は欧文だけ） */
+.btn,.btn.big{letter-spacing:.06em}
+.sos-btn{letter-spacing:.22em}
+/* 家族: 人の丸は細い輪に頭文字、札はピルをやめ小さな金の字 */
+.member .av,.fam .av{background:transparent!important;color:var(--c)!important;box-shadow:inset 0 0 0 1.5px var(--c)!important;font-weight:500}
+.tag,.tag.me{background:none!important;color:var(--gilt)!important;padding:0!important;border-radius:0!important;box-shadow:none!important;font-size:.6875rem;letter-spacing:.12em;font-weight:500;margin-left:8px}
+/* 評価ボタン: すべて細い線、「言えた」だけ墨、「忘れた」は字の色だけ */
+.grades button{background:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 30%,transparent)}
+.grades .g1{background:none;color:var(--ng);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 30%,transparent)}
+.grades .g3{background:var(--ink);color:var(--bg)}
+/* ステージの閉じるは × だけ */
+.stage-bar .icon-btn{background:none}
+/* 進み具合の済んだ点は小さく */
+.lrail b{width:4px;height:4px;top:12px;margin-left:-2px}
+.lrail b.big{width:9px;height:9px;top:9.5px;margin-left:-4.5px}
+.btn:disabled{opacity:.45}
+.member .av,.fam .av{color:var(--ink)!important}
