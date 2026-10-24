@@ -1,0 +1,272 @@
+/* 家族: わたしのパスポート（駅のスタンプ）、家族の進み具合、カードを送る・招待する、この端末の人、設定 */
+(function () {
+  const { el, esc, button, icon, onTab, toast, sheet, $ } = App;
+  const { LS } = Store;
+  /* スタンプのインク。色は CSS の --ink0〜5（ライトとダークで明るさを変える） */
+  const INKS = 6;
+
+  /* 入国スタンプ風の SVG。押した日付が入る。ts が無ければ点線の空き枠 */
+  function stampSVG(s, ts, big) {
+    const name = s.fr.length > 9 && s.fr.includes(" ") ? s.fr.replace(" ", "\n") : s.fr;
+    const lines = name.split("\n");
+    /* 長い駅名は円の中の幅（約 74）に収まるよう、字の幅をそろえて縮める */
+    const fit = (l, max) => (l.length > max ? ` textLength="74" lengthAdjust="spacingAndGlyphs"` : "");
+    if (!ts) return `<svg class="stamp empty" viewBox="0 0 120 120" role="img" aria-label="${esc(s.ja)}（まだ）"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/><text x="60" y="${lines.length > 1 ? 56 : 64}" text-anchor="middle" class="st-n">${lines.map((l, i) => `<tspan x="60" dy="${i ? 14 : 0}"${fit(l, 8)}>${esc(l)}</tspan>`).join("")}</text></svg>`;
+    const c = `var(--ink${s.idx % INKS})`;
+    const d = new Date(ts);
+    const date = String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getFullYear()).slice(2);
+    const rot = ((s.idx * 37) % 17) - 8;
+    return `<svg class="stamp${big ? " land" : ""}" viewBox="0 0 120 120" role="img" aria-label="${esc(s.ja)}のスタンプ ${date}" style="--rot:${rot}deg;color:${c}">
+      <defs><filter id="ink${s.idx}"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="${s.idx + 3}"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.9 1.35"/><feComposite in="SourceGraphic" operator="in"/></filter></defs>
+      <g filter="url(#ink${s.idx})" fill="none" stroke="currentColor">
+        <circle cx="60" cy="60" r="54" stroke-width="3"/><circle cx="60" cy="60" r="47" stroke-width="1.5"/>
+        <path id="arc${s.idx}" d="M22 60a38 38 0 0176 0" stroke="none"/>
+        <text class="st-top" fill="currentColor" stroke="none"><textPath href="#arc${s.idx}" startOffset="50%" text-anchor="middle">PARIS · FRANCE</textPath></text>
+        <text x="60" y="${lines.length > 1 ? 60 : 67}" text-anchor="middle" class="st-n" fill="currentColor" stroke="none">${lines.map((l, i) => `<tspan x="60" dy="${i ? 15 : 0}"${fit(l, 8)}>${esc(l)}</tspan>`).join("")}</text>
+        <text x="60" y="95" text-anchor="middle" class="st-d" fill="currentColor" stroke="none">${date}</text>
+      </g></svg>`;
+  }
+  /* パスポート（到着証明書）を 1 枚の画像にする。canvas で描き、共有できる端末は共有シート、できなければ保存 */
+  async function certificate(opts) {
+    const me = Store.cur(); if (!me) return;
+    try { await document.fonts.ready; } catch (e) { /* 書体が読めなくても代わりの書体で描く */ }
+    const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const g = cv.getContext("2d");
+    const line = Store.lineOf(me.color).c;
+    const navy = "#1B2A5C", ink = "#14213D", paper = "#F6F5F1", tile = "#E7E5DE";
+    g.fillStyle = paper; g.fillRect(0, 0, W, H);
+    g.strokeStyle = tile; g.lineWidth = 2;
+    for (let x = 0; x < W; x += 54) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+    for (let y = 0; y < H; y += 36) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+    const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+    /* 駅名標 PARIS */
+    g.fillStyle = navy; rr(80, 80, W - 160, 150, 18); g.fill();
+    g.strokeStyle = "#fff"; g.lineWidth = 5; rr(92, 92, W - 184, 126, 12); g.stroke();
+    g.fillStyle = "#fff"; g.font = "600 92px Jost, Futura, sans-serif"; g.textBaseline = "middle"; g.fillText("PARIS", 130, 158);
+    g.fillStyle = line; g.beginPath(); g.arc(W - 160, 155, 46, 0, Math.PI * 2); g.fill();
+    g.fillStyle = App.onColor(line); g.font = "600 44px Jost, sans-serif"; g.textAlign = "center"; g.fillText(Store.lineOf(me.color).line, W - 160, 157); g.textAlign = "left";
+    /* 名前と見出し */
+    g.fillStyle = ink; g.font = "italic 500 56px Fraunces, Georgia, serif"; g.fillText("Passeport de langue", 80, 310);
+    g.font = "700 72px 'Zen Maru Gothic', sans-serif"; g.fillText(me.name, 80, 400);
+    g.fillStyle = "#5D6680"; g.font = "700 34px 'Zen Maru Gothic', sans-serif";
+    const t = Store.trip(); const stamps = LS.get("stamps", {});
+    const sts = Course.stations().filter((s) => !s.terminus);
+    g.fillText(`フランス語の路線 ${Object.keys(stamps).length} / ${sts.length} 駅${t ? " · パリ到着 " + t.start.replace(/-/g, "/") : ""}`, 80, 462);
+    /* スタンプ */
+    const inks = ["#2E7D4F", "#1F5FAF", "#B23A2B", "#7A3F8F", "#8A5A1E", "#0E6E73"];
+    const cols = 5, size = 168, gap = 22, x0 = (W - (cols * size + (cols - 1) * gap)) / 2, y0 = 530;
+    sts.forEach((s, i) => {
+      const cx = x0 + (i % cols) * (size + gap) + size / 2, cy = y0 + Math.floor(i / cols) * (size + 18) + size / 2;
+      const done = stamps[s.id];
+      g.save(); g.translate(cx, cy); g.rotate((((s.idx * 37) % 17) - 8) * Math.PI / 180);
+      g.strokeStyle = done ? inks[s.idx % inks.length] : "#C9C6BC"; g.fillStyle = g.strokeStyle;
+      g.setLineDash(done ? [] : [10, 10]); g.lineWidth = done ? 6 : 3; g.beginPath(); g.arc(0, 0, size / 2 - 8, 0, Math.PI * 2); g.stroke();
+      if (done) { g.lineWidth = 3; g.beginPath(); g.arc(0, 0, size / 2 - 22, 0, Math.PI * 2); g.stroke(); }
+      g.setLineDash([]); g.textAlign = "center";
+      let fs = 28; g.font = `600 ${fs}px Jost, sans-serif`; while (g.measureText(s.fr).width > size - 56 && fs > 16) { fs -= 2; g.font = `600 ${fs}px Jost, sans-serif`; }
+      g.fillStyle = done ? g.strokeStyle : "#9AA0AE"; g.fillText(s.fr, 0, done ? -6 : 0);
+      if (done) { const d = new Date(done); g.font = "500 20px Jost, sans-serif"; g.fillText(`${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getFullYear()).slice(2)}`, 0, 34); }
+      g.restore();
+    });
+    /* 家族 */
+    const fam = Store.profiles().map((p) => ({ n: p.name, c: Store.lineOf(p.color).c })).concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c })));
+    let fx = 80; const fy = H - 120;
+    g.font = "700 30px 'Zen Maru Gothic', sans-serif"; g.textAlign = "left";
+    g.fillStyle = "#5D6680"; g.fillText("EN FAMILLE", fx, fy - 70);
+    for (const f of fam.slice(0, 5)) {
+      g.fillStyle = f.c; g.beginPath(); g.arc(fx + 30, fy, 30, 0, Math.PI * 2); g.fill();
+      g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Zen Maru Gothic', sans-serif"; g.fillText(App.ini ? App.ini(f.n) : f.n.slice(0, 1), fx + 30, fy + 2);
+      g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Zen Maru Gothic', sans-serif"; g.fillText(f.n, fx + 70, fy + 2);
+      fx += 90 + g.measureText(f.n).width;
+    }
+    if (opts && opts.preview) return cv.toDataURL("image/png");   /* 確認用（画面写真のスクリプト） */
+    const blob = await new Promise((r) => cv.toBlob(r, "image/png"));
+    if (!blob) { toast("画像を作れませんでした"); return; }
+    const file = new File([blob], `paris-passport-${me.name}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: "パリ旅のフランス語", text: `${me.name}のことばのパスポート` }).catch(() => {}); return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast("パスポートの画像を保存しました");
+  }
+
+  window.Passport = { stampSVG, certificate };
+
+  function members() {
+    const me = Store.curId();
+    const out = Store.profiles().map((p) => ({ id: p.id, name: p.name, c: Store.lineOf(p.color).c, me: p.id === me, local: true, streak: Store.streakOf(p.id), stamps: Object.keys(LS.of(p.id, "stamps", {})).length, idx: Course.indexFor(p.id), learned: Course.learnedCount(p.id) }));
+    for (const c of Object.values(Store.family())) out.push({ id: c.id, name: c.n, c: Store.lineOf(c.c).c, card: true, streak: c.s, stamps: c.st.length, idx: c.p || 0, at: c.t });
+    return out;
+  }
+
+  function render() {
+    const root = $("v-family");
+    const me = Store.cur(); if (!me) return;
+    root.innerHTML = "";
+    root.appendChild(el("header", "vh", `<p class="eyebrow">FAMILLE</p><h1>家族とパスポート</h1>`));
+
+    /* わたしのパスポート */
+    const stamps = LS.get("stamps", {});
+    const pass = el("section", "passport card");
+    const sts = Course.stations().filter((s) => !s.terminus);
+    pass.innerHTML = `<div class="pp-hd"><div><p class="eyebrow">PASSEPORT DE LANGUE</p><h2>${esc(me.name)} のパスポート</h2></div><span class="pp-n"><b>${Object.keys(stamps).length}</b>/ ${sts.length}</span></div>`;
+    const grid = el("div", "stamps");
+    for (const s of sts) { const d = stamps[s.id] ? new Date(stamps[s.id]) : null; grid.appendChild(el("div", "stamp-cell" + (d ? "" : " todo"), stampSVG(s, stamps[s.id]) + `<span>${esc(s.ja)}</span><small>${d ? d.getMonth() + 1 + "/" + d.getDate() : "まだ"}</small>`)); }
+    pass.appendChild(grid);
+    pass.appendChild(button("btn ghost wide", icon("download") + "<span>パスポートを画像にする</span>", () => certificate()));
+    root.appendChild(pass);
+
+    /* 家族の進み具合 */
+    const fam = el("section", "fam card");
+    fam.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">LA FAMILLE</p><h2>家族の進み具合</h2></div>`));
+    const total = Course.stations().length - 1;
+    const ul = el("ul", "members");
+    for (const m of members().sort((a, b) => b.stamps - a.stamps || b.streak - a.streak)) {
+      const li = el("li", "member");
+      li.innerHTML = `<span class="av" style="${App.avStyle(m.c)}">${esc(App.ini(m.name))}</span>
+        <div class="m-t"><b>${esc(m.name)}${m.me ? '<small class="tag me">あなた</small>' : m.card ? '<small class="tag">リンクで受け取り</small>' : '<small class="tag">この端末</small>'}</b>
+        <span class="m-bar" aria-hidden="true"><i style="width:${(m.stamps / total) * 100}%;background:${m.c}"></i></span>
+        <small>${m.stamps} 駅 · ${m.streak} 日連続${m.card ? " · " + (() => { const d = new Date(typeof m.at === "number" ? m.at : Date.parse(m.at) || 0); return d.getMonth() + 1 + "/" + d.getDate(); })() + " 時点" : ""}</small></div>`;
+      if (m.card) li.querySelector(".m-t").appendChild(button("linkbtn", "<span>外す</span>", () => {
+        const card = Store.family()[m.id];
+        Store.removeFamilyCard(m.id); render();
+        App.toast(`${m.name} さんを外しました`, { label: "元に戻す", run: () => { Store.restoreFamilyCard(card); render(); } });
+      }, m.name + "さんのカードを外す"));
+      ul.appendChild(li);
+    }
+    fam.appendChild(ul);
+    const act = el("div", "fam-act");
+    act.appendChild(button("btn wide", icon("share") + "<span>進み具合を家族に送る</span>", () => shareLink(Store.cardUrl(me.id), `${me.name}のフランス語の進み具合`, `パリ旅のフランス語：${me.name}は ${Object.keys(stamps).length} 駅まで進みました。開くと家族の路線図に表示されます。`)));
+    act.appendChild(button("btn ghost", icon("star") + "<span>応援を送る</span>", () => shareLink(Store.cardUrl(me.id, true), `${me.name}から応援`, `Bravo ! ${me.name}から応援が届きました。パリまで一緒にがんばろう。`)));
+    act.appendChild(button("btn ghost", icon("plus") + "<span>家族を招待する</span>", () => shareLink(Store.inviteUrl(), "パリ旅のフランス語", "家族のパリ旅行に向けて、一緒にフランス語を覚えよう。開いて自分の名前を入れるだけで始められます。")));
+    fam.appendChild(act);
+    fam.appendChild(el("p", "hint", "記録は各自のスマホに保存されます。家族の進み具合は、送られてきたリンクを開くとここに並びます。"));
+    root.appendChild(fam);
+
+    /* この端末の人 */
+    const dev = el("section", "card");
+    dev.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">CET APPAREIL</p><h2>この端末を使う人</h2></div>`));
+    const pl = el("div", "people");
+    for (const p of Store.profiles()) {
+      const b = button("person" + (p.id === me.id ? " on" : ""), `<span class="av" style="${App.avStyle(Store.lineOf(p.color).c)}">${esc(App.ini(p.name))}</span><span>${esc(p.name)}</span>`, () => { if (p.id !== me.id) { Store.switchTo(p.id); toast(p.name + "に切り替えました"); } });
+      b.setAttribute("aria-pressed", p.id === me.id ? "true" : "false");
+      pl.appendChild(b);
+    }
+    pl.appendChild(button("person add", `<span class="av add">${icon("plus")}</span><span>人を追加</span>`, () => Onboard.addPerson()));
+    dev.appendChild(pl);
+    dev.appendChild(button("btn ghost", icon("gear") + "<span>名前と色を変える</span>", () => editMe()));
+    root.appendChild(dev);
+
+    const st = el("section", "card");
+    st.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">設定 · RÉGLAGES</p><h2>文字の大きさ・速さ・旅の日程</h2></div>`));
+    st.appendChild(button("btn ghost wide", icon("gear") + "<span>設定を開く</span>", () => openSettings()));
+    root.appendChild(st);
+  }
+
+  function openSettings() { sheet("設定", (b) => b.appendChild(settings()), { cls: "tall", onClose: () => { if (App.currentTab() === "family") render(); } }); }
+  App.openSettings = openSettings;
+
+  function shareLink(url, title, text) {
+    if (navigator.share) { navigator.share({ title, text, url }).catch(() => {}); return; }
+    sheet("リンクを送る", (b) => {
+      b.appendChild(el("p", "muted", "このリンクを LINE やメールで送ってください。"));
+      const inp = el("input", "copyfield"); inp.value = url; inp.readOnly = true; inp.setAttribute("aria-label", "送るリンク");
+      b.appendChild(inp);
+      b.appendChild(button("btn wide", "<span>リンクをコピー</span>", () => {
+        const done = () => toast("コピーしました");
+        if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(() => { inp.select(); });
+        else inp.select();
+      }));
+    });
+  }
+
+  function editMe() {
+    const me = Store.cur();
+    sheet("名前と色", (b, close) => {
+      const f = el("form", "form");
+      f.innerHTML = `<label for="edName">名前（家族に見える呼び名）</label><input id="edName" type="text" maxlength="20" value="${esc(me.name)}" autocomplete="off">`;
+      const colors = Onboard.colorPicker(me.color);
+      f.appendChild(el("span", "lbl", "路線の色")); f.appendChild(colors.el);
+      f.appendChild(button("btn wide", "<span>保存</span>", () => f.requestSubmit()));
+      f.addEventListener("submit", (e) => { e.preventDefault(); const n = $("edName").value.trim(); if (!n) return; Store.updateProfile(me.id, { name: n, color: colors.value() }); close(); toast("保存しました"); });
+      b.appendChild(f);
+      const del = button("btn danger ghost wide", "<span>この人の記録を消す</span>", () => {
+        b.innerHTML = "";
+        b.appendChild(el("p", null, `${esc(me.name)} の記録（スタンプ・カード・設定）をこの端末から消します。元には戻せません。`));
+        b.appendChild(button("btn danger wide", "<span>消す</span>", () => { Store.removeProfile(me.id); close(); if (!Store.cur()) Onboard.start(); }));
+        b.appendChild(button("btn ghost wide", "<span>やめる</span>", close));
+      });
+      b.appendChild(del);
+    });
+  }
+
+  function settings() {
+    const pr = Store.prefs();
+    const t = Store.trip();
+    const sec = el("div", "settings");
+    const f = el("div", "form");
+    f.innerHTML = `
+      <span class="lbl" id="lbSize">文字の大きさ</span>
+      <div class="seg" role="radiogroup" aria-labelledby="lbSize"><button type="button" role="radio" data-size="md" aria-checked="${pr.size === "md"}">ふつう</button><button type="button" role="radio" data-size="lg" aria-checked="${pr.size === "lg"}">大きい</button></div>
+      <label for="stRate">読み上げの速さ</label>
+      <select id="stRate"><option value="0.8">ゆっくりめ</option><option value="1">ふつう</option><option value="1.15">速め</option></select>
+      <span class="lbl" id="lbMotion">画面の動き</span>
+      <div class="seg" role="radiogroup" aria-labelledby="lbMotion"><button type="button" role="radio" data-motion="full" aria-checked="${pr.motion === "full"}">ふつう</button><button type="button" role="radio" data-motion="less" aria-checked="${pr.motion === "less"}">減らす</button></div>
+      <span class="lbl" id="lbGrades">復習カードの答え方</span>
+      <div class="seg" role="radiogroup" aria-labelledby="lbGrades"><button type="button" role="radio" data-grades="4" aria-checked="${pr.grades === "4"}">4 段階</button><button type="button" role="radio" data-grades="2" aria-checked="${pr.grades === "2"}">2 択</button></div>
+      <span class="lbl" id="lbSound">効果音</span>
+      <div class="seg" role="radiogroup" aria-labelledby="lbSound"><button type="button" role="radio" data-sound="1" aria-checked="${pr.sound}">鳴らす</button><button type="button" role="radio" data-sound="0" aria-checked="${!pr.sound}">鳴らさない</button></div>
+      <label for="stTrip">パリに着く日（4 日間の旅）</label>
+      <input id="stTrip" type="date" value="${t ? t.start : ""}">`;
+    sec.appendChild(f);
+    f.querySelector("#stRate").value = String(pr.rate === 1 ? 1 : pr.rate < 1 ? 0.8 : 1.15);
+    const radio = (sel, fn) => f.querySelectorAll(sel).forEach((b) => b.addEventListener("click", () => { fn(b); b.parentNode.querySelectorAll("[role=radio]").forEach((x) => x.setAttribute("aria-checked", x === b ? "true" : "false")); }));
+    radio("[data-size]", (b) => Store.setPrefs({ size: b.dataset.size }));
+    radio("[data-motion]", (b) => Store.setPrefs({ motion: b.dataset.motion }));
+    radio("[data-grades]", (b) => Store.setPrefs({ grades: b.dataset.grades }));
+    radio("[data-sound]", (b) => { Store.setPrefs({ sound: b.dataset.sound === "1" }); if (b.dataset.sound === "1") App.sfx.ok(); });
+    f.querySelector("#stRate").addEventListener("change", (e) => { Store.setPrefs({ rate: +e.target.value }); App.TTS.speak("Bonjour, bienvenue à Paris."); });
+    f.querySelector("#stTrip").addEventListener("change", (e) => { const v = e.target.value; if (v) { Store.setTrip(v); App.renderHeader(); toast("旅の日程を保存しました"); } });
+
+    const data = el("div", "row");
+    data.appendChild(button("btn ghost", icon("download") + "<span>記録を書き出す</span>", () => {
+      const me = Store.cur();
+      const blob = new Blob([JSON.stringify(Store.exportProfile(me.id))], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `paris-fr-${me.name}.json`;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }));
+    const file = el("input"); file.type = "file"; file.accept = "application/json,.json"; file.hidden = true;
+    file.addEventListener("change", () => {
+      const fl = file.files[0]; file.value = ""; if (!fl) return;   /* 同じファイルをもう一度選んでも反応するように */
+      fl.text().then((txt) => { const p = Store.importProfile(JSON.parse(txt)); toast(p.name + " の記録を読み込みました"); }).catch((e) => toast("読み込めませんでした：" + e.message));
+    });
+    data.appendChild(file);
+    data.appendChild(button("btn ghost", icon("upload") + "<span>記録を読み込む</span>", () => file.click()));
+    sec.appendChild(el("h3", "sub", "機種変更・別の端末へ"));
+    sec.appendChild(data);
+    /* オフラインの準備（教材と音声を端末に保存できたか） */
+    const off = el("p", "offline-st", "オフラインの準備: 確かめています…");
+    sec.appendChild(el("h3", "sub", "電波がない所で使う"));
+    sec.appendChild(off);
+    let tries = 0;
+    const check = () => {
+      if (!off.isConnected && tries > 0) return;
+      if (!(window.PWA && PWA.status)) { off.textContent = "このブラウザではオフラインの準備ができません。"; return; }
+      PWA.status().then((st) => {
+        off.className = "offline-st " + st;
+        off.innerHTML = st === "ready" ? `${icon("check")}<span>準備できています。電波がない所でも、レッスン・フレーズ・音声・しおりが使えます（発音チェックだけは通信が必要）。</span>`
+          : st === "installing" ? `<span>準備中です（教材と音声を保存しています）。この画面を開いたまま少し待ってください。</span>`
+          : `<span>このブラウザではオフラインの準備ができません。Safari や Chrome で開くか、ホーム画面に追加してください。</span>`;
+        if (st === "installing" && tries++ < 30) setTimeout(check, 2000);
+      });
+    };
+    check();
+    if (window.PWA) {
+      const inst = el("div", "install");
+      if (PWA.canInstallHint && PWA.canInstallHint()) inst.innerHTML = `<h3 class="sub">ホーム画面に追加</h3><p class="hint">Safari の共有ボタン ${icon("share")} から「ホーム画面に追加」を選ぶと、アプリのように開けて、電波がない所でも使えます。</p>`;
+      else if (PWA.canPrompt && PWA.canPrompt()) { inst.appendChild(el("h3", "sub", "ホーム画面に追加")); inst.appendChild(el("p", "hint", "アプリのように開けて、電波がない所でも使えます。")); inst.appendChild(button("btn ghost", icon("download") + "<span>ホーム画面に追加</span>", () => PWA.promptInstall())); }
+      sec.appendChild(inst);
+    }
+    return sec;
+  }
+
+  onTab("family", render);
+})();
