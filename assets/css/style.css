@@ -1379,3 +1379,91 @@ body{line-break:strict;word-break:normal;text-autospace:normal}
 .hd-count b i{opacity:1}
 .aff-cr i{white-space:nowrap}
 .note{text-wrap:balance}
+
+/* ================= 第 5 版・高級感の仕上げ « Maison » =================
+   紙に墨、差し色は真鍮の金だけ。人の路線色は「自分の印」（題の点・進み具合の丸・タブの点）に限る。
+   面はつくらず罫で区切り、文字は軽く・字間を広く。動きは静かに。 */
+:root{--gilt:#8A6A34;--gilt-2:#C9B07F;--ok:#2F6B4B;--ng:#9A3328;--ok-soft:#E9EEE6;--ng-soft:#F4E6E1;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .08 0 0 0 0 .05 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gilt:#CDB07A;--gilt-2:#6F5C38;--ok:#86C29E;--ng:#E8968A;--ok-soft:#18231C;--ng-soft:#2A1A17}}
+:root[data-theme="dark"]{--gilt:#CDB07A;--gilt-2:#6F5C38;--ok:#86C29E;--ng:#E8968A;--ok-soft:#18231C;--ng-soft:#2A1A17}
+/* 紙の手ざわり（ごく薄い粒子） */
+body,.stage{background-image:var(--grain);background-size:180px 180px}
+/* ボタン: 墨の札。文字は軽く字間を広く、押すと少し沈む */
+.btn{font-weight:500;letter-spacing:.16em;font-size:.9375rem;transition:opacity .2s,background-color .2s}
+.btn.big{font-size:1rem;letter-spacing:.18em;min-height:58px}
+.btn:hover{filter:none}
+.btn:active{transform:none;opacity:.82}
+.btn.ghost{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 38%,transparent);font-weight:500}
+.btn .btn-fr{letter-spacing:.02em;opacity:.66}
+.btn:disabled{opacity:.28}
+/* 音声とマイク: 墨の丸と金の細い輪（印章のように） */
+.hearbtn{width:112px;height:112px;background:var(--ink);color:var(--bg);box-shadow:0 0 0 7px var(--bg),0 0 0 8px var(--gilt-2)}
+.hearbtn .ic{width:40px;height:40px;stroke-width:1.3}
+.micbtn{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink),0 0 0 4px var(--bg),0 0 0 5px var(--gilt-2)}
+.micbtn .ic{stroke-width:1.4}
+.micbtn.rec{background:var(--ink);color:var(--bg)}
+.micbig .ic{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink),0 0 0 6px var(--bg),0 0 0 7px var(--gilt-2)}
+.micbig.rec .ic{background:var(--ink);color:var(--bg)}
+.say.round{box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--gilt-2)}
+/* 進み具合: 細い線と墨。自分の丸だけ路線色 */
+.lrail::before{height:1px;top:13.5px;border-radius:0}
+.lrail i{height:2px;top:13px;border-radius:0;background:var(--ink)}
+.lrail b{width:7px;height:7px;top:10.5px;margin-left:-3.5px;box-shadow:inset 0 0 0 1px var(--line-gray);background:var(--bg)}
+.lrail b.on{box-shadow:none;background:var(--ink)}
+.lrail b.big{width:11px;height:11px;top:8.5px;margin-left:-5.5px;box-shadow:inset 0 0 0 1px var(--ink)}
+.lrail b.big.on{background:var(--ink)}
+.lr-cap{font-family:var(--jp);font-weight:500;letter-spacing:.08em}
+.segs{gap:4px}
+.segs i{height:2px;border-radius:0;background:var(--line-gray)}
+.segs i.on{background:var(--ink)}
+.ride-line{height:1px;background:linear-gradient(90deg,var(--ink) 0 50%,var(--line-gray) 50%)}
+.ride-st i{width:14px;height:14px;box-shadow:inset 0 0 0 1px var(--ink)}
+.ride-st.cur i{width:18px;height:18px;margin-top:-2px;box-shadow:inset 0 0 0 1px var(--ink),inset 0 0 0 5px var(--bg);background:var(--ink)}
+.ride-st.nxt i{box-shadow:inset 0 0 0 1px var(--line-gray)}
+/* 金の差し色: 番号・小見出し・読みのカナ */
+.aff-no,.ticket .ring b,.ptile::before{color:var(--gilt)}
+.vh .eyebrow,.aff-cartel + .aff-q + .aff-meta{color:var(--gilt)}
+.kana{color:var(--gilt)}
+.stband b{color:var(--gilt-2)}
+.badge{background:none;color:var(--gilt);box-shadow:inset 0 0 0 1px var(--gilt);font-weight:500}
+.streak .ic{color:var(--gilt);fill:none}
+.vh{padding-bottom:4px}
+.vh h1{font-weight:500;letter-spacing:.06em}
+h2{font-weight:500}
+.aff-cartel h1{font-weight:500;letter-spacing:.06em}
+/* 今日の課題の丸: 細い輪、済みは墨 */
+.leg i{width:26px;height:26px;box-shadow:inset 0 0 0 1px var(--line-gray)}
+.leg.done i{background:var(--ink);color:var(--bg)}
+.leg .go{color:var(--gilt)}
+/* 答え: 面を塗らず、細い色の線と小さな札 */
+.opt.right{background:none;box-shadow:inset 2px 0 0 var(--ok)}
+.opt.wrong{background:none;box-shadow:inset 2px 0 0 var(--ng);animation:none}
+.opt.right::after,.opt.wrong::after{font-weight:500;letter-spacing:.08em}
+.stage-foot.fb,.stage-foot.fb.ng{background:var(--surface);box-shadow:inset 0 2px 0 var(--ok)}
+.stage-foot.fb.ng{box-shadow:inset 0 2px 0 var(--ng)}
+.fb-hd{font-family:var(--jp);font-weight:500;letter-spacing:.1em;font-size:.875rem}
+/* 見出し帯: 使う人は細い輪、SOS は細い線の札 */
+.me-chip .av{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:500}
+.sos-btn{background:transparent;box-shadow:inset 0 0 0 1px var(--sos);font-size:.75rem;letter-spacing:.22em;font-weight:500}
+@media (max-width:899px){:root[data-tab="home"]:not(.hd-solid):has(#v-home > .home-a:first-child > .affiche:first-child) .hd .me-chip .av{color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9)}}
+/* タブ: 線の細いアイコン */
+.ti{stroke-width:1.25}
+.tabbar [role=tab]{font-weight:400}
+.tabbar [role=tab][aria-selected=true]{font-weight:500}
+/* 画面の切り替えは静かに */
+.view{animation:viewin .5s var(--ease-out)}
+@keyframes viewin{from{opacity:0}to{opacity:1}}
+/* 罫は細く */
+.card,.linemap,.famlines,.ticket,.duo-cta,.phl,.pgrid,.opts{border-top-width:1px}
+.l-kana,.show-kana,.rn,.cheer,.pscene.on .ps-t small,.sign .roundel,.missed-box summary b{color:var(--gilt)}
+.l-kana,.show-kana{font-weight:500;letter-spacing:.12em}
+.listhd button.up{background:none;box-shadow:none;padding:0 4px 0 0;min-height:var(--tap);letter-spacing:.1em;font-weight:500;color:var(--ink-2)}
+.btn:disabled{opacity:.35}
+.showtile{background:var(--ink);color:var(--bg);border-radius:4px}
+.dstamp[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.tool.say.playing,.say.round.playing{background:var(--gilt);color:var(--bg)}
+.today::before{height:2px;border-radius:0;background:var(--gilt)}
+.tl::before{width:1px;background:var(--line-gray)}
+.show-sub,.show-kana-box{border-radius:4px}
+.sheet{border-radius:10px 10px 0 0}
