@@ -21,6 +21,8 @@ window.DATA = window.DATA || {};
   /* 名前の頭文字。家族に同じ頭文字の人がいれば 2 文字（Junyeol と Junha → Jn と Jh） */
   function initials(name, others) {
     const n = String(name || "?").trim();
+    /* かな・漢字の名前は 2 字まで（1 字だと「マ」のように何の印か分かりにくい） */
+    if (/^[\u3040-\u30ff\u3400-\u9fff]/.test(n)) return n.slice(0, 2);
     const first = n.slice(0, 1);
     const clash = (others || []).some((o) => o !== name && String(o).trim().slice(0, 1).toLowerCase() === first.toLowerCase());
     if (!clash) return first;

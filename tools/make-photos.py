@@ -15,7 +15,7 @@ OUT = ROOT / "assets" / "img" / "st"
 # 駅 id → 画面で切り抜くときの中心（CSS の object-position）。写真ごとに見せたい所が違う
 FOCUS = {
     "welcome": "50% 38%", "bonjour": "50% 45%", "lire": "50% 42%", "comprendre": "42% 40%",
-    "aeroport": "32% 50%", "taxi": "45% 62%", "hotel": "74% 50%", "cafe": "50% 58%",
+    "aeroport": "32% 50%", "taxi": "50% 30%", "hotel": "74% 50%", "cafe": "50% 58%",
     "metro": "68% 52%", "musee": "52% 62%", "resto": "50% 45%", "carte": "50% 72%",
     "boutique": "50% 50%", "urgence": "40% 58%", "paris": "38% 50%",
 }

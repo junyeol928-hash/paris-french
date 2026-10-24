@@ -7,19 +7,20 @@
   const { el, esc, button, icon, shuffle, sayBtn, TTS, sfx, haptic, stage, phrase } = App;
 
   /* 上の進み具合 */
-  function railbar(root, close, total, label) {
+  function railbar(root, close, total, label, mark) {
     const bar = el("div", "stage-bar");
     bar.appendChild(button("icon-btn", icon("close"), () => close(), label || "レッスンをやめる"));
     const rail = el("div", "lrail"); rail.setAttribute("role", "progressbar"); rail.setAttribute("aria-valuemin", "0"); rail.setAttribute("aria-valuemax", String(total)); rail.setAttribute("aria-label", "進み具合");
     const fill = el("i"); rail.appendChild(fill);
     const dots = [];
-    if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b"); d.style.left = (k / total) * 100 + "%"; d.dataset.k = k; rail.appendChild(d); dots.push(d); }
+    const at = (f) => `calc(14px + (100% - 14px) * ${f})`;
+    if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b", k === mark || k === total ? "big" : ""); d.style.left = at(k / total); d.dataset.k = k; rail.appendChild(d); dots.push(d); }
     const me = el("span", "lr-me", esc(App.ini ? App.ini(Store.cur().name) : "")); rail.appendChild(me);
     bar.appendChild(rail);
     root.appendChild(bar);
     return (n) => {
-      const pct = Math.min(100, (n / total) * 100) + "%";
-      fill.style.width = pct; me.style.left = pct;
+      const f = Math.min(1, n / total);
+      fill.style.width = `calc((100% - 14px) * ${f})`; me.style.left = at(f);
       for (const d of dots) d.classList.toggle("on", +d.dataset.k <= n);
       rail.setAttribute("aria-valuenow", String(Math.round(n)));
     };
@@ -71,20 +72,16 @@
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
     box.innerHTML = `<div class="arr-scene"><figure class="arr-poster">${App.photo(s.id, "arr-photo")}</figure>
-        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 104">
-          <defs><linearGradient id="trShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
-            <linearGradient id="trGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34405E"/><stop offset=".5" stop-color="#1A2034"/><stop offset=".51" stop-color="#28324C"/><stop offset="1" stop-color="#161B2C"/></linearGradient></defs>
-          <rect class="tr-in" x="96" y="22" width="44" height="64" rx="4"/><rect class="tr-in" x="196" y="22" width="44" height="64" rx="4"/>
-          <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
-          <path fill="url(#trShade)" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
-          <rect class="tr-stripe" x="10" y="66" width="300" height="4"/>
-          <rect class="tr-win" x="24" y="26" width="58" height="28" rx="5"/><rect class="tr-win" x="152" y="26" width="32" height="28" rx="5"/><rect class="tr-win" x="252" y="26" width="42" height="28" rx="9"/>
-          <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="22" rx="2"/></g>
-          <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="22" rx="2"/></g>
-          <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="22" rx="2"/></g>
-          <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="22" rx="2"/></g>
-          <circle class="tr-lamp" cx="298" cy="78" r="4"/>
-          <circle class="tr-wh" cx="64" cy="96" r="7"/><circle class="tr-wh" cx="96" cy="96" r="7"/><circle class="tr-wh" cx="232" cy="96" r="7"/><circle class="tr-wh" cx="264" cy="96" r="7"/>
+        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 100">
+          <rect class="tr-in" x="96" y="22" width="44" height="62" rx="3"/><rect class="tr-in" x="196" y="22" width="44" height="62" rx="3"/>
+          <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
+          <rect class="tr-skirt" x="10" y="78" width="300" height="14" rx="0"/>
+          <rect class="tr-win" x="24" y="26" width="58" height="26" rx="4"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="4"/><rect class="tr-win" x="252" y="26" width="42" height="26" rx="8"/>
+          <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="20" rx="2"/></g>
+          <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="20" rx="2"/></g>
+          <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="20" rx="2"/></g>
+          <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="20" rx="2"/></g>
+          <circle class="tr-lamp" cx="298" cy="70" r="4"/>
         </svg></div></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
@@ -107,7 +104,7 @@
     const items = l.ids.map(phrase).filter(Boolean);
     const quiz = buildQuiz(items);
     const total = items.length + quiz.length;
-    const setP = railbar(root, close, total);
+    const setP = railbar(root, close, total, null, items.length);
     const body = el("div", "stage-body"); root.appendChild(body);
     let results = {};
     saveTo = l.id;
@@ -369,7 +366,7 @@
     const later = (fn, ms) => { clearTimeout(timer); const my = ++gen; timer = setTimeout(() => { if (my === gen && root.isConnected) fn(); }, ms); };
     const cancel = () => { clearTimeout(timer); gen++; };
     root.closest(".stage").addEventListener("stage-closed", cancel);
-    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.appendChild(chat); line(0); });
+    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.insertAdjacentHTML("beforeend", `<figure class="wall-poster">${App.photo(s.id)}<figcaption>${esc(s.fr)} · ${esc(d.ja)}</figcaption></figure>`); body.appendChild(chat); line(0); });
     const chat = el("div", "chat"); chat.setAttribute("aria-live", "polite"); chat.setAttribute("aria-label", "会話");
     let foot = null;
     function bubble(who, fr, ja, n) {

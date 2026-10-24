@@ -76,7 +76,6 @@
     if (st && st.kind === "during" && DATA.days[st.n - 1]) root.appendChild(todayTrip(st.n - 1));
     /* 家族が駅に着いた知らせ（前に見たときより進んでいたら一度だけ） */
     const news = familyNews();
-    if (news.length) root.appendChild(newsCard(news));
     const colA = el("div", "home-a"), colB = el("div", "home-b");
     root.append(colA, colB);
 
@@ -99,6 +98,7 @@
       hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
     }
     colA.appendChild(hero);
+    if (news.length) colA.appendChild(newsCard(news));
 
     /* 今日の 3 つ */
     const tk = Course.ticket();
@@ -196,18 +196,20 @@
   }
   function markSeen(news) { const seen = Store.LS.get("famSeen", {}) || {}; for (const n of news) seen[n.id] = n.idx; Store.LS.set("famSeen", seen); }
   function newsCard(news) {
-    const c = el("section", "news card");
+    const c = el("section", "news");
     c.setAttribute("role", "status");
-    c.innerHTML = `<p class="eyebrow">家族のお知らせ</p>${news.map((x) => `<p class="news-t"><b>${esc(x.name)}</b> さんが <b class="fr">${esc(x.st.fr)}</b>（${esc(x.st.ja)}）に着きました</p>`).join("")}`;
+    const first = news[0];
+    c.innerHTML = `<span class="av" style="${App.avStyle(familyAt().find((f) => f.id === first.id)?.c || "#888")}" aria-hidden="true">${esc(ini(first.name))}</span>
+      <p class="news-t"><b>${esc(first.name)}</b> さんが<b>${esc(first.st.ja)}</b>に着きました${news.length > 1 ? `<small>ほか ${news.length - 1} 人も進みました</small>` : ""}</p>`;
     const me = Store.cur();
-    const row = el("div", "row");
-    row.appendChild(button("btn small", icon("star") + "<span>Bravo を送る</span>", () => {
+    const row = el("div", "news-act");
+    row.appendChild(button("btn small", "<span>Bravo</span>", () => {
       markSeen(news); c.remove();
       const url = Store.cardUrl(me.id, true);
       if (navigator.share) navigator.share({ title: `${me.name}から応援`, text: `Bravo ! ${me.name}から応援が届きました。`, url }).catch(() => {});
       else App.goTab("family");
     }));
-    row.appendChild(button("btn ghost small", "<span>閉じる</span>", () => { markSeen(news); c.remove(); }));
+    row.appendChild(button("icon-btn", icon("close"), () => { markSeen(news); c.remove(); }, "お知らせを閉じる"));
     c.appendChild(row);
     return c;
   }
