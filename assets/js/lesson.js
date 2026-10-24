@@ -43,7 +43,7 @@
   /* 正解したら駅の絵がふっと寄って戻る（ポスターの絵が手応えになる） */
   function glow(body) {
     const a = body.querySelector(".stband.art"); if (!a) return;
-    a.classList.remove("cheer"); void a.offsetWidth; a.classList.add("cheer");
+    a.classList.remove("is-glow"); void a.offsetWidth; a.classList.add("is-glow");
   }
   /* 画面の下に固定する操作欄 */
   function footer(body) { const f = el("div", "stage-foot"); body.appendChild(f); return f; }
