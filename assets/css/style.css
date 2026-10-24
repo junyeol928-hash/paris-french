@@ -977,3 +977,9 @@ html[data-size="lg"] .fam-act{grid-template-columns:1fr}
 /* iPhone の Safari は日付欄に固有の幅を持たせて画面からはみ出すので、見た目の既定を外して幅に収める */
 input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;box-sizing:border-box}
 input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.4em}
+/* はじめにの各段も駅の壁: 上にタイル、段の名前は小さな駅名標（番号は路線の丸） */
+.onboard::before{content:"";position:absolute;left:0;right:0;top:0;height:420px;pointer-events:none;background-image:linear-gradient(180deg,color-mix(in srgb,var(--bg) 20%,transparent),var(--bg)),var(--tiles);background-size:100% 100%,64px 32px}
+.onboard > *{position:relative;z-index:1}
+.ob-plate{justify-self:start;display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;border-radius:8px;padding:6px 16px 6px 6px;box-shadow:inset 0 0 0 1.5px var(--navy),inset 0 0 0 3px rgba(255,255,255,.88)}
+.ob-plate b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--line);color:var(--on-line);font-family:var(--ui);font-weight:600;font-size:.875rem}
+.ob-plate span{font-family:var(--ui);font-weight:600;font-size:.8125rem;letter-spacing:.16em}

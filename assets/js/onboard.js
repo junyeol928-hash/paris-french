@@ -63,7 +63,7 @@
     }
     function nameStep() {
       const w = el("form", "ob");
-      w.innerHTML = `<p class="eyebrow">1 · VOTRE NOM</p><h1>呼び名を教えてください</h1><p class="lede">家族の路線図に表示されます。ひらがな・カタカナ・ローマ字、どれでも。</p>
+      w.innerHTML = `<p class="ob-plate"><b>1</b><span>VOTRE NOM</span></p><h1>呼び名を教えてください</h1><p class="lede">家族の路線図に表示されます。ひらがな・カタカナ・ローマ字、どれでも。</p>
         <label class="sr" for="obName">呼び名</label><input id="obName" class="big-input" type="text" maxlength="20" autocomplete="nickname" placeholder="例: ママ、Junyeol" value="${esc(st.name)}">`;
       const next = button("btn big wide primary", "<span>次へ</span>" + icon("arrow"), () => w.requestSubmit());
       w.appendChild(next);
@@ -72,7 +72,7 @@
     }
     function colorStep() {
       const w = el("div", "ob");
-      w.innerHTML = `<p class="eyebrow">2 · VOTRE LIGNE</p><h1>${esc(st.name)} さんの路線の色</h1><p class="lede">パリのメトロは路線ごとに色があります。家族で別々の色にすると、路線図で見分けやすくなります。</p>`;
+      w.innerHTML = `<p class="ob-plate"><b>2</b><span>VOTRE LIGNE</span></p><h1>${esc(st.name)} さんの路線の色</h1><p class="lede">パリのメトロは路線ごとに色があります。家族で別々の色にすると、路線図で見分けやすくなります。</p>`;
       const used = Store.profiles().map((p) => p.color);
       if (used.includes(st.color)) { const free = Store.LINES.find((l) => !used.includes(l.id)); if (free) st.color = free.id; }
       const cp = colorPicker(st.color);
@@ -82,7 +82,7 @@
     }
     function sizeStep() {
       const w = el("div", "ob");
-      w.innerHTML = `<p class="eyebrow">3 · LISIBILITÉ</p><h1>文字の大きさ</h1><p class="lede">あとから設定で変えられます。</p>`;
+      w.innerHTML = `<p class="ob-plate"><b>3</b><span>LISIBILITÉ</span></p><h1>文字の大きさ</h1><p class="lede">あとから設定で変えられます。</p>`;
       const pv = el("div", "sizes");
       [["md", "ふつう"], ["lg", "大きい"]].forEach(([k, t]) => {
         const b = button("sizeopt" + (k === "lg" ? " lg" : ""), `<span class="fr">Bonjour !</span><span>${t}</span>`, () => { st.size = k; document.documentElement.dataset.size = k; pv.querySelectorAll(".sizeopt").forEach((x) => x.setAttribute("aria-checked", x === b ? "true" : "false")); });
@@ -95,7 +95,7 @@
     }
     function tripStep() {
       const w = el("form", "ob");
-      w.innerHTML = `<p class="eyebrow">4 · LE VOYAGE</p><h1>パリに着く日は？</h1><p class="lede">出発までの日数と、旅のしおりの日付に使います。この端末だけに保存されます。</p>
+      w.innerHTML = `<p class="ob-plate"><b>4</b><span>LE VOYAGE</span></p><h1>パリに着く日は？</h1><p class="lede">出発までの日数と、旅のしおりの日付に使います。この端末だけに保存されます。</p>
         <label for="obTrip">パリに着く日（4 日間の旅）</label><p class="hint">欄をタップすると日付を選べます</p><input id="obTrip" class="big-input" type="date" value="${st.trip ? st.trip.start : ""}">`;
       w.appendChild(button("btn big wide primary", "<span>次へ</span>" + icon("arrow"), () => w.requestSubmit()));
       w.appendChild(button("btn ghost wide", "<span>あとで決める</span>", () => go(1)));
