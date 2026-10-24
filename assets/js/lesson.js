@@ -35,7 +35,7 @@
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
   function stband(s, label) {
     const b = el("div", "stband");
-    b.innerHTML = `<span>${esc(label || s.fr)}</span>${s && !label ? `<b class="roundel" aria-hidden="true">${s.num}</b>` : ""}`;
+    b.innerHTML = `${s && !label ? `<b>N° ${String(s.num).padStart(2, "0")}</b>` : ""}<span>${esc(App.titleFr(label || s.fr))}</span>`;
     b.setAttribute("aria-hidden", "true");
     return b;
   }
@@ -78,27 +78,17 @@
     const prev = st[s.idx - 1], next = st[s.idx + 1];
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
-    box.innerHTML = `<div class="arr-scene"><figure class="arr-poster">${App.photo(s.id, "arr-photo")}</figure>
-        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 96">
-          <rect class="tr-in" x="96" y="22" width="44" height="62" rx="3"/><rect class="tr-in" x="196" y="22" width="44" height="62" rx="3"/>
-          <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
-          <rect class="tr-skirt" x="10" y="78" width="300" height="14" rx="0"/>
-          <rect class="tr-win" x="24" y="26" width="58" height="26" rx="4"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="4"/><rect class="tr-win" x="252" y="26" width="42" height="26" rx="8"/>
-          <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="20" rx="2"/></g>
-          <circle class="tr-lamp" cx="298" cy="70" r="4"/>
-          <rect class="tr-under" x="44" y="92" width="64" height="4" rx="1"/><rect class="tr-under" x="212" y="92" width="64" height="4" rx="1"/>
-        </svg></div></div></div>
+    const nn = String(s.num).padStart(2, "0"), all = String(st.length).padStart(2, "0");
+    box.innerHTML = `<figure class="aff-art arr-art">${App.photo(s.id)}<figcaption class="aff-kick" lang="fr">Station ${nn} / ${all}</figcaption></figure>
+      <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
+      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(s.id))}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
-        <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
-        <span class="ride-st cur"><i></i><small>${esc(s.fr)}</small></span>
-        <span class="ride-st nxt"><i></i><small>${esc(next ? next.fr : "")}</small></span>
+        <span class="ride-st prev"><i></i><small>${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</small></span>
+        <span class="ride-st cur"><i></i><small>${esc(App.titleFr(s.fr))}</small></span>
+        <span class="ride-st nxt"><i></i><small>${esc(next ? App.titleFr(next.fr) : "")}</small></span>
         <span class="ride-me">${esc(App.ini ? App.ini(Store.cur().name) : "")}</span></div>
       <p class="eyebrow">${s.num} 番目の駅 · ${l.kind === "dlg" ? "会話の練習" : l.kind === "rules" ? "読み方のきまり" : "レッスン " + i + " / " + s.lessons.length}</p>
-      <div class="sign big"><span>${esc(s.fr)}</span></div>
-      <h1 data-head>${esc(s.ja)}</h1><p class="lede">${esc(sub)}</p>`;
+      <p class="lede">${esc(sub)}</p>`;
     body.appendChild(box);
     const f = footer(body);
     if (resume) {

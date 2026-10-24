@@ -24,7 +24,7 @@
     const LINE_C = { listen: "#1F5FAF", nums: "#E5A800", weak: "#D9701C", talk: "#3F9160", rules: "#9B2F8F" };
     const grid = el("div", "pgrid");
     for (const t of tiles) {
-      const b = button("ptile p-" + t.k, `<span class="pt-ic"${LINE_C[t.k] ? ` style="background:${LINE_C[t.k]};color:${App.onColor(LINE_C[t.k])}"` : ""}>${icon(t.ic)}</span><span class="pt-t"><b>${esc(t.t)}</b><span class="pt-fr">${DEST[t.k]}</span><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
+      const b = button("ptile p-" + t.k, `<span class="pt-ic"${LINE_C[t.k] ? ` style="color:${LINE_C[t.k]}"` : ""}>${icon(t.ic)}</span><span class="pt-t"><b>${esc(t.t)}</b><span class="pt-fr">${DEST[t.k]}</span><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
       grid.appendChild(b);
     }
     root.appendChild(grid);

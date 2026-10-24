@@ -79,21 +79,27 @@
     const colA = el("div", "home-a"), colB = el("div", "home-b");
     root.append(colA, colB);
 
-    /* 次の駅: 駅の壁に掛かったポスター（その場面の写真）と、ホーローの駅名標 */
-    const hero = el("section", "next");
+    /* 次の駅: 企画展のポスター。その駅の名画を上いっぱいに、駅名を大きな斜体で、下に解説札 */
+    const hero = el("section", "next affiche");
+    const ln = Store.lineOf(me.color);
+    const kick = (t) => `<p class="aff-kick" lang="fr">Ligne ${ln.line} · ${t}</p>`;
     if (cur.terminus) {
-      hero.innerHTML = `<figure class="poster">${App.photo("paris")}<figcaption><p class="q fr">Bienvenue à Paris !</p></figcaption></figure>
-        <div class="plate"><span class="pl-t"><small>TERMINUS · 終点</small><span>PARIS</span></span></div>
-        <div class="next-t"><h1>全部の駅を通りました</h1><p>あとは旅を楽しむだけ。毎日の復習カードで、覚えた表現を忘れないように。</p></div>`;
+      hero.innerHTML = `<figure class="aff-art">${App.photo("paris")}${kick("Terminus")}</figure>
+        <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:6">Paris<em>.</em></p>
+        <div class="aff-cartel"><div><h1>全部の駅を通りました</h1><p class="aff-cr fr" lang="fr">${esc(App.credit("paris"))}</p></div></div>
+        <p class="aff-lede">あとは旅を楽しむだけ。毎日の復習カードで、覚えた表現を忘れないように。</p>`;
       hero.appendChild(button("btn big wide board", icon("download") + "<span>到着証明書をつくる</span>", () => Passport.certificate()));
       hero.appendChild(button("btn ghost wide", "<span>復習カードへ</span>" + icon("arrow"), () => App.goTab("practice", "review")));
     } else {
       const i = cur.lessons.indexOf(next) + 1;
       const p = Course.stationProgress(cur);
       const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? { fr: DATA.dialogs.find((d) => d.id === next.dlg).lines[0].fr } : null;
-      hero.innerHTML = `<figure class="poster">${App.photo(cur.id)}<figcaption>${sample ? `<p class="q fr">« ${esc(sample.fr)} »</p>` : `<p class="q fr">${next.kind === "rules" ? "Lire le français" : esc(cur.fr)}</p>`}</figcaption></figure>
-        <div class="plate"><span class="pl-t"><small>PROCHAINE STATION · 次の駅</small><span>${esc(cur.fr)}</span></span><b class="roundel" aria-label="${cur.num} 番目の駅">${cur.num}</b></div>
-        <div class="next-t"><h1>${esc(cur.ja)}</h1><p>${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + " 全 " + cur.lessons.length + " のうち " + i + " つ目"} · 約 ${minutes(next)} 分</p></div>
+      const nn = String(cur.num).padStart(2, "0"), all = String(stations.length).padStart(2, "0");
+      hero.innerHTML = `<figure class="aff-art">${App.photo(cur.id)}${kick(`Prochaine station · ${nn} / ${all}`)}</figure>
+        <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
+        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(cur.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
+        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}
+        <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + " 全 " + cur.lessons.length + " のうち " + i + " つ目"} · 約 ${minutes(next)} 分</p>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
       hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
     }
