@@ -754,3 +754,6 @@ html[data-motion="less"] .doors{display:none}
 .news .row{display:grid;grid-template-columns:1fr auto;gap:8px}
 .stage:has(.arrive) .doors{display:none}
 .stage-body:has(> .ticketcard) > .stage-foot,.stage-body:has(> .chat) > .stage-foot{margin-top:0}
+/* iPhone の Safari は日付欄に固有の幅を持たせて画面からはみ出すので、見た目の既定を外して幅に収める */
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;box-sizing:border-box}
+input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.4em}
