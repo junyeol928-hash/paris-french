@@ -34,7 +34,7 @@
     root.appendChild(nav);
     const more = el("div", "chips bk-more");
     [["sos", "困ったとき", "sos"], ["fav", "保存した表現", "star"], ["addr", "住所カード", "pin"]].forEach(([id, t, ic]) => {
-      const b = button("chip" + (id === "sos" ? " sos" : ""), icon(ic) + `<span>${t}</span>`, () => render(id));
+      const b = button("chip" + (id === "sos" ? " sos" : ""), `<span>${t}</span>`, () => render(id));
       b.setAttribute("aria-pressed", view === id ? "true" : "false"); more.appendChild(b);
     });
     root.appendChild(more);

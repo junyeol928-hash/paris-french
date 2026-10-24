@@ -20,7 +20,7 @@
       { k: "rules", ic: "abc", t: "読み方のきまり", s: `${DATA.pron.length} のきまりと例`, go: () => rulesList() },
     ];
     /* 乗り換え案内の行き先のように、それぞれのフランス語の名前 */
-    const DEST = { review: "RÉVISION", listen: "ÉCOUTE", nums: "NOMBRES", weak: "ENCORE", talk: "DIALOGUE", rules: "LIRE" };
+    const DEST = { review: "Révision", listen: "Écoute", nums: "Nombres", weak: "Encore", talk: "Dialogue", rules: "Lire" };
     const LINE_C = { listen: "#1F5FAF", nums: "#E5A800", weak: "#D9701C", talk: "#3F9160", rules: "#9B2F8F" };
     const grid = el("div", "pgrid");
     for (const t of tiles) {
@@ -64,9 +64,9 @@
         if (!p) return next();
         cnt.textContent = `残り ${queue.length + 1} 枚`;
         body.innerHTML = "";
-        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || "")} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
+        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(App.titleFr(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || ""))} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
         const card = el("div", "ticketcard");
-        card.innerHTML = `<div class="tc-hd"><span>RÉVISION · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
+        card.innerHTML = `<div class="tc-hd"><span>Révision · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
         if (mode === "s") { front.innerHTML = `<p class="hint">フランス語で言うと？</p><p class="tc-ja" data-head tabindex="-1">${esc(p.ja)}</p>`; }
         else { front.innerHTML = `<p class="hint" data-head tabindex="-1">聞いて、意味を思い浮かべる</p>`; front.appendChild(button("hearbtn", icon("say"), () => TTS.speak(p.fr), "もう一度聞く")); TTS.speak(p.fr); }

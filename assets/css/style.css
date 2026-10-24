@@ -1630,3 +1630,69 @@ i.fr-lbl{font-size:1rem}
 .lh-medal{width:56px;height:56px}
 .mini-posters figure .medal{width:72%;aspect-ratio:1;margin:0 auto}
 .jm-pt.now{z-index:3}
+
+/* ---------- 第 6 版・レビュー 1 回目 ---------- */
+/* いまここ: 文字の幅の札を、駅の印の真下に */
+.jm-pt.now .jm-here{position:absolute;left:50%;right:auto;top:calc(100% + 6px);transform:translateX(-50%);width:max-content;display:block;margin:0}
+/* 地図の駅名を淡い街並みから浮かせる（紙の光彩を強く） */
+.jm-lb{text-shadow:0 0 2px var(--bg),0 0 6px var(--bg),0 0 12px var(--bg),0 0 18px var(--bg)}
+.jm-lb i{color:var(--ink-2)}
+/* 大きな文字: タブは折り返さない、ポスターの題は絵の下の紙の上へ */
+html[data-size="lg"] .tabbar [role=tab]{font-size:12px;letter-spacing:0;white-space:nowrap}
+html[data-size="lg"] .aff-title{margin-top:10px}
+html[data-size="lg"] .aff-art::after{background:linear-gradient(180deg,rgba(10,8,6,.45),rgba(10,8,6,0) 40%)}
+/* 金をやめる: 番号・祝い・題の点は墨か自分の路線色 */
+.aff-no,.ticket .ring b,.ptile::before,.rn{color:var(--ink)}
+.cheer{color:var(--ink)}
+.aff-title em{color:var(--line)}
+.medal{box-shadow:0 0 0 1px var(--line-gray)}
+.hearbtn{box-shadow:none}
+.micbtn,.micbig .ic{box-shadow:inset 0 0 0 1px var(--ink)}
+.say.round{box-shadow:none}
+/* 進み具合の自分の丸（路線番号） */
+.lr-me,.ride-me{font-family:var(--ui);font-weight:500}
+/* 閉じるボタンは × だけ */
+.icon-btn{background:none}
+/* 選択肢の文字は太らせない */
+.opt{font-weight:400}
+/* 練習の目次: 日本語が主、仏語は小さな斜体 */
+.ptile::before{font-size:1.25rem;color:var(--muted)}
+.ptile .pt-t b{font-size:1.0625rem}
+/* 家族の知らせ: 色の帯と黄色の枠をやめ、罫と下線の文字 */
+.news{background:none;box-shadow:none;border-top:1px solid var(--line-gray);border-bottom:1px solid var(--line-gray);border-radius:0;padding:12px 40px 12px 0}
+.cheer-btn{background:none;box-shadow:none;min-height:var(--tap);padding:0;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;color:var(--ink)}
+.cheer-btn .ic{display:none}
+/* SOS: 112 は赤い大きな数字、ほかは罫で区切った行 */
+.sosbox{background:none!important;color:var(--ink)!important;box-shadow:none!important;border-radius:0!important;border-top:1px solid var(--ng);border-bottom:1px solid var(--ng);padding:14px 0!important}
+.sosbox .sos-n b{color:var(--ng);font-family:var(--ui);font-weight:500;font-size:3.25rem}
+.sosbox .sos-n small,.sosbox p{color:var(--ink-2)!important}
+.sosbox .sos-call{color:var(--ng)}
+.calls{gap:0!important}
+.call{background:none!important;box-shadow:none!important;border-radius:0!important;border-bottom:1px solid var(--line-gray)}
+.call .ic{color:var(--ng)}
+/* しおりの入口は文字だけの札 */
+.chip{background:none;box-shadow:inset 0 0 0 1px var(--line-gray);font-weight:400}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.chip.sos{color:var(--ng)}
+/* 各タブの頭の挿絵は低く（操作をすぐ見せる） */
+.vign{aspect-ratio:auto;height:150px;max-height:none}
+.vign img{object-position:50% 55%}
+/* 美術館: 2 列で全体が見える額、下に作品名 */
+.mu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}
+.mu-f{aspect-ratio:auto;padding:0;background:none;box-shadow:none;display:grid;gap:6px}
+.mu-im{display:block;aspect-ratio:5/4;padding:4px;background:var(--surface);box-shadow:0 0 0 1px var(--line-gray),0 10px 18px -14px rgba(40,30,20,.5)}
+.mu-im img{width:100%;height:100%;object-fit:cover;display:block}
+.mu-c{font-size:.75rem;line-height:1.35;color:var(--muted)}
+.mu-c i{display:block;font-family:var(--bo);font-size:.9375rem;color:var(--ink)}
+.mu-f.empty .mu-im{background:none;box-shadow:inset 0 0 0 1px var(--line-gray)}
+/* 修了で手に入れた絵: カードをやめ、絵を大きく、下に解説札 */
+.got{display:block;padding:0;background:none;box-shadow:none;margin:0 0 4px}
+.got img{width:100%;height:auto;max-height:42vh;object-fit:cover;box-shadow:0 0 0 1px var(--line-gray)}
+.got figcaption{margin-top:8px}
+.got small{display:inline;margin:0 8px 0 0}
+.got .aff-cr{display:inline}
+.calls{gap:0 16px!important}
+/* いまここ は駅名の下の小さな札（隣の駅の印に重ならない） */
+.jm-pt.now .jm-here{position:static;transform:none;display:inline-block;width:auto;margin-top:4px;text-shadow:none}
+.news-rdl{width:30px;height:30px;font-size:14px;box-shadow:none}
+.got img{max-height:30vh}

@@ -326,14 +326,17 @@
     sec.innerHTML = `<div class="pp-hd"><div><p class="eyebrow fr-lbl" lang="fr">Mon musée</p><h2>わたしの美術館</h2></div><span class="pp-n"><b>${got}</b> / ${items.length} 枚</span></div>
       <p class="hint">レッスンを 1 つ終えるたびに、その回の名画が 1 枚ここに掛かります。</p>`;
     const g = el("div", "mu-grid");
+    let empties = 0;
     for (const x of items) {
+      if (!x.done && ++empties > 2) continue;
       const p = DATA.photos[x.a];
-      if (x.done) g.appendChild(button("mu-f", `<img src="${p.src}" alt="" loading="lazy" decoding="async" style="object-position:${p.pos}">`, () => sheet(p.work, (b) => {
+      if (x.done) g.appendChild(button("mu-f", `<span class="mu-im"><img src="${p.src}" alt="" loading="lazy" decoding="async" style="object-position:${p.pos}"></span><span class="mu-c" lang="fr"><i>${esc(p.work)}</i>${esc(p.artist.split(" ").slice(-1)[0])}</span>`, () => sheet(p.work, (b) => {
         b.insertAdjacentHTML("beforeend", `<figure class="mu-big"><img src="${p.src}" alt="" decoding="async"></figure><p class="aff-cr" lang="fr">${App.creditHtml(x.a)}</p><p class="hint">${esc(x.s.ja)}の駅で手に入れた絵</p>`);
       }), `${p.artist}「${p.work}」`));
-      else g.appendChild(el("span", "mu-f empty", `<span class="sr">まだの絵</span>`));
+      else g.appendChild(el("span", "mu-f empty", `<span class="mu-im"></span><span class="mu-c">次の絵</span>`));
     }
     sec.appendChild(g);
+    if (items.length - got > 2) sec.appendChild(el("p", "hint", `ほかに ${items.length - got - 2} 枚の絵が、これからの駅で待っています。`));
     return sec;
   }
 

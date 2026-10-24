@@ -151,7 +151,7 @@
       const label = `${s.ja}（${s.fr}）。${state === "done" ? "修了" : state === "now" ? "いまの駅" : "これから"}${here.length ? "。" + here.map((f) => f.name).join("、") + "がここ" : ""}`;
       const pt = el("div", `jm-pt ${state} ${side}`);
       pt.style.left = L + "%"; pt.style.top = T + "%";
-      const inner = `${App.medal(s.id)}<span class="jm-lb"><b>${s.terminus ? "パリ到着" : esc(s.ja)}</b><i lang="fr">${esc(App.titleFr(s.fr))}</i></span>${state === "now" ? `<span class="jm-here">いまここ</span>` : ""}${here.length ? `<span class="jm-fam">${here.map((f) => App.roundel(f.c)).join("")}</span>` : ""}`;
+      const inner = `${App.medal(s.id)}<span class="jm-lb"><b>${s.terminus ? "パリ到着" : esc(s.ja)}</b><i lang="fr">${esc(App.titleFr(s.fr))}</i>${state === "now" ? `<span class="jm-here">いまここ</span>` : ""}</span>${here.length ? `<span class="jm-fam">${here.map((f) => App.roundel(f.c)).join("")}</span>` : ""}`;
       if (s.terminus) { pt.innerHTML = inner; pt.setAttribute("role", "img"); pt.setAttribute("aria-label", label); }
       else pt.appendChild(button("jm-btn", inner, () => stationSheet(s), label));
       box.appendChild(pt);
@@ -176,7 +176,7 @@
     const c = el("section", "news");
     c.setAttribute("role", "status");
     const first = news[0];
-    c.innerHTML = `<span class="av" style="${App.avStyle(familyAt().find((f) => f.id === first.id)?.c || "#888")}" aria-hidden="true">${esc(ini(first.name))}</span>
+    c.innerHTML = `${App.roundel(familyAt().find((f) => f.id === first.id)?.c || "", "news-rdl")}
       <p class="news-t"><b>${esc(first.name)}</b> さんが<wbr><b>${esc(first.st.ja)}</b>に<wbr>着きました${news.length > 1 ? `<wbr><span class="nw">（ほか ${news.length - 1} 人）</span>` : ""}</p>`;
     const me = Store.cur();
     const row = el("div", "news-act");
