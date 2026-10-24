@@ -1376,3 +1376,6 @@ body{line-break:strict;word-break:normal;text-autospace:normal}
   .tabbar [role=tab][aria-selected=true]{background:none;color:var(--ink)}
   .tabbar [role=tab][aria-selected=true]::before{top:auto;bottom:10px;left:calc(50% - 2.5px)}
 }
+.hd-count b i{opacity:1}
+.aff-cr i{white-space:nowrap}
+.note{text-wrap:balance}
