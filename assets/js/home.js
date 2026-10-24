@@ -109,8 +109,8 @@
     tk.legs.forEach((g) => {
       const b = button("leg" + (g.done ? " done" : g.none ? " none" : ""), `<i aria-hidden="true">${g.done ? icon("check") : ""}</i><span><b>${esc(g.t)}</b><small>${esc(g.s)}</small></span>${icon("arrow", "go")}`, () => {
         if (g.k === "lesson") { if (next) Lesson.start(next.id, { onClose: render }); }
-        else if (g.k === "weak") Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度 · RÉVISION", render);
-        else if (g.k === "rehearse") Lesson.drill(g.reh.d.ph, `${g.reh.date.slice(5).replace("-", "/")} ${g.reh.d.ja}`, "旅の予行演習 · RÉPÉTITION", render, "rehearse");
+        else if (g.k === "weak") Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度", render);
+        else if (g.k === "rehearse") Lesson.drill(g.reh.d.ph, `${g.reh.date.slice(5).replace("-", "/")} ${g.reh.d.ja}`, "旅の予行演習", render, "rehearse");
         else if (g.k === "review") App.review({ onClose: () => { render(); header(); } });
         else if (g.k === "listen") App.listen({ onClose: () => { render(); header(); } });
         else App.goTab("practice", g.k);
@@ -153,6 +153,8 @@
     const fam = familyAt();
     const now = {}; for (const f of fam) now[f.id] = f.idx;
     if (!seen) { Store.LS.set("famSeen", now); return []; }   /* はじめては記録だけ */
+    const fresh = fam.filter((f) => seen[f.id] == null);
+    if (fresh.length) { for (const f of fresh) seen[f.id] = f.idx; Store.LS.set("famSeen", seen); }
     const st = Course.stations();
     return fam.filter((f) => seen[f.id] != null && f.idx > seen[f.id]).map((f) => ({ id: f.id, idx: f.idx, name: f.name, st: st[Math.min(f.idx, st.length - 1)] }));
   }
@@ -186,7 +188,7 @@
     g.appendChild(button("tool", icon("book") + "<span>表現</span>", () => App.goTab("book", d.id)));
     const pr = Store.prefs(); const addr = [pr.hotelName, pr.hotelAddr].filter(Boolean).join("\n");
     g.appendChild(button("tool", icon("pin") + "<span>住所</span>", () => (addr ? App.show(addr, "この住所までお願いします", "", { lead: "À cette adresse, s’il vous plaît." }) : App.goTab("book", "addr"))));
-    g.appendChild(button("tool", icon("cards") + "<span>予行演習</span>", () => Lesson.drill(d.ph, d.ja, "今日の予行演習 · RÉPÉTITION", render, "rehearse")));
+    g.appendChild(button("tool", icon("cards") + "<span>予行演習</span>", () => Lesson.drill(d.ph, d.ja, "今日の予行演習", render, "rehearse")));
     const sos = button("tool sos", icon("sos") + "<span>SOS</span>", () => App.openSos()); g.appendChild(sos);
     c.appendChild(g);
     return c;

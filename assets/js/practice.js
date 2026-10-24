@@ -15,7 +15,7 @@
       { k: "review", ic: "cards", t: "復習カード", s: plan.dueTotal ? `今日 ${plan.dueTotal} 枚` : Course.learnedCount() ? "今日のぶんは済み" : "レッスンで覚えた表現がここに", badge: plan.dueTotal, go: () => review() },
       { k: "listen", ic: "ear", t: "聞き取り", s: `言われることば ${lsOk} / ${DATA.listen.length}`, go: () => listenSetup("words") },
       { k: "nums", ic: "hash", t: "数字と値段", s: "0〜100。70〜99 が山場", go: () => listenSetup("nums") },
-      { k: "weak", ic: "swap", t: "苦手な表現", s: Course.weakIds().length ? `${Course.weakIds().length} つ · 1 回 8 問まで` : "間違えた表現がここに", go: () => { if (Course.weakIds().length) Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度 · RÉVISION", render); else App.toast("いまは苦手な表現はありません"); } },
+      { k: "weak", ic: "swap", t: "苦手な表現", s: Course.weakIds().length ? `${Course.weakIds().length} つ · 1 回 8 問まで` : "間違えた表現がここに", go: () => { if (Course.weakIds().length) Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度", render); else App.toast("いまは苦手な表現はありません"); } },
       { k: "talk", ic: "chat", t: "会話の練習", s: `${Object.keys(dlg).length} / ${DATA.dialogs.length} 場面`, go: () => talkList() },
       { k: "rules", ic: "abc", t: "読み方のきまり", s: `${DATA.pron.length} のきまりと例`, go: () => rulesList() },
     ];

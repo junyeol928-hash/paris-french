@@ -190,7 +190,7 @@ h3.sub{margin:18px 0 8px;font-size:1rem}
 .stations{--done:0%;list-style:none;margin:0;padding:6px 0;position:relative;display:grid;gap:4px}
 .stations::before{content:"";position:absolute;left:19px;top:28px;bottom:28px;width:6px;border-radius:3px;background:linear-gradient(var(--line) 0 var(--done),var(--line-gray) var(--done) 100%)}
 .st{position:relative;border-radius:14px}
-.st.terminus,.st-btn{display:grid;grid-template-columns:72px 1fr;align-items:center;min-height:56px;padding-right:6px;position:relative}
+.st.terminus,.st-btn{display:grid;grid-template-columns:86px 1fr;align-items:center;min-height:56px;padding-right:6px;position:relative}
 .st-btn{width:100%;border:0;background:none;text-align:left;border-radius:14px;color:inherit}
 .st-btn:hover{background:color-mix(in srgb,var(--surface) 70%,transparent)}
 .dot{justify-self:start;margin-left:12px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 4px var(--line-gray);position:relative;z-index:1}
@@ -205,7 +205,7 @@ h3.sub{margin:18px 0 8px;font-size:1rem}
 .st.terminus .st-t b{font-size:1.375rem;color:var(--navy);letter-spacing:.1em}
 :root[data-theme="dark"] .st.terminus .st-t b{color:var(--ink)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .st.terminus .st-t b{color:var(--ink)}}
-.who{display:flex;position:absolute;left:30px;top:50%;transform:translateY(-50%);z-index:2}
+.who{display:flex;position:absolute;left:40px;top:50%;transform:translateY(-50%);z-index:2}
 .who .av.sm:first-child{margin-left:0}
 .who .av.sm.me{width:30px;height:30px}
 
@@ -334,7 +334,7 @@ h3.sub{margin:18px 0 8px;font-size:1rem}
 .passport{background:var(--surface-2);background-image:repeating-linear-gradient(-45deg,transparent 0 14px,color-mix(in srgb,var(--line) 5%,transparent) 14px 15px)}
 .stamps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 10px}
 @media (min-width:600px){.stamps{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.stamp-cell{display:grid;justify-items:center;gap:2px;text-align:center}
+.stamp-cell{display:grid;justify-items:center;align-content:start;gap:2px;text-align:center;padding:10px 4px 8px;border-radius:14px;background:var(--surface)}
 .stamp-cell span{font-size:.75rem;font-weight:700;color:var(--ink-2)}
 .stamp-cell small{font-family:var(--ui);font-size:.75rem;color:var(--muted)}
 .stamp-cell.todo span{color:var(--muted);font-weight:500}
@@ -437,7 +437,7 @@ h3.sub{margin:18px 0 8px;font-size:1rem}
 .lrail{flex:1;height:8px;border-radius:4px;background:var(--sunken);overflow:hidden}
 .lrail i{display:block;height:100%;width:0;background:var(--line);border-radius:4px;transition:width .5s var(--ease)}
 .stage-body{flex:1;display:flex;flex-direction:column;gap:16px;padding:12px 0 8px}
-.stage-foot{margin-top:auto;display:grid;gap:10px;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;z-index:2;background:var(--bg);box-shadow:0 -16px 16px -4px var(--bg)}
+.stage-foot{margin-top:auto;display:grid;gap:10px;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;z-index:2;background:var(--bg);box-shadow:0 -6px 8px -4px var(--bg)}
 .stage-foot.two{grid-template-columns:auto 1fr}
 .stage-foot.fb{margin:auto -20px 0;padding:16px 20px calc(16px + env(safe-area-inset-bottom,0px));background:var(--ok-soft);border-radius:22px 22px 0 0;box-shadow:0 -12px 30px -18px rgba(0,0,0,.3);animation:rise .3s var(--ease-out)}
 .stage-foot.fb.ng{background:var(--ng-soft)}
@@ -446,8 +446,8 @@ h3.sub{margin:18px 0 8px;font-size:1rem}
 .fb-row{display:flex;gap:10px;align-items:center;margin-top:8px}
 .fb-row .btn{flex:1}
 .fb-live:empty{display:none}
-.quiz.answered .hearbtn{width:84px;height:84px;box-shadow:none;transition:width .3s var(--ease),height .3s var(--ease)}
-.quiz.answered .hearbtn .ic{width:32px;height:32px}
+/* 答えた後もボタンの大きさは変えない（選択肢が指の下から動かないように）。輪だけ消す */
+.quiz.answered .hearbtn{box-shadow:none;transition:box-shadow .3s var(--ease)}
 .arrive{display:grid;gap:14px;margin:auto 0;animation:arrive .6s var(--ease) .35s both}
 @keyframes arrive{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
 .arrive h1{font-size:2rem}
@@ -671,7 +671,7 @@ html[data-motion="less"] .doors{display:none}
 
 /* ---------- 第 4 回 ---------- */
 .aa-btn{width:var(--tap);height:var(--tap);border-radius:50%;border:0;background:var(--surface);box-shadow:0 1px 0 var(--hair);color:var(--ink);display:grid;place-items:center}
-.aa-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.aa-btn[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--ink)}
 @media (max-width:420px){.me-chip .nm{display:none}.me-chip{padding:5px}.hd-r{gap:8px}}
 /* 電話をかけるボタン */
 .calls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 8px}
@@ -690,8 +690,8 @@ html[data-motion="less"] .doors{display:none}
 .show-lead{font-family:var(--fr);font-style:italic;font-size:clamp(1.6rem,6vw,2.4rem);line-height:1.2;color:var(--ink)}
 .show-fr.addr{font-family:var(--ui);font-weight:600;font-size:clamp(1.6rem,6.5vw,2.6rem)}
 /* レッスン系の画面: 中身を空いた所の中央に置く */
-.stage-body > .lcard,.stage-body > .quiz,.stage-body > .ticketcard,.stage-body > .arrive,.stage-body > .result,.stage-body > .handoff{margin-top:auto}
-.stage-body > .speakbox{margin-bottom:auto}
+.stage-body > .lcard,.stage-body > .quiz,.stage-body > .ticketcard,.stage-body > .arrive,.stage-body > .result{margin-top:clamp(8px,5vh,48px)}
+.stage-body > .handoff{margin-top:auto}
 .arrive .sign.big span{font-size:2.75rem}
 .ride{height:90px}
 /* 会話の吹き出し: 話し手の名前は吹き出しの中、読み上げも中に */
@@ -703,8 +703,11 @@ html[data-motion="less"] .doors{display:none}
 .bub.me .say{grid-column:1;grid-row:2}
 /* 家族タブ */
 .tag.me{background:var(--ink);color:var(--bg)}
-.linkbtn{border:0;background:none;padding:0;min-height:32px;justify-self:start;color:var(--muted);font-size:.8125rem;text-decoration:underline;text-underline-offset:3px}
-.member{grid-template-columns:44px 1fr}
+.linkbtn{border:0;background:none;padding:0;min-height:var(--tap);padding:0 4px;margin-left:-4px;justify-self:start;color:var(--muted);font-size:.875rem;text-decoration:underline;text-underline-offset:3px}
+.member{grid-template-columns:44px 1fr;align-items:start;padding-top:6px}
+.sosbox{text-decoration:none}
+.sos-call{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.9375rem}
+.sos-call .ic{width:20px;height:20px}
 .fam-act{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}
 .fam-act .btn:first-child{grid-column:1/-1}
 .fam-act .btn{width:100%;padding:0 12px}
@@ -714,3 +717,40 @@ html[data-motion="less"] .doors{display:none}
   .home-b{position:static;max-height:none;overflow:visible}
   .ptile.wide{grid-column:auto;flex-direction:column;align-items:flex-start;min-height:150px}
 }
+.st.now .who{left:44px}
+.form-hd{margin:18px 0 6px}
+/* ---------- 第 5 回 ---------- */
+/* しおりの切り替え 3 つは 1 行に */
+.bk-more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.bk-more .chip{flex-direction:column;justify-content:center;gap:4px;min-height:64px;padding:8px 4px;border-radius:16px;font-size:.8125rem;min-width:0;text-align:center}
+/* 復習カード: カードを空いた所の中央に（評価ボタンとの間を空けすぎない） */
+.stage-body > .ticketcard{margin:auto 0 20px}
+/* 到着の車両: 左から走ってきて減速して止まり、扉が開く */
+.train{width:min(100%,340px);margin:0 auto 6px;overflow:hidden}
+.train svg{display:block;width:100%;height:auto;overflow:visible}
+.tr-body{fill:var(--line)}
+.tr-in{fill:#1B2238}
+.tr-win{fill:color-mix(in srgb,var(--surface) 82%,var(--line))}
+.tr-door rect{fill:color-mix(in srgb,var(--line) 82%,#000)}
+.tr-door .tr-dw{fill:color-mix(in srgb,var(--surface) 82%,var(--line))}
+.tr-wh{fill:var(--ink)}
+.tr-rail{fill:var(--line-gray)}
+.tr-lamp{fill:#FFE08A}
+.train svg > *:not(.tr-rail){animation:tr-arrive 1.25s cubic-bezier(.15,.75,.25,1) both}
+.train .tr-door.l{animation:tr-arrive 1.25s cubic-bezier(.15,.75,.25,1) both,tr-open-l .45s var(--ease) 1.35s forwards}
+.train .tr-door.r{animation:tr-arrive 1.25s cubic-bezier(.15,.75,.25,1) both,tr-open-r .45s var(--ease) 1.35s forwards}
+@keyframes tr-arrive{from{transform:translateX(-340px)}to{transform:none}}
+@keyframes tr-open-l{from{transform:none}to{transform:translateX(-17px)}}
+@keyframes tr-open-r{from{transform:none}to{transform:translateX(17px)}}
+[data-motion="less"] .train svg > *,[data-motion="less"] .train .tr-door{animation:none}
+[data-motion="less"] .train .tr-door.l{transform:translateX(-17px)}
+[data-motion="less"] .train .tr-door.r{transform:translateX(17px)}
+@media (prefers-reduced-motion:reduce){.train svg > *,.train .tr-door{animation:none!important}.train .tr-door.l{transform:translateX(-17px)}.train .tr-door.r{transform:translateX(17px)}}
+/* 第 5 回の仕上げ */
+.quiz.answered{padding-bottom:24px}
+.st.now .who{left:50px}
+.stage-body > .chat{margin-top:auto}
+.news-t .fr{font-family:var(--ui);font-weight:600;letter-spacing:.03em}
+.news .row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.stage:has(.arrive) .doors{display:none}
+.stage-body:has(> .ticketcard) > .stage-foot,.stage-body:has(> .chat) > .stage-foot{margin-top:0}

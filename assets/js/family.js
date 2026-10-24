@@ -29,7 +29,10 @@
   /* パスポート（到着証明書）を 1 枚の画像にする。canvas で描き、共有できる端末は共有シート、できなければ保存 */
   async function certificate(opts) {
     const me = Store.cur(); if (!me) return;
-    try { await document.fonts.ready; } catch (e) { /* 書体が読めなくても代わりの書体で描く */ }
+    try {
+      await Promise.all(["700 72px 'Zen Maru Gothic'", "700 30px 'Zen Maru Gothic'", "italic 500 56px Fraunces", "600 92px Jost", "500 20px Jost"].map((f) => document.fonts.load(f)));
+      await document.fonts.ready;
+    } catch (e) { /* 書体が読めなくても代わりの書体で描く */ }
     const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const g = cv.getContext("2d");
     const line = Store.lineOf(me.color).c;
@@ -43,8 +46,10 @@
     g.fillStyle = navy; rr(80, 80, W - 160, 150, 18); g.fill();
     g.strokeStyle = "#fff"; g.lineWidth = 5; rr(92, 92, W - 184, 126, 12); g.stroke();
     g.fillStyle = "#fff"; g.font = "600 92px Jost, Futura, sans-serif"; g.textBaseline = "middle"; g.fillText("PARIS", 130, 158);
-    g.fillStyle = line; g.beginPath(); g.arc(W - 160, 155, 46, 0, Math.PI * 2); g.fill();
-    g.fillStyle = App.onColor(line); g.font = "600 44px Jost, sans-serif"; g.textAlign = "center"; g.fillText(Store.lineOf(me.color).line, W - 160, 157); g.textAlign = "left";
+    g.fillStyle = line; g.beginPath(); g.arc(W - 160, 155, 52, 0, Math.PI * 2); g.fill();
+    g.fillStyle = App.onColor(line); g.textAlign = "center";
+    g.font = "600 17px Jost, sans-serif"; g.fillText("LIGNE", W - 160, 130);
+    g.font = "600 46px Jost, sans-serif"; g.fillText(Store.lineOf(me.color).line, W - 160, 168); g.textAlign = "left";
     /* 名前と見出し */
     g.fillStyle = ink; g.font = "italic 500 56px Fraunces, Georgia, serif"; g.fillText("Passeport de langue", 80, 310);
     g.font = "700 72px 'Zen Maru Gothic', sans-serif"; g.fillText(me.name, 80, 400);
@@ -63,22 +68,29 @@
       g.setLineDash(done ? [] : [10, 10]); g.lineWidth = done ? 6 : 3; g.beginPath(); g.arc(0, 0, size / 2 - 8, 0, Math.PI * 2); g.stroke();
       if (done) { g.lineWidth = 3; g.beginPath(); g.arc(0, 0, size / 2 - 22, 0, Math.PI * 2); g.stroke(); }
       g.setLineDash([]); g.textAlign = "center";
-      let fs = 28; g.font = `600 ${fs}px Jost, sans-serif`; while (g.measureText(s.fr).width > size - 56 && fs > 16) { fs -= 2; g.font = `600 ${fs}px Jost, sans-serif`; }
+      let fs = 28; g.font = `600 ${fs}px Jost, sans-serif`; while (g.measureText(s.fr).width > size - 72 && fs > 14) { fs -= 2; g.font = `600 ${fs}px Jost, sans-serif`; }
       g.fillStyle = done ? g.strokeStyle : "#9AA0AE"; g.fillText(s.fr, 0, done ? -6 : 0);
       if (done) { const d = new Date(done); g.font = "500 20px Jost, sans-serif"; g.fillText(`${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getFullYear()).slice(2)}`, 0, 34); }
       g.restore();
     });
     /* 家族 */
-    const fam = Store.profiles().map((p) => ({ n: p.name, c: Store.lineOf(p.color).c })).concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c })));
-    let fx = 80; const fy = H - 120;
+    const nSt = (o) => Object.keys(o || {}).length;
+    const fam = Store.profiles().map((p) => ({ n: p.name, c: Store.lineOf(p.color).c, k: nSt(Store.raw.get("p:" + p.id + ":stamps", {})) }))
+      .concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c, k: (c.st || []).length })));
+    const rows = Math.ceil(sts.length / cols);
+    let fx = 80; const fy = Math.min(H - 150, y0 + (rows - 1) * (size + 18) + size + 100);   /* 見出しが最後の列のスタンプに重ならない位置 */
     g.font = "700 30px 'Zen Maru Gothic', sans-serif"; g.textAlign = "left";
     g.fillStyle = "#5D6680"; g.fillText("EN FAMILLE", fx, fy - 70);
     for (const f of fam.slice(0, 5)) {
       g.fillStyle = f.c; g.beginPath(); g.arc(fx + 30, fy, 30, 0, Math.PI * 2); g.fill();
       g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Zen Maru Gothic', sans-serif"; g.fillText(App.ini ? App.ini(f.n) : f.n.slice(0, 1), fx + 30, fy + 2);
-      g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Zen Maru Gothic', sans-serif"; g.fillText(f.n, fx + 70, fy + 2);
-      fx += 90 + g.measureText(f.n).width;
+      g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Zen Maru Gothic', sans-serif"; g.fillText(f.n, fx + 70, fy - 12);
+      const wN = g.measureText(f.n).width;
+      g.fillStyle = "#5D6680"; g.font = "600 22px Jost, 'Zen Maru Gothic', sans-serif"; g.fillText(`${f.k} / ${sts.length} 駅`, fx + 70, fy + 22);
+      fx += 90 + Math.max(wN, g.measureText(`${f.k} / ${sts.length} 駅`).width);
     }
+    g.textAlign = "right"; g.fillStyle = line; g.font = "italic 500 64px Fraunces, Georgia, serif"; g.fillText("Bon voyage !", W - 80, H - 56);
+    g.textAlign = "left";
     if (opts && opts.preview) return cv.toDataURL("image/png");   /* 確認用（画面写真のスクリプト） */
     const blob = await new Promise((r) => cv.toBlob(r, "image/png"));
     if (!blob) { toast("画像を作れませんでした"); return; }
@@ -136,7 +148,7 @@
     const act = el("div", "fam-act");
     act.appendChild(button("btn wide", icon("share") + "<span>進み具合を家族に送る</span>", () => shareLink(Store.cardUrl(me.id), `${me.name}のフランス語の進み具合`, `パリ旅のフランス語：${me.name}は ${Object.keys(stamps).length} 駅まで進みました。開くと家族の路線図に表示されます。`)));
     act.appendChild(button("btn ghost", icon("star") + "<span>応援を送る</span>", () => shareLink(Store.cardUrl(me.id, true), `${me.name}から応援`, `Bravo ! ${me.name}から応援が届きました。パリまで一緒にがんばろう。`)));
-    act.appendChild(button("btn ghost", icon("plus") + "<span>家族を招待する</span>", () => shareLink(Store.inviteUrl(), "パリ旅のフランス語", "家族のパリ旅行に向けて、一緒にフランス語を覚えよう。開いて自分の名前を入れるだけで始められます。")));
+    act.appendChild(button("btn ghost", icon("plus") + "<span>家族を招待</span>", () => shareLink(Store.inviteUrl(), "パリ旅のフランス語", "家族のパリ旅行に向けて、一緒にフランス語を覚えよう。開いて自分の名前を入れるだけで始められます。")));
     fam.appendChild(act);
     fam.appendChild(el("p", "hint", "記録は各自のスマホに保存されます。家族の進み具合は、送られてきたリンクを開くとここに並びます。"));
     root.appendChild(fam);
