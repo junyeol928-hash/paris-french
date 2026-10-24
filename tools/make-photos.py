@@ -15,10 +15,12 @@ OUT = ROOT / "assets" / "img" / "st"
 # 駅 id → 画面で切り抜くときの中心（CSS の object-position）。写真ごとに見せたい所が違う
 FOCUS = {
     "welcome": "50% 38%", "bonjour": "50% 45%", "lire": "50% 42%", "comprendre": "42% 40%",
-    "aeroport": "32% 50%", "taxi": "50% 30%", "hotel": "74% 50%", "cafe": "50% 58%",
+    "aeroport": "32% 50%", "taxi": "50% 40%", "hotel": "74% 50%", "cafe": "50% 58%",
     "metro": "68% 52%", "musee": "52% 62%", "resto": "50% 45%", "carte": "50% 72%",
     "boutique": "50% 50%", "urgence": "40% 58%", "paris": "38% 50%",
 }
+# 元の写真から使う範囲（左・上・右・下の割合）。文字を重ねる所に写真の看板が来ないように切る
+CROP = {"taxi": (0, 0.3, 1, 1)}
 LONG = 1000      # 長い辺の画素数（スマホの 2 倍密度で幅いっぱいに出しても粗くならない大きさ）
 QUALITY = 72
 
@@ -37,6 +39,9 @@ def main():
         if not src.exists():
             raise SystemExit(f"元の写真がありません: {src}")
         im = Image.open(src).convert("RGB")
+        if sid in CROP:
+            l, t, r, btm = CROP[sid]
+            im = im.crop((int(im.width * l), int(im.height * t), int(im.width * r), int(im.height * btm)))
         im.thumbnail((LONG, LONG), Image.Resampling.LANCZOS)
         dst = OUT / f"{sid}.webp"
         grade(im).save(dst, "WEBP", quality=QUALITY, method=6)

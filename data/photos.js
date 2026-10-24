@@ -58,9 +58,9 @@ window.DATA.photos = {
 },
 "taxi": {
 "src": "assets/img/st/taxi.webp",
-"pos": "50% 30%",
+"pos": "50% 40%",
 "w": 1000,
-"h": 602,
+"h": 422,
 "title": "LUMINEUX TAXI PARISIEN.jpg",
 "author": "Enmix",
 "license": "CC BY-SA 3.0",

@@ -16,14 +16,21 @@
     const at = (f) => `calc(14px + (100% - 14px) * ${f})`;
     if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b", k === mark || k === total ? "big" : ""); d.style.left = at(k / total); d.dataset.k = k; rail.appendChild(d); dots.push(d); }
     const me = el("span", "lr-me", esc(App.ini ? App.ini(Store.cur().name) : "")); rail.appendChild(me);
+    if (mark) {
+      rail.classList.add("staged");
+      const c1 = el("small", "lr-cap", "聞く"); c1.style.left = "14px"; rail.appendChild(c1);
+      const c2 = el("small", "lr-cap", "確認問題"); c2.style.left = at(mark / total); rail.appendChild(c2);
+    }
     bar.appendChild(rail);
     root.appendChild(bar);
-    return (n) => {
+    const set = (n) => {
       const f = Math.min(1, n / total);
       fill.style.width = `calc((100% - 14px) * ${f})`; me.style.left = at(f);
       for (const d of dots) d.classList.toggle("on", +d.dataset.k <= n);
       rail.setAttribute("aria-valuenow", String(Math.round(n)));
     };
+    set.hop = () => { me.classList.remove("hop"); void me.offsetWidth; me.classList.add("hop"); };
+    return set;
   }
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
   function stband(s, label) {
@@ -72,7 +79,7 @@
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
     box.innerHTML = `<div class="arr-scene"><figure class="arr-poster">${App.photo(s.id, "arr-photo")}</figure>
-        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 100">
+        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 96">
           <rect class="tr-in" x="96" y="22" width="44" height="62" rx="3"/><rect class="tr-in" x="196" y="22" width="44" height="62" rx="3"/>
           <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
           <rect class="tr-skirt" x="10" y="78" width="300" height="14" rx="0"/>
@@ -82,6 +89,7 @@
           <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="20" rx="2"/></g>
           <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="20" rx="2"/></g>
           <circle class="tr-lamp" cx="298" cy="70" r="4"/>
+          <rect class="tr-under" x="44" y="92" width="64" height="4" rx="1"/><rect class="tr-under" x="212" y="92" width="64" height="4" rx="1"/>
         </svg></div></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
@@ -166,6 +174,7 @@
         else if (!ok) results[q.p.id] = false;
         if (!ok) q.wrong = true;
         (ok ? sfx.ok : sfx.ng)(); haptic(ok ? 10 : 30);
+        if (ok && setP.hop) setP.hop();
         box.classList.add("answered");
         foot.classList.add("fb", ok ? "ok" : "ng");
         foot.innerHTML = "";
@@ -472,6 +481,8 @@
       const setP = railbar(root, close, quiz.length, "練習をやめる");
       const body = el("div", "stage-body"); root.appendChild(body);
       const box0 = el("div", "arrive"); box0.innerHTML = `<div class="sign big"><span>${kind === "rehearse" ? "RÉPÉTITION" : "RÉVISION"}</span></div><p class="eyebrow">${esc(sub)}</p><h1 data-head>${esc(title)}</h1><p class="lede">${items.length} 問 · 約 ${Math.max(2, Math.round(items.length * 0.5))} 分${kind === "rehearse" ? " · その日に出会う順番で" : ""}</p>`;
+      const scenes = [...new Set(items.map((p) => p.s))].slice(0, 4);
+      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.photo(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
       body.appendChild(box0);
       footer(body).appendChild(button("btn big wide", "<span>はじめる</span>" + icon("arrow"), () => ask(0)));
       const results = {};
@@ -532,7 +543,7 @@
       const body = el("div", "stage-body"); root.appendChild(body);
       const intro = el("div", "arrive");
       intro.innerHTML = `<div class="sign big"><span>EN FAMILLE</span></div><p class="eyebrow">家族で会話</p><h1 data-head>${esc(d.ja)}</h1><p class="lede">2 人で 1 台のスマホを渡し合います。<b>店員役</b>は画面のフランス語を声に出して読み、<b>お客役</b>はそれを聞いて答えを選び、声に出して返します。</p>
-        <div class="duo-roles"><span class="role s">${icon("chat")}<b>店員役</b><small>読む人</small></span><span class="role c">${icon("family")}<b>お客役</b><small>答える人</small></span></div>`;
+        <div class="duo-roles">${(() => { const st = Course.stations().find((x) => x.lessons.some((l) => l.dlg === id)); const ph = st ? App.photo(st.id, "role-ph") : ""; return `<span class="role s">${ph}<b>店員役</b><small>読む人</small></span><span class="role c">${ph}<b>お客役</b><small>答える人</small></span>`; })()}</div>`;
       body.appendChild(intro);
       footer(body).appendChild(button("btn big wide", "<span>店員役の人から始める</span>" + icon("arrow"), () => step(0)));
       const pass = (to, fn) => {   /* 相手に渡す画面 */

@@ -671,7 +671,8 @@ html[data-motion="less"] .doors{display:none}
 .news-t b{font-family:var(--maru)}
 .news-t small{display:block;font-size:.75rem;color:var(--muted)}
 .news-act{display:flex;align-items:center;gap:2px}
-.news-act .btn{min-height:40px;padding:0 14px}
+.news-act .icon-btn{background:transparent}
+.news-act .icon-btn.star{color:#D9901C}
 @media (min-width:900px){#v-home .today,#v-home .news{grid-column:1/-1}}
 /* ---------- 第 3 回 ---------- */
 [tabindex="-1"]:focus{outline:none}
@@ -755,7 +756,8 @@ html[data-motion="less"] .doors{display:none}
 .bk-more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .bk-more .chip{flex-direction:column;justify-content:center;gap:4px;min-height:64px;padding:8px 4px;border-radius:16px;font-size:.8125rem;min-width:0;text-align:center}
 /* 復習カード: カードを空いた所の中央に（評価ボタンとの間を空けすぎない） */
-.stage-body > .ticketcard{margin:auto 0 20px}
+/* 写真のポスターと課題はひとつの場面として近くに。空きは課題と下の操作の間に回す */
+.stage-body > .wall-poster + .ticketcard,.stage-body > .wall-poster + .chat{margin-top:4px}
 /* 到着の車両: 左から走ってきて減速して止まり、扉が開く */
 .train{width:min(100%,340px);margin:0 auto 6px;overflow:hidden}
 .train svg{display:block;width:100%;height:auto;overflow:visible}
@@ -780,10 +782,8 @@ html[data-motion="less"] .doors{display:none}
 /* 第 5 回の仕上げ */
 .quiz.answered{padding-bottom:24px}
 .st.now .who{left:50px}
-.stage-body > .chat{margin-top:auto}
 
 .stage:has(.arrive) .doors{display:none}
-.stage-body:has(> .ticketcard) > .stage-foot,.stage-body:has(> .chat) > .stage-foot{margin-top:0}
 
 /* ---------- 家族の路線（パリで合流） ---------- */
 .famlines{display:grid;gap:6px;background:var(--surface);border-radius:var(--r);padding:16px 16px 10px;box-shadow:0 1px 0 var(--hair)}
@@ -864,7 +864,8 @@ html[data-size="lg"] .fl-n{font-size:17px} html[data-size="lg"] .fl-s{font-size:
 .arr-photo{height:clamp(130px,36vw,180px);border-radius:3px;box-shadow:none}
 .arr-photo::after{display:none}
 .platform{position:relative;padding-top:10px;margin-top:6px}
-.platform::after{content:"";display:block;height:4px;margin-top:2px;border-radius:2px;background:var(--line-gray)}
+.platform::after{content:"";display:block;height:14px;margin-top:-1px;background:linear-gradient(#E8C547 0 6px,color-mix(in srgb,var(--ink) 14%,var(--bg)) 6px)}
+.tr-under{fill:var(--navy)}
 .arr-scene .train{margin:0 auto;width:min(100%,300px)}
 .tr-win,.tr-door .tr-dw{fill:#DCE3F2}
 .tr-in{fill:var(--navy)}
@@ -876,6 +877,7 @@ html[data-size="lg"] .fl-n{font-size:17px} html[data-size="lg"] .fl-s{font-size:
 /* 練習: 乗り換え案内の板 */
 .ptile{gap:10px;min-height:156px;padding:16px}
 .pt-ic{width:44px;height:44px;border-radius:50%;background:var(--line);color:var(--on-line)}
+.ptile.p-review .pt-ic{background:#fff;color:var(--navy)}
 .pt-fr{display:block;font-family:var(--ui);font-weight:500;font-size:.6875rem;letter-spacing:.16em;color:var(--muted);margin:1px 0 4px}
 .ptile.p-review{background:var(--navy);color:var(--on-navy)}
 .ptile.p-review .pt-fr,.ptile.p-review .pt-t small{color:rgba(255,255,255,.75)}
@@ -900,8 +902,7 @@ html[data-size="lg"] .fl-n{font-size:17px} html[data-size="lg"] .fl-s{font-size:
 .tl li::before{left:-15.5px}
 /* 大きな文字で、ボタンの文字が 1 字だけ次の行に落ちないように */
 .btn span{word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance}
-html[data-size="lg"] .news{grid-template-columns:auto 1fr}
-html[data-size="lg"] .news-act{grid-column:1/-1;justify-content:flex-end}
+
 html[data-size="lg"] .fam-act{grid-template-columns:1fr}
 /* 場面の見出しの帯は、地の四角を見せない */
 .listhd{background:transparent;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -938,3 +939,29 @@ html[data-size="lg"] .fam-act{grid-template-columns:1fr}
   .tabbar [role=tab][aria-selected=true]{background:rgba(255,255,255,.12);color:#fff}
   .tabbar [role=tab][aria-selected=true]::before{background:var(--line)}
 }
+.lrail.staged{height:44px}
+.lr-cap{position:absolute;top:32px;font-family:var(--maru);font-weight:700;font-size:.625rem;color:var(--muted);white-space:nowrap;line-height:1}
+
+/* ---------- 第 4 版・レビュー 3 回目 ---------- */
+/* 正解したら路線の自分の丸が弾む */
+.lr-me.hop{animation:hop .5s var(--ease-out)}
+@keyframes hop{0%{transform:none}35%{transform:translateY(-7px) scale(1.12)}70%{transform:translateY(1px) scale(.96)}100%{transform:none}}
+[data-motion="less"] .lr-me.hop{animation:none}
+@media (prefers-reduced-motion:reduce){.lr-me.hop{animation:none}}
+/* お知らせの文は単語の途中で折り返さない */
+/* 区切ってよい所（<wbr>）でだけ折り返す。anywhere にすると「着/きました」のように切れる */
+.news-t{word-break:keep-all;overflow-wrap:break-word}
+/* 閉じるボタンを隠した画面（修了）では、路線は左端から */
+.stage-bar .icon-btn[hidden] + .lrail{margin-left:0}
+/* 集中練習の導入: 出てくる場面の写真 */
+.mini-posters{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin-top:8px}
+.mini-posters figure{margin:0;padding:4px;border-radius:6px;background:var(--frame)}
+.mini-posters .photo{height:64px;border-radius:2px}
+.mini-posters figcaption{font-family:var(--maru);font-weight:700;font-size:.6875rem;color:#fff;padding:4px 2px 0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 家族で会話の役の札: その場面の写真を左右に分けて */
+.duo-roles .role{position:relative;overflow:hidden;padding:0 0 12px;border-top:0;border-radius:12px;background:var(--surface);box-shadow:0 1px 0 var(--hair)}
+.role-ph{height:84px;width:100%;margin-bottom:8px}
+.role.s .role-ph img{object-position:0% 50%!important}
+.role.c .role-ph img{object-position:100% 50%!important}
+.role.s{box-shadow:0 1px 0 var(--hair),inset 0 -4px 0 var(--navy)}
+.role.c{box-shadow:0 1px 0 var(--hair),inset 0 -4px 0 var(--line)}

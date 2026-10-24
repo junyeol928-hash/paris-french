@@ -398,6 +398,9 @@ window.DATA = window.DATA || {};
     return `<span class="photo${cls ? " " + cls : ""}"><img src="${p.src}" alt="" width="${p.w}" height="${p.h}" decoding="async" style="object-position:${p.pos}"></span>`;
   }
 
-  window.App = { el, esc, photo, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
+  /* 場面（phrases の s）→ その場面の駅の写真 id */
+  const SCENE_PHOTO = { base: "bonjour", air: "aeroport", taxi: "taxi", hotel: "hotel", cafe: "cafe", resto: "resto", menu: "carte", metro: "metro", visite: "musee", shop: "boutique", urgence: "urgence" };
+
+  window.App = { el, esc, photo, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
     onTab, goTab, currentTab, initTabs, sheet, stage, show };
 })();

@@ -200,15 +200,15 @@
     c.setAttribute("role", "status");
     const first = news[0];
     c.innerHTML = `<span class="av" style="${App.avStyle(familyAt().find((f) => f.id === first.id)?.c || "#888")}" aria-hidden="true">${esc(ini(first.name))}</span>
-      <p class="news-t"><b>${esc(first.name)}</b> さんが<b>${esc(first.st.ja)}</b>に着きました${news.length > 1 ? `<small>ほか ${news.length - 1} 人も進みました</small>` : ""}</p>`;
+      <p class="news-t"><b>${esc(first.name)}</b> さんが<wbr><b>${esc(first.st.ja)}</b>に<wbr>着きました${news.length > 1 ? `<wbr>（ほか ${news.length - 1} 人）` : ""}</p>`;
     const me = Store.cur();
     const row = el("div", "news-act");
-    row.appendChild(button("btn small", "<span>Bravo</span>", () => {
+    row.appendChild(button("icon-btn star", icon("star"), () => {
       markSeen(news); c.remove();
       const url = Store.cardUrl(me.id, true);
       if (navigator.share) navigator.share({ title: `${me.name}から応援`, text: `Bravo ! ${me.name}から応援が届きました。`, url }).catch(() => {});
       else App.goTab("family");
-    }));
+    }, "Bravo を送る（応援）"));
     row.appendChild(button("icon-btn", icon("close"), () => { markSeen(news); c.remove(); }, "お知らせを閉じる"));
     c.appendChild(row);
     return c;

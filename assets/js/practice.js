@@ -64,7 +64,7 @@
         if (!p) return next();
         cnt.textContent = `残り ${queue.length + 1} 枚`;
         body.innerHTML = "";
-        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc((App.scene(p.s) || {}).fr || "")}</figcaption></figure>`);
+        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || "")} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
         const card = el("div", "ticketcard");
         card.innerHTML = `<div class="tc-hd"><span>TICKET</span><span>${esc((App.scene(p.s) || {}).ja || "")} · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
