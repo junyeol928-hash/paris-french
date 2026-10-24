@@ -87,7 +87,7 @@
     const nn = String(s.num).padStart(2, "0"), all = String(st.length - 1).padStart(2, "0");
     box.innerHTML = `<figure class="aff-art arr-art">${App.photo(s.id)}<figcaption class="aff-kick" lang="fr">Station ${nn} / ${all}</figcaption></figure>
       <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
-      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(s.id))}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>
+      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(s.id)}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</small></span>
         <span class="ride-st cur"><i></i><small>${esc(App.titleFr(s.fr))}</small></span>
@@ -274,7 +274,7 @@
   /* 話してみる（音声認識が使える端末だけ）。通信が無いときは使えない旨を先に出す */
   function speakBox(text) {
     const box = el("div", "speakbox");
-    const out = el("p", "speak-out", "マイクを押して、まねして言ってみましょう");
+    const out = el("p", "speak-out", "マイクを押して、まねして言ってみよう");
     out.setAttribute("aria-live", "polite");
     const gate = el("span", "gate", '<i class="g l"></i><i class="post"></i><i class="g r"></i>'); gate.setAttribute("aria-hidden", "true"); gate.hidden = true;
     const mic = button("micbtn", icon("mic"), () => {

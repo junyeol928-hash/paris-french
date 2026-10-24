@@ -1344,3 +1344,35 @@ html[data-size="lg"] .btn:has(.btn-fr){justify-content:center}
 .note{background:none;border-radius:0;box-shadow:inset 2px 0 0 var(--line-gray);padding:4px 0 4px 12px}
 .me-chip{background:transparent;box-shadow:none;padding-left:0}
 .hd-count b i{margin-right:-2px}
+/* ---------- 文字の仕上げ・レビュー 8 回目 ---------- */
+/* 禁則: 小さい「ょ」や句読点を行頭に置かない */
+body{line-break:strict;word-break:normal;text-autospace:normal}
+/* 日本語の補足は字間を締める。欧文の大文字ラベルだけ広く */
+.eyebrow{letter-spacing:.06em}
+.vh .eyebrow,.aff-kick,.stband b,.ptile .pt-fr,.tc-hd span:first-child{letter-spacing:.2em}
+.aff-meta,.leg small,.pt-t small,.ps-t small,.hint,.lede{letter-spacing:.02em}
+/* 見出し帯の日数: 数字と単位を同じ Jost に、J と − の間を空ける */
+.hd-count b{font-family:var(--ui);font-weight:500;font-size:1.5rem;letter-spacing:0}
+.hd-count b i{font-style:normal;font-size:.8em;opacity:.8;margin:0}
+.hd-count b i.mn{margin:0 .08em;position:relative;top:-.04em}
+.streak b{font-family:var(--ui);font-weight:500;font-size:1.0625rem}
+/* フランス語の文は行の長さをそろえて折り返す */
+.lcard .fr,.l-fr,.ph .fr,.tc-fr,.aff-q{text-wrap:balance}
+/* 解説札の作品名は Bodoni の斜体 */
+.aff-cr i,.ob-hero figcaption i{font-family:var(--bo);font-style:italic;font-size:1.1em;letter-spacing:0}
+/* 主なボタン: 仏語と矢印の間 12px、仏語は控えめに */
+.btn .btn-fr{opacity:.6;font-size:1rem}
+.btn .btn-fr + .ic{margin-left:0}
+.btn:has(.btn-fr){gap:12px}
+/* 練習の目次: 見出しの右に小さな仏語、補足はその下 */
+.ptile .pt-t{grid-template-columns:auto 1fr;align-items:baseline;column-gap:10px}
+.ptile .pt-t small{grid-column:1/-1}
+/* 「場面一覧」へ戻るのは枠なしの文字リンク */
+.listhd .up{background:none;box-shadow:none;padding:0 4px 0 0;min-height:var(--tap);font-size:.875rem;color:var(--ink-2)}
+/* デスクトップの横のメニューも紙の地に */
+@media (min-width:900px){
+  .tabbar{background:var(--bg);border-right:1px solid var(--line-gray)}
+  .tabbar [role=tab]{color:var(--muted)}
+  .tabbar [role=tab][aria-selected=true]{background:none;color:var(--ink)}
+  .tabbar [role=tab][aria-selected=true]::before{top:auto;bottom:10px;left:calc(50% - 2.5px)}
+}

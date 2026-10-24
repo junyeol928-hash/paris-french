@@ -404,12 +404,17 @@ window.DATA = window.DATA || {};
     const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
     return p && p.artist ? `${p.artist} — ${p.work}, ${p.year}`.replace(/-/g, "‑") : "";   /* 名前の途中（Saint-Lazare）で改行しない */
   }
+  function creditHtml(id) {
+    const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
+    const nb = (t) => esc(t).replace(/-/g, "\u2011");
+    return p && p.artist ? `${nb(p.artist)} — <i>${nb(p.work)}</i>, ${esc(p.year)}` : "";
+  }
   /* 駅名標の大文字（AÉROPORT）をポスターの題の形（Aéroport）にする */
   const titleFr = (s) => { const l = String(s).toLocaleLowerCase("fr"); return l.charAt(0).toLocaleUpperCase("fr") + l.slice(1); };
 
   /* 場面（phrases の s）→ その場面の駅の写真 id */
   const SCENE_PHOTO = { base: "bonjour", air: "aeroport", taxi: "taxi", hotel: "hotel", cafe: "cafe", resto: "resto", menu: "carte", metro: "metro", visite: "musee", shop: "boutique", urgence: "urgence" };
 
-  window.App = { el, esc, photo, credit, titleFr, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
+  window.App = { el, esc, photo, credit, creditHtml, titleFr, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
     onTab, goTab, currentTab, initTabs, sheet, stage, show };
 })();

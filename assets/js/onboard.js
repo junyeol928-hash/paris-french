@@ -49,7 +49,7 @@
     function welcome() {
       const others = Store.profiles();
       const w = el("div", "ob welcome");
-      w.innerHTML = `<figure class="ob-hero">${App.photo("welcome")}<figcaption lang="fr">${esc(App.credit("welcome"))}</figcaption></figure>
+      w.innerHTML = `<figure class="ob-hero">${App.photo("welcome")}<figcaption lang="fr">${App.creditHtml("welcome")}</figcaption></figure>
         <p class="eyebrow">PARIS · EN FAMILLE</p><h1 class="fr hello">Bonjour&nbsp;!</h1>
         <p class="lede">家族でパリへ。フランス語ゼロから、旅で困らないところまで。1 日 5 分、駅をひとつずつ進みます。</p>`;
       if (others.length) {

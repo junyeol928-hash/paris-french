@@ -86,7 +86,7 @@
     if (cur.terminus) {
       hero.innerHTML = `<figure class="aff-art">${App.photo("paris")}${kick("Terminus")}</figure>
         <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:6">Paris<em>.</em></p>
-        <div class="aff-cartel"><div><h1>全部の駅を通りました</h1><p class="aff-cr fr" lang="fr">${esc(App.credit("paris"))}</p></div></div>
+        <div class="aff-cartel"><div><h1>全部の駅を通りました</h1><p class="aff-cr fr" lang="fr">${App.creditHtml("paris")}</p></div></div>
         <p class="aff-lede">あとは旅を楽しむだけ。毎日の復習カードで、覚えた表現を忘れないように。</p>`;
       hero.appendChild(button("btn big wide board", icon("download") + "<span>到着証明書をつくる</span>", () => Passport.certificate()));
       hero.appendChild(button("btn ghost wide", "<span>復習カードへ</span>" + icon("arrow"), () => App.goTab("practice", "review")));
@@ -97,11 +97,11 @@
       const nn = String(cur.num).padStart(2, "0"), all = String(stations.length - 1).padStart(2, "0");
       hero.innerHTML = `<figure class="aff-art">${App.photo(cur.id)}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
         <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
-        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${esc(App.credit(cur.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
+        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(cur.id)}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
         ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}
         <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + " 全 " + cur.lessons.length + " のうち " + i + " つ目"} · 約 ${minutes(next)} 分</p>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
-      hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">Départ</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
+      hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">${Course.isDone(cur.lessons[0].id) || i > 1 ? "Continuer" : "Commencer"}</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
     }
     colA.appendChild(hero);
     if (news.length) colA.appendChild(newsCard(news));
@@ -247,7 +247,7 @@
     ch.innerHTML = `<span class="av" style="--c:var(--line);--oc:var(--on-line)">${esc(ini(me.name))}</span><span class="nm">${esc(me.name)}</span>`;
     ch.setAttribute("aria-label", `${me.name}（使う人の切り替えと設定）`);
     const c = $("hdCount");
-    c.innerHTML = !st ? "" : st.kind === "before" ? `<small>出発まで</small><b><i lang="fr">J−</i>${st.n}</b>` : st.kind === "during" ? `<small>パリ</small><b><i lang="fr">Jour </i>${st.n}</b>` : `<small>おかえり</small><b>${icon("check")}</b>`;
+    c.innerHTML = !st ? "" : st.kind === "before" ? `<small>出発まで</small><b><i lang="fr">J</i><i class="mn">−</i>${st.n}</b>` : st.kind === "during" ? `<small>パリ</small><b><i lang="fr">Jour </i>${st.n}</b>` : `<small>おかえり</small><b>${icon("check")}</b>`;
     c.setAttribute("aria-label", !st ? "" : st.kind === "before" ? `出発まであと ${st.n} 日` : st.kind === "during" ? `旅の ${st.n} 日目` : "旅から帰りました");
     const n = Store.streakOf();
     $("hdStreak").textContent = n;
