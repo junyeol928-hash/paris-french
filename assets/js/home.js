@@ -101,7 +101,7 @@
         ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}
         <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + " 全 " + cur.lessons.length + " のうち " + i + " つ目"} · 約 ${minutes(next)} 分</p>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
-      hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
+      hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">Départ</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
     }
     colA.appendChild(hero);
     if (news.length) colA.appendChild(newsCard(news));
@@ -247,7 +247,7 @@
     ch.innerHTML = `<span class="av" style="--c:var(--line);--oc:var(--on-line)">${esc(ini(me.name))}</span><span class="nm">${esc(me.name)}</span>`;
     ch.setAttribute("aria-label", `${me.name}（使う人の切り替えと設定）`);
     const c = $("hdCount");
-    c.innerHTML = !st ? "" : st.kind === "before" ? `<small>出発まで</small><b>${st.n}<span>日</span></b>` : st.kind === "during" ? `<small>パリ</small><b>${st.n}<span>日目</span></b>` : `<small>おかえり</small><b>${icon("check")}</b>`;
+    c.innerHTML = !st ? "" : st.kind === "before" ? `<small>出発まで</small><b><i lang="fr">J−</i>${st.n}</b>` : st.kind === "during" ? `<small>パリ</small><b><i lang="fr">Jour </i>${st.n}</b>` : `<small>おかえり</small><b>${icon("check")}</b>`;
     c.setAttribute("aria-label", !st ? "" : st.kind === "before" ? `出発まであと ${st.n} 日` : st.kind === "during" ? `旅の ${st.n} 日目` : "旅から帰りました");
     const n = Store.streakOf();
     $("hdStreak").textContent = n;

@@ -100,7 +100,7 @@
     if (resume) {
       f.appendChild(button("btn big wide", `<span>続きから（${resume.label}）</span>` + icon("arrow"), () => onGo(resume)));
       f.appendChild(button("btn ghost wide", "<span>最初から</span>", () => { clearResume(); onGo(null); }));
-    } else f.appendChild(button("btn big wide", "<span>はじめる</span>" + icon("arrow"), () => onGo(null)));
+    } else f.appendChild(button("btn big wide", "<span>はじめる</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Commencer</small>" + icon("arrow"), () => onGo(null)));
   }
 
   /* ---------- learn ---------- */
@@ -142,7 +142,7 @@
       const f = footer(body); f.classList.add("two");
       const back = button("btn ghost", icon("back") + "<span>前へ</span>", () => (i === 0 ? null : learnCard(i - 1)));
       back.disabled = i === 0;
-      f.append(back, button("btn big", "<span>次へ</span>" + icon("arrow"), () => learnCard(i + 1)));
+      f.append(back, button("btn big", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => learnCard(i + 1)));
       TTS.speak(p.fr);
       focusHead(card);
     }
@@ -178,7 +178,7 @@
         const fb = resultPanel(ok, q.p.fr, q.p.ja);
         const row = el("div", "fb-row");
         row.appendChild(sayBtn(q.p.fr));
-        row.appendChild(button("btn big", "<span>次へ</span>" + icon("arrow"), () => askQuiz(qi + 1, retry)));
+        row.appendChild(button("btn big", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => askQuiz(qi + 1, retry)));
         fb.appendChild(row);
         foot.appendChild(fb);
         TTS.speak(q.p.fr);
@@ -327,7 +327,7 @@
       body.appendChild(card);
       const f = footer(body); f.classList.add("two");
       const back = button("btn ghost", icon("back") + "<span>前へ</span>", () => (i === 0 ? null : rule(i - 1))); back.disabled = i === 0;
-      f.append(back, button("btn big", "<span>次へ</span>" + icon("arrow"), () => rule(i + 1)));
+      f.append(back, button("btn big", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => rule(i + 1)));
       TTS.speak(r.ex.map((x) => x[0]));
       focusHead(card);
     }
@@ -352,7 +352,7 @@
           foot.classList.add("fb", c.ok ? "ok" : "ng");
           foot.innerHTML = "";
           const fb = resultPanel(c.ok, it.q.fr, `${it.q.kana}（${it.q.ja}）`, `<p class="small muted">きまり: ${esc(it.q.rule)}</p>`);
-          fb.appendChild(button("btn big wide", "<span>次へ</span>" + icon("arrow"), () => q(i + 1))); foot.appendChild(fb);
+          fb.appendChild(button("btn big wide", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => q(i + 1))); foot.appendChild(fb);
           fb.focus({ preventScroll: true });
         });
         os.appendChild(b);
@@ -421,7 +421,7 @@
           if (Speech.supported()) {
             foot.appendChild(el("p", "eyebrow", "声に出して言ってみる"));
             foot.appendChild(speakBox(o.fr));
-            foot.appendChild(button("btn big wide", "<span>次へ</span>" + icon("arrow"), () => { Speech.stop(); line(i + 1); }));
+            foot.appendChild(button("btn big wide", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => { Speech.stop(); line(i + 1); }));
             TTS.speak(o.fr);
           } else {
             const my = gen;
@@ -485,7 +485,7 @@
       const scenes = [...new Set(items.map((p) => p.s))].slice(0, 4);
       box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.photo(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
       body.appendChild(box0);
-      footer(body).appendChild(button("btn big wide", "<span>はじめる</span>" + icon("arrow"), () => ask(0)));
+      footer(body).appendChild(button("btn big wide", "<span>はじめる</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Commencer</small>" + icon("arrow"), () => ask(0)));
       const results = {};
       function ask(qi) {
         if (qi >= quiz.length) return end();
@@ -501,7 +501,7 @@
           (ok ? sfx.ok : sfx.ng)(); haptic(ok ? 10 : 30);
           box.classList.add("answered"); foot.classList.add("fb", ok ? "ok" : "ng"); foot.innerHTML = "";
           const fb = resultPanel(ok, q.p.fr, q.p.ja);
-          const row = el("div", "fb-row"); row.appendChild(sayBtn(q.p.fr)); row.appendChild(button("btn big", "<span>次へ</span>" + icon("arrow"), () => ask(qi + 1)));
+          const row = el("div", "fb-row"); row.appendChild(sayBtn(q.p.fr)); row.appendChild(button("btn big", "<span>次へ</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Suivant</small>" + icon("arrow"), () => ask(qi + 1)));
           fb.appendChild(row); foot.appendChild(fb); TTS.speak(q.p.fr); fb.focus({ preventScroll: true });
         };
         if (q.type === "order") { orderQ(box, foot, q, done); focusHead(box); return; }

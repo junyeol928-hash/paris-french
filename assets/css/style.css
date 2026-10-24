@@ -1282,3 +1282,65 @@ html[data-size="lg"] .aff-q{display:none}
 /* 会話の絵も空いた高さを吸う */
 .stage-body.chatbody > .wall-poster{flex:1 1 120px;display:flex}
 .stage-body.chatbody > .wall-poster .photo{height:auto;flex:1;min-height:110px;max-height:260px}
+
+/* ================= 第 5 版・文字と部品の磨き込み ================= */
+/* 組版: 日本語の見出しと操作の文字は詰め（palt）、なめらかな描画、行末の収まり */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-kerning:normal}
+h1,h2,h3,.btn,.chip,.seg button,.tabbar [role=tab],.leg b,.pt-t b,.ps-t b,.me-chip,.aff-cartel h1{font-feature-settings:"palt" 1}
+p,li,.lede,.hint{text-wrap:pretty}
+h1{letter-spacing:.02em} h2,h3{letter-spacing:.03em}
+body{letter-spacing:.02em}
+.fr{letter-spacing:-.005em;font-feature-settings:"kern" 1,"liga" 1}
+/* 欧文の小見出しは字間を広く、日本語は広げすぎない */
+.eyebrow{letter-spacing:.14em;font-size:.6875rem}
+.eyebrow:lang(ja){letter-spacing:.1em}
+/* 覚える文: Jost を少し細く大きく、読みのカナは中太で字間 */
+.lcard .fr,.l-fr{font-weight:450;font-size:2.125rem;line-height:1.16;letter-spacing:-.015em}
+.ph .fr{font-weight:450;font-size:1.5rem;letter-spacing:-.01em}
+.opt span.fr,.tc-fr,.bub .fr{font-weight:450}
+.kana{font-weight:500;letter-spacing:.12em;font-size:.8125rem}
+.ja{color:var(--ink-2)}
+/* 題の Bodoni: 大きいほど字間を詰め、句読点の当たりを避ける */
+.aff-title{letter-spacing:-.035em;font-variation-settings:"opsz" 96}
+.aff-q{letter-spacing:.005em;font-variation-settings:"opsz" 28}
+/* 見出し帯: J−121 を Bodoni の数字で。帯は細い罫の下線だけ */
+.hd{box-shadow:0 1px 0 var(--line-gray)}
+.hd-count b{font-family:var(--bo);font-weight:400;font-size:1.75rem;letter-spacing:-.01em;line-height:1}
+.hd-count b i{font-style:italic;font-size:.85em;margin-right:1px;opacity:.85}
+.hd-count small{font-family:var(--jp);font-weight:500;font-size:.625rem;letter-spacing:.12em}
+.streak b{font-family:var(--bo);font-weight:400;font-size:1.25rem}
+.streak small{font-family:var(--jp);font-weight:500}
+.me-chip .nm{font-weight:700;letter-spacing:.02em}
+/* 主なボタン: 左に日本語、右に斜体の仏語と矢印 */
+.btn:has(.btn-fr){justify-content:space-between;padding:0 22px;gap:12px}
+.btn .btn-fr{margin-left:auto;font-family:var(--bo);font-style:italic;font-weight:400;font-size:1.0625rem;letter-spacing:.01em;opacity:.72;white-space:nowrap}
+.btn .btn-fr + .ic{margin-left:-4px}
+.btn.big{font-size:1.0625rem;letter-spacing:.06em}
+@media (max-width:360px){.btn .btn-fr{display:none}.btn:has(.btn-fr){justify-content:center}}
+html[data-size="lg"] .btn .btn-fr{display:none}
+html[data-size="lg"] .btn:has(.btn-fr){justify-content:center}
+/* 下のタブ: 紙の帯、選んだ所は墨の文字と路線色の小さな点 */
+.tabbar{background:color-mix(in srgb,var(--bg) 94%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line-gray)}
+.tabbar [role=tab]{font-family:var(--jp);font-weight:500;font-size:.6875rem;letter-spacing:.08em;gap:5px}
+.tabbar [role=tab][aria-selected=true]{font-weight:700}
+.tabbar [role=tab][aria-selected=true]::before{top:auto;bottom:2px;left:calc(50% - 2.5px);right:auto;width:5px;height:5px;border-radius:50%}
+.ti{stroke-width:1.4}
+@media (min-width:900px){.tabbar{background:var(--ink)}.tabbar [role=tab][aria-selected=true]::before{bottom:auto;top:calc(50% - 2.5px);left:6px}}
+/* フレーズの操作: 4 つの箱ではなく 1 本の道具帯（細い罫で仕切る） */
+.ph-act{gap:0;border:1px solid var(--line-gray);border-radius:4px;overflow:hidden}
+.ph-act .tool{border-radius:0;background:none;box-shadow:none;min-height:52px;font-size:.6875rem;letter-spacing:.06em}
+.ph-act .tool + .tool{box-shadow:inset 1px 0 0 var(--line-gray)}
+.ph-act .tool.say{background:var(--ink);color:var(--bg)}
+.ph-act .tool .ic{width:20px;height:20px;stroke-width:1.5}
+/* 小さな操作（もう一度・ゆっくり）は細い線の札 */
+.say{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 35%,transparent);font-size:.8125rem;letter-spacing:.06em;font-weight:500}
+/* 練習の目次とホームの課題の行: 文字の階層をはっきり */
+.leg b{font-family:var(--mi);font-size:1rem;font-weight:700}
+.leg small{letter-spacing:.04em}
+.ptile .pt-fr{font-family:var(--ui);font-size:.625rem;letter-spacing:.22em}
+/* アイコンの線を文字の細さにそろえる */
+.ic{stroke-width:1.6}
+/* 補足は全部、左の細い罫（白い面にしない）。使う人の札は面なし */
+.note{background:none;border-radius:0;box-shadow:inset 2px 0 0 var(--line-gray);padding:4px 0 4px 12px}
+.me-chip{background:transparent;box-shadow:none;padding-left:0}
+.hd-count b i{margin-right:-2px}
