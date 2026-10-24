@@ -1,0 +1,5 @@
+dist/
+assets/audio/_seg/
+__pycache__/
+*.pyc
+tools/private-words.txt
