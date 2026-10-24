@@ -1181,3 +1181,28 @@ html[data-size="lg"] .aff-no small{font-size:.625rem}
 .btn.ghost{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 45%,transparent)}
 .ob-hero{margin-bottom:18px}
 .ticket .ring b{font-family:var(--ui);font-weight:500;font-size:1.75rem}
+/* ---------- 第 5 版・レビュー 3 回目 ---------- */
+/* 答えたあと: 出題の音声は隠し（答えの帯に再生がある）、選んだ行と正解の帯をひとまとまりに */
+.quiz.answered .hearwrap{display:none}
+/* 中身は空いた所の上下中央に（下の操作の位置はそのまま） */
+.stage-body > .lcard{margin-block:auto}
+.stage-body > .wall-poster:has(+ .ticketcard){margin-top:auto}
+.stage-body > .wall-poster + .ticketcard{margin-bottom:auto}
+/* 復習: 切符ではなく頁。罫で問いと答えを分ける */
+.ticketcard{background:none;box-shadow:none;border-radius:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--line-gray)}
+.tc-hd{padding:10px 0;border-bottom:1px solid var(--line-gray)}
+.tc-back{border-top:1px solid var(--line-gray);margin:0;padding:22px 0 24px}
+.tc-front{padding:24px 0}
+.tc-stripe{display:none}
+.tc-fr{font-size:2.25rem}
+/* マイクの段と修了の表現: 角丸の面ではなく罫で挟む */
+.speakbox{background:none;box-shadow:none;border-radius:0;border-top:1px solid var(--line-gray);border-bottom:1px solid var(--line-gray);padding:12px 0}
+.missed{gap:0;border-top:1px solid var(--line-gray)}
+.missed li{background:none;border-radius:0;border-bottom:1px solid var(--line-gray);padding:10px 0}
+/* 角の決まり: 閉じる・文字の大きさも四角 */
+.icon-btn,.aa-btn{border-radius:4px}
+/* 大きな文字とデスクトップ: 絵を低くして今日の課題を最初の画面に */
+html[data-size="lg"] .aff-art{height:min(64vw,300px)}
+html[data-size="lg"] .aff-q{display:none}
+@media (min-width:900px){.aff-art{height:min(34vh,320px)}.aff-q{display:none}}
+.bub-t{border-radius:6px}.bub.s .bub-t{border-bottom-left-radius:0}.bub.me .bub-t{border-bottom-right-radius:0}

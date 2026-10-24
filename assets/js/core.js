@@ -402,7 +402,7 @@ window.DATA = window.DATA || {};
   /* 絵の解説札の 1 行（画家 — 作品名, 年） */
   function credit(id) {
     const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
-    return p && p.artist ? `${p.artist} — ${p.work}, ${p.year}` : "";
+    return p && p.artist ? `${p.artist} — ${p.work}, ${p.year}`.replace(/-/g, "‑") : "";   /* 名前の途中（Saint-Lazare）で改行しない */
   }
   /* 駅名標の大文字（AÉROPORT）をポスターの題の形（Aéroport）にする */
   const titleFr = (s) => { const l = String(s).toLocaleLowerCase("fr"); return l.charAt(0).toLocaleUpperCase("fr") + l.slice(1); };
