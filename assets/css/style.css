@@ -1133,3 +1133,5 @@ h2{font-size:1.3125rem}
 /* 斜体は Bodoni だけ（Jost の斜体は作らない） */
 .aff-q,.bk-fr,.ac-say,.show-lead,.listhd h2 .fr{font-family:var(--bo);font-weight:400}
 .lh-ph{border-radius:2px}
+/* 答えたあとは聞くボタンを小さくして、選択肢と答えの帯が重ならないように */
+.answered .hearbtn{width:84px;height:84px;box-shadow:none;transition:width .25s var(--ease-out),height .25s var(--ease-out)}
