@@ -19,13 +19,15 @@
       { k: "talk", ic: "chat", t: "会話の練習", s: `${Object.keys(dlg).length} / ${DATA.dialogs.length} 場面`, go: () => talkList() },
       { k: "rules", ic: "abc", t: "読み方のきまり", s: `${DATA.pron.length} のきまりと例`, go: () => rulesList() },
     ];
+    /* 乗り換え案内の行き先のように、それぞれのフランス語の名前 */
+    const DEST = { review: "RÉVISION", listen: "ÉCOUTE", nums: "NOMBRES", weak: "ENCORE", talk: "DIALOGUE", rules: "LIRE" };
     const grid = el("div", "pgrid");
     for (const t of tiles) {
-      const b = button("ptile" + (t.k === "review" ? " wide" : ""), `<span class="pt-ic">${icon(t.ic)}</span><span class="pt-t"><b>${esc(t.t)}</b><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
+      const b = button("ptile p-" + t.k, `<span class="pt-ic">${icon(t.ic)}</span><span class="pt-fr">${DEST[t.k]}</span><span class="pt-t"><b>${esc(t.t)}</b><small>${esc(t.s)}</small></span>${t.badge ? `<span class="badge">${t.badge}</span>` : ""}`, t.go);
       grid.appendChild(b);
     }
     root.appendChild(grid);
-    if (arg === "review") review(); else if (arg === "listen") listenSetup("words"); else if (arg === "rules") rulesList();
+    if (arg === "review") review(); else if (arg === "listen") listenSetup("words"); else if (arg === "rules") rulesList(); else if (arg === "talk") talkList();
   }
 
   /* ---------- 復習カード ---------- */

@@ -12,9 +12,24 @@
     bar.appendChild(button("icon-btn", icon("close"), () => close(), label || "レッスンをやめる"));
     const rail = el("div", "lrail"); rail.setAttribute("role", "progressbar"); rail.setAttribute("aria-valuemin", "0"); rail.setAttribute("aria-valuemax", String(total)); rail.setAttribute("aria-label", "進み具合");
     const fill = el("i"); rail.appendChild(fill);
+    const dots = [];
+    if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b"); d.style.left = (k / total) * 100 + "%"; d.dataset.k = k; rail.appendChild(d); dots.push(d); }
+    const me = el("span", "lr-me", esc(App.ini ? App.ini(Store.cur().name) : "")); rail.appendChild(me);
     bar.appendChild(rail);
     root.appendChild(bar);
-    return (n) => { fill.style.width = Math.min(100, (n / total) * 100) + "%"; rail.setAttribute("aria-valuenow", String(Math.round(n))); };
+    return (n) => {
+      const pct = Math.min(100, (n / total) * 100) + "%";
+      fill.style.width = pct; me.style.left = pct;
+      for (const d of dots) d.classList.toggle("on", +d.dataset.k <= n);
+      rail.setAttribute("aria-valuenow", String(Math.round(n)));
+    };
+  }
+  /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
+  function stband(s, label) {
+    const b = el("div", "stband");
+    b.innerHTML = `<span>${esc(label || s.fr)}</span>${s && !label ? `<b class="roundel" aria-hidden="true">${s.num}</b>` : ""}`;
+    b.setAttribute("aria-hidden", "true");
+    return b;
   }
   /* 画面の下に固定する操作欄 */
   function footer(body) { const f = el("div", "stage-foot"); body.appendChild(f); return f; }
@@ -55,18 +70,22 @@
     const prev = st[s.idx - 1], next = st[s.idx + 1];
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
-    box.innerHTML = `<div class="arr-scene">${App.photo(s.id, "arr-photo")}<div class="train" aria-hidden="true"><svg viewBox="0 0 320 112">
+    box.innerHTML = `<div class="arr-scene"><figure class="arr-poster">${App.photo(s.id, "arr-photo")}</figure>
+        <div class="platform"><div class="train" aria-hidden="true"><svg viewBox="0 0 320 104">
+          <defs><linearGradient id="trShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+            <linearGradient id="trGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34405E"/><stop offset=".5" stop-color="#1A2034"/><stop offset=".51" stop-color="#28324C"/><stop offset="1" stop-color="#161B2C"/></linearGradient></defs>
           <rect class="tr-in" x="96" y="22" width="44" height="64" rx="4"/><rect class="tr-in" x="196" y="22" width="44" height="64" rx="4"/>
           <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
-          <rect class="tr-win" x="26" y="26" width="56" height="26" rx="6"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="6"/><rect class="tr-win" x="254" y="26" width="38" height="26" rx="10"/>
-          <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="20" rx="2"/></g>
-          <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="20" rx="2"/></g>
-          <circle class="tr-lamp" cx="296" cy="74" r="5"/>
-          <circle class="tr-wh" cx="64" cy="98" r="9"/><circle class="tr-wh" cx="100" cy="98" r="9"/><circle class="tr-wh" cx="226" cy="98" r="9"/><circle class="tr-wh" cx="262" cy="98" r="9"/>
-          <rect class="tr-rail" x="0" y="106" width="320" height="4" rx="2"/>
-        </svg></div></div>
+          <path fill="url(#trShade)" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
+          <rect class="tr-stripe" x="10" y="66" width="300" height="4"/>
+          <rect class="tr-win" x="24" y="26" width="58" height="28" rx="5"/><rect class="tr-win" x="152" y="26" width="32" height="28" rx="5"/><rect class="tr-win" x="252" y="26" width="42" height="28" rx="9"/>
+          <g class="tr-door l"><rect x="98" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="102" y="30" width="12" height="22" rx="2"/></g>
+          <g class="tr-door r"><rect x="118" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="122" y="30" width="12" height="22" rx="2"/></g>
+          <g class="tr-door l"><rect x="198" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="202" y="30" width="12" height="22" rx="2"/></g>
+          <g class="tr-door r"><rect x="218" y="24" width="20" height="60" rx="2"/><rect class="tr-dw" x="222" y="30" width="12" height="22" rx="2"/></g>
+          <circle class="tr-lamp" cx="298" cy="78" r="4"/>
+          <circle class="tr-wh" cx="64" cy="96" r="7"/><circle class="tr-wh" cx="96" cy="96" r="7"/><circle class="tr-wh" cx="232" cy="96" r="7"/><circle class="tr-wh" cx="264" cy="96" r="7"/>
+        </svg></div></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
         <span class="ride-st cur"><i></i><small>${esc(s.fr)}</small></span>
@@ -106,7 +125,8 @@
       const p = items[i];
       body.innerHTML = "";
       const card = el("div", "lcard");
-      card.innerHTML = `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`;
+      card.appendChild(stband(s));
+      card.insertAdjacentHTML("beforeend", `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`);
       const fr = el("p", "l-fr fr", esc(p.fr)); fr.setAttribute("data-head", "");
       card.appendChild(fr);
       card.appendChild(el("p", "l-kana", esc(p.kana)));
@@ -137,6 +157,7 @@
       const q = list[qi];
       body.innerHTML = "";
       const box = el("div", "quiz");
+      box.appendChild(stband(s));
       const head = el("p", "eyebrow q-head", retry ? "もう一度 · " + (q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする")
         : q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする");
       head.setAttribute("data-head", "");

@@ -83,8 +83,8 @@
     /* 次の駅: 駅の壁に掛かったポスター（その場面の写真）と、ホーローの駅名標 */
     const hero = el("section", "next");
     if (cur.terminus) {
-      hero.innerHTML = `<figure class="poster">${App.photo("paris")}<figcaption><p class="kick">TERMINUS · 終点</p><p class="q fr">Bienvenue à Paris !</p></figcaption></figure>
-        <div class="plate"><span>PARIS</span></div>
+      hero.innerHTML = `<figure class="poster">${App.photo("paris")}<figcaption><p class="q fr">Bienvenue à Paris !</p></figcaption></figure>
+        <div class="plate"><span class="pl-t"><small>TERMINUS · 終点</small><span>PARIS</span></span></div>
         <div class="next-t"><h1>全部の駅を通りました</h1><p>あとは旅を楽しむだけ。毎日の復習カードで、覚えた表現を忘れないように。</p></div>`;
       hero.appendChild(button("btn big wide board", icon("download") + "<span>到着証明書をつくる</span>", () => Passport.certificate()));
       hero.appendChild(button("btn ghost wide", "<span>復習カードへ</span>" + icon("arrow"), () => App.goTab("practice", "review")));
@@ -92,9 +92,9 @@
       const i = cur.lessons.indexOf(next) + 1;
       const p = Course.stationProgress(cur);
       const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? { fr: DATA.dialogs.find((d) => d.id === next.dlg).lines[0].fr } : null;
-      hero.innerHTML = `<figure class="poster">${App.photo(cur.id)}<figcaption><p class="kick">PROCHAINE STATION · 次の駅</p>${sample ? `<p class="q fr">« ${esc(sample.fr)} »</p>` : `<p class="q fr">${next.kind === "rules" ? "Lire le français" : esc(cur.fr)}</p>`}</figcaption></figure>
-        <div class="plate"><span>${esc(cur.fr)}</span><b class="roundel" aria-label="${cur.num} 番目の駅">${cur.num}</b></div>
-        <div class="next-t"><h1>${esc(cur.ja)}</h1><p>${next.kind === "dlg" ? "会話の練習" : next.kind === "rules" ? "読み方のきまり " + i + " / " + cur.lessons.length : "レッスン " + i + " / " + cur.lessons.length} · 約 ${minutes(next)} 分</p></div>
+      hero.innerHTML = `<figure class="poster">${App.photo(cur.id)}<figcaption>${sample ? `<p class="q fr">« ${esc(sample.fr)} »</p>` : `<p class="q fr">${next.kind === "rules" ? "Lire le français" : esc(cur.fr)}</p>`}</figcaption></figure>
+        <div class="plate"><span class="pl-t"><small>PROCHAINE STATION · 次の駅</small><span>${esc(cur.fr)}</span></span><b class="roundel" aria-label="${cur.num} 番目の駅">${cur.num}</b></div>
+        <div class="next-t"><h1>${esc(cur.ja)}</h1><p>${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + " 全 " + cur.lessons.length + " のうち " + i + " つ目"} · 約 ${minutes(next)} 分</p></div>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
       hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
     }
@@ -107,7 +107,7 @@
     ticket.innerHTML = `<div class="tk-top"><div><p class="eyebrow">今日の切符</p><h2>${tk.done === tk.total ? "今日の分は<wbr>全部できました" : "今日の&nbsp;3&nbsp;つ · あと&nbsp;" + (tk.total - tk.done)}</h2></div>
       <div class="ring" style="--p:${pct}" role="img" aria-label="今日の 3 つのうち ${tk.done} つ済み"><span><b>${tk.done}</b><small>/ ${tk.total}</small></span></div></div>`;
     const legs = el("div", "legs");
-    tk.legs.forEach((g) => {
+    tk.legs.slice().sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0)).forEach((g) => {
       const b = button("leg" + (g.done ? " done" : g.none ? " none" : ""), `<i aria-hidden="true">${g.done ? icon("check") : ""}</i><span><b>${esc(g.t)}</b><small>${esc(g.s)}</small></span>${icon("arrow", "go")}`, () => {
         if (g.k === "lesson") { if (next) Lesson.start(next.id, { onClose: render }); }
         else if (g.k === "weak") Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度", render);
@@ -142,7 +142,7 @@
       const sub = s.terminus && Store.trip() ? Store.trip().start.slice(5).replace("-", "/") + " 到着" : s.ja;
       const label = `${s.ja}（${s.fr}）。${state === "done" ? "修了" : state === "now" ? "いまの駅" : "これから"}${here.length ? "。" + here.map((f) => f.name).join("、") + "がここ" : ""}`;
       const whoHtml = `<span class="who" aria-hidden="true">${i === curIdx ? `<span class="av sm me">${esc(ini(me.name))}</span>` : ""}${here.map((f) => `<span class="av sm" style="${App.avStyle(f.c)}">${esc(ini(f.name))}</span>`).join("")}</span>`;
-      const inner = `<i class="dot" aria-hidden="true"></i>${whoHtml}<span class="st-t"><b>${esc(s.fr)}</b><small>${esc(sub)}${state === "done" && !s.terminus ? " · 修了" : state === "now" ? " · いまここ" : ""}</small></span>`;
+      const inner = `<i class="dot" aria-hidden="true"></i>${whoHtml}<span class="st-t"><b>${s.terminus ? "PARIS" : esc(s.ja)}</b><small><span class="fr-s">${s.terminus ? esc(sub) : esc(s.fr)}</span>${state === "done" && !s.terminus ? " · 修了" : state === "now" ? " · いまここ" : ""}</small></span>`;
       if (s.terminus) { li.innerHTML = inner; li.setAttribute("aria-label", label); }
       else li.appendChild(button("st-btn", inner, () => stationSheet(s), label));
       ol.appendChild(li);
@@ -155,8 +155,8 @@
   function famLines(me, curIdx, stations) {
     const last = stations.length - 1;
     const people = [{ id: me.id, name: me.name, c: Store.lineOf(me.color).c, idx: curIdx, me: true }].concat(familyAt()).slice(0, 5);
-    const n = people.length, gap = 40, top = 30;
-    const yMid = top + ((n - 1) * gap) / 2, H = top + (n - 1) * gap + 30;
+    const n = people.length, gap = 52, top = 40;
+    const yMid = top + ((n - 1) * gap) / 2, H = top + (n - 1) * gap + 34;
     const X0 = 16, XB = 222, XE = 318;
     const xOf = (idx) => X0 + (Math.min(idx, last - 1) / (last - 1)) * (XB - X0);
     const sec = el("section", "famlines");
@@ -170,11 +170,11 @@
       const x = at ? XE : xOf(f.idx);
       svg += `<path d="${path}" fill="none" stroke="${f.c}" stroke-opacity=".26" stroke-width="6" stroke-linecap="round"/>`;
       svg += at ? `<path d="${path}" fill="none" stroke="${f.c}" stroke-width="6" stroke-linecap="round"/>` : `<path d="M${X0} ${y} H${x}" stroke="${f.c}" stroke-width="6" stroke-linecap="round"/>`;
-      svg += `<text class="fl-n" x="${X0}" y="${y - 12}">${esc(f.name)}<tspan class="fl-s" dx="6">${esc(stations[Math.min(f.idx, last)].fr)}</tspan></text>`;
-      if (!at) svg += `<g class="fl-av${f.me ? " me" : ""}"><circle cx="${x}" cy="${y}" r="${f.me ? 12 : 11}" fill="${f.c}"/><text x="${x}" y="${y + 3.6}" fill="${App.onColor(f.c)}">${esc(ini(f.name))}</text></g>`;
+      svg += `<text class="fl-n" x="${X0}" y="${y - 19}">${esc(f.name)}<tspan class="fl-s" dx="8">${esc(stations[Math.min(f.idx, last)].ja)}</tspan></text>`;
+      if (!at) svg += `<g class="fl-av${f.me ? " me" : ""}"><circle cx="${x}" cy="${y}" r="${f.me ? 14 : 13}" fill="${f.c}"/><text x="${x}" y="${y + 4.2}" fill="${App.onColor(f.c)}">${esc(ini(f.name))}</text></g>`;
     });
     svg += `<circle cx="${XE}" cy="${yMid}" r="12" class="fl-end"/><circle cx="${XE}" cy="${yMid}" r="5" class="fl-end-in"/>`;
-    svg += `<text class="fl-paris" x="${XE}" y="${yMid + 28}">PARIS</text></svg>`;
+    svg += `<text class="fl-paris" x="${XE}" y="${yMid + 32}">PARIS</text></svg>`;
     sec.insertAdjacentHTML("beforeend", svg);
     if (done) sec.appendChild(el("p", "hint", `${people.filter((f) => f.idx >= last).map((f) => esc(f.name)).join("、")} は PARIS に着いています`));
     if (n === 1) {

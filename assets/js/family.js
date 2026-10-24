@@ -11,7 +11,7 @@
     const lines = name.split("\n");
     /* 長い駅名は円の中の幅（約 74）に収まるよう、字の幅をそろえて縮める */
     const fit = (l, max) => (l.length > max ? ` textLength="74" lengthAdjust="spacingAndGlyphs"` : "");
-    if (!ts) return `<svg class="stamp empty" viewBox="0 0 120 120" role="img" aria-label="${esc(s.ja)}（まだ）"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/><text x="60" y="${lines.length > 1 ? 56 : 64}" text-anchor="middle" class="st-n">${lines.map((l, i) => `<tspan x="60" dy="${i ? 14 : 0}"${fit(l, 8)}>${esc(l)}</tspan>`).join("")}</text></svg>`;
+    if (!ts) return `<svg class="stamp empty" viewBox="0 0 120 120" role="img" aria-label="${esc(s.ja)}（まだ）"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/><text x="60" y="${lines.length > 1 ? 56 : 64}" text-anchor="middle" class="st-n">${lines.map((l, i) => `<tspan x="60" dy="${i ? 14 : 0}"${fit(l, 7)}>${esc(l)}</tspan>`).join("")}</text></svg>`;
     const c = `var(--ink${s.idx % INKS})`;
     const d = new Date(ts);
     const date = String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getFullYear()).slice(2);
@@ -22,7 +22,7 @@
         <circle cx="60" cy="60" r="54" stroke-width="3"/><circle cx="60" cy="60" r="47" stroke-width="1.5"/>
         <path id="arc${s.idx}" d="M22 60a38 38 0 0176 0" stroke="none"/>
         <text class="st-top" fill="currentColor" stroke="none"><textPath href="#arc${s.idx}" startOffset="50%" text-anchor="middle">PARIS · FRANCE</textPath></text>
-        <text x="60" y="${lines.length > 1 ? 60 : 67}" text-anchor="middle" class="st-n" fill="currentColor" stroke="none">${lines.map((l, i) => `<tspan x="60" dy="${i ? 15 : 0}"${fit(l, 8)}>${esc(l)}</tspan>`).join("")}</text>
+        <text x="60" y="${lines.length > 1 ? 60 : 67}" text-anchor="middle" class="st-n" fill="currentColor" stroke="none">${lines.map((l, i) => `<tspan x="60" dy="${i ? 15 : 0}"${fit(l, 7)}>${esc(l)}</tspan>`).join("")}</text>
         <text x="60" y="95" text-anchor="middle" class="st-d" fill="currentColor" stroke="none">${date}</text>
       </g></svg>`;
   }
@@ -131,12 +131,14 @@
     fam.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">LA FAMILLE</p><h2>家族の進み具合</h2></div>`));
     const total = Course.stations().length - 1;
     const ul = el("ul", "members");
-    for (const m of members().sort((a, b) => b.stamps - a.stamps || b.streak - a.streak)) {
+    const sts2 = Course.stations();
+    for (const m of members().sort((a, b) => (b.me ? 1 : 0) - (a.me ? 1 : 0))) {
       const li = el("li", "member");
+      const here = sts2[Math.min(m.idx, sts2.length - 1)];
       li.innerHTML = `<span class="av" style="${App.avStyle(m.c)}">${esc(App.ini(m.name))}</span>
         <div class="m-t"><b>${esc(m.name)}${m.me ? '<small class="tag me">あなた</small>' : m.card ? '<small class="tag">リンクで受け取り</small>' : '<small class="tag">この端末</small>'}</b>
-        <span class="m-bar" aria-hidden="true"><i style="width:${(m.stamps / total) * 100}%;background:${m.c}"></i></span>
-        <small>${m.stamps} 駅 · ${m.streak} 日連続${m.card ? " · " + (() => { const d = new Date(typeof m.at === "number" ? m.at : Date.parse(m.at) || 0); return d.getMonth() + 1 + "/" + d.getDate(); })() + " 時点" : ""}</small></div>`;
+        <span class="m-here">${App.photo(here.id, "m-ph")}<span><small>いまの駅</small>${esc(here.ja)}<span class="fr-s">${esc(here.fr)}</span></span></span>
+        <small>${m.streak ? m.streak + " 日続けて練習" : "これから"}${m.card ? " · " + (() => { const d = new Date(typeof m.at === "number" ? m.at : Date.parse(m.at) || 0); return d.getMonth() + 1 + "/" + d.getDate(); })() + " 時点" : ""}</small></div>`;
       if (m.card) li.querySelector(".m-t").appendChild(button("linkbtn", "<span>外す</span>", () => {
         const card = Store.family()[m.id];
         Store.removeFamilyCard(m.id); render();
@@ -150,6 +152,11 @@
     act.appendChild(button("btn ghost", icon("star") + "<span>応援を送る</span>", () => shareLink(Store.cardUrl(me.id, true), `${me.name}から応援`, `Bravo ! ${me.name}から応援が届きました。パリまで一緒にがんばろう。`)));
     act.appendChild(button("btn ghost", icon("plus") + "<span>家族を招待</span>", () => shareLink(Store.inviteUrl(), "パリ旅のフランス語", "家族のパリ旅行に向けて、一緒にフランス語を覚えよう。開いて自分の名前を入れるだけで始められます。")));
     fam.appendChild(act);
+    /* 家族だからできる練習: 1 台を渡し合って、店員とお客の役で会話する */
+    const duo = el("div", "duo-cta");
+    duo.innerHTML = `<p class="eyebrow">EN FAMILLE · 一緒に</p><b>1 台を渡し合って、会話を練習</b><small>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら。</small>`;
+    duo.appendChild(button("btn board", icon("chat") + "<span>家族で会話を始める</span>", () => App.goTab("practice", "talk")));
+    fam.appendChild(duo);
     fam.appendChild(el("p", "hint", "記録は各自のスマホに保存されます。家族の進み具合は、送られてきたリンクを開くとここに並びます。"));
     root.appendChild(fam);
 

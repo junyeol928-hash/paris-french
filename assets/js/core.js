@@ -362,7 +362,7 @@ window.DATA = window.DATA || {};
       bar.appendChild(button("icon-btn", icon("close"), () => close(), "閉じる"));
       root.appendChild(bar);
       bar.appendChild(el("p", "show-tip", "画面を相手に向けてください"));
-      const box = el("div", "show-box");
+      const box = el("div", "show-box enamel");
       if (lead) box.appendChild(el("p", "show-lead", esc(lead)));
       const big = el("p", "show-fr" + (lead ? " addr" : ""), esc(fr)); big.setAttribute("data-head", ""); box.appendChild(big);
       root.appendChild(box);
