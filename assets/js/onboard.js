@@ -96,7 +96,7 @@
     function tripStep() {
       const w = el("form", "ob");
       w.innerHTML = `<p class="eyebrow">4 · LE VOYAGE</p><h1>パリに着く日は？</h1><p class="lede">出発までの日数と、旅のしおりの日付に使います。この端末だけに保存されます。</p>
-        <label for="obTrip">パリに着く日（4 日間の旅）</label><input id="obTrip" class="big-input" type="date" value="${st.trip ? st.trip.start : ""}">`;
+        <label for="obTrip">パリに着く日（4 日間の旅）</label><p class="hint">欄をタップすると日付を選べます</p><input id="obTrip" class="big-input" type="date" value="${st.trip ? st.trip.start : ""}">`;
       w.appendChild(button("btn big wide primary", "<span>次へ</span>" + icon("arrow"), () => w.requestSubmit()));
       w.appendChild(button("btn ghost wide", "<span>あとで決める</span>", () => go(1)));
       w.addEventListener("submit", (e) => { e.preventDefault(); const v = $("obTrip").value; if (v) Store.setTrip(v); go(1); });
