@@ -198,7 +198,7 @@
     const nowHm = new Date().toTimeString().slice(0, 5);
     const nextStop = d.stops.find(([tm]) => /^\d\d:\d\d$/.test(tm) && tm >= nowHm) || null;
     const c = el("section", "today card");
-    c.innerHTML = `<p class="eyebrow">旅行中 · À PARIS · JOUR ${i + 1}</p><h1>${esc(d.ja)}</h1><p class="muted">${date.slice(5).replace("-", "/")} · ${esc(d.fr)}</p>
+    c.innerHTML = `<p class="eyebrow">旅行中 · À Paris · Jour ${i + 1}</p><h1>${esc(d.ja)}</h1><p class="muted">${date.slice(5).replace("-", "/")} · ${esc(d.fr)}</p>
       ${nextStop ? `<div class="today-next"><span class="tl-t">${esc(nextStop[0])}</span><span><b>${esc(nextStop[1])}</b>${nextStop[2] ? `<small>${esc(nextStop[2])}</small>` : ""}</span></div>` : ""}`;
     const g = el("div", "today-act");
     g.appendChild(button("tool", icon("book") + "<span>表現</span>", () => App.goTab("book", d.id)));

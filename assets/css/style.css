@@ -1696,3 +1696,50 @@ html[data-size="lg"] .aff-art::after{background:linear-gradient(180deg,rgba(10,8
 .jm-pt.now .jm-here{position:static;transform:none;display:inline-block;width:auto;margin-top:4px;text-shadow:none}
 .news-rdl{width:30px;height:30px;font-size:14px;box-shadow:none}
 .got img{max-height:30vh}
+
+/* ---------- 第 6 版・レビュー 2 回目 ---------- */
+/* 金を残さない: 古い --gilt を使う所はすべて墨の薄い色、輪は罫の色に */
+:root{--gilt:var(--muted);--gilt-2:var(--line-gray)}
+.tool.say.playing,.say.round.playing{background:var(--ink);color:var(--bg)}
+/* 大きな文字: タブの字を小さくせず、余白と字間で 1 行に収める */
+html[data-size="lg"] .tabbar [role=tab]{font-size:15px;letter-spacing:0;padding:0 2px;white-space:nowrap}
+/* 大きな文字: ポスターの題は学習の開始より目立たせない */
+html[data-size="lg"] .aff-title{font-size:min(4rem,calc((100cqw - 8px) / (var(--n) * .5)))}
+/* 和文の見出しの字間を詰める */
+h1,h2,h3,.vh h1{letter-spacing:.02em}
+/* 練習の目次の番号はローマ数字をやめ、小さな算用数字 */
+.ptile::before{content:counter(toc) ".";font-family:var(--ui);font-style:normal;font-size:.875rem;color:var(--muted)}
+/* 地図: 駅名の後ろだけ紙を敷いて、街並みの細かい線を沈める。まだの駅も字は濃く、印（色の抜けた挿絵）で区別 */
+.jm-lb{text-shadow:none}
+.jm-lb b,.jm-lb i{display:table;padding:0 5px;background:color-mix(in srgb,var(--bg) 84%,transparent)}
+.jm-pt.l .jm-lb b,.jm-pt.l .jm-lb i{margin-left:auto}
+.jm-pt.todo .jm-lb b{color:var(--ink-2)}
+/* 修了: 祝いの言葉を先に、手に入れた絵はその下 */
+.stamp-land .stamp{max-width:112px}
+.got{margin:14px 0 4px}
+/* 美術館: 絵を切り抜かず、額の中の余白で大きさをそろえる */
+.mu-im img{object-fit:contain;background:var(--surface)}
+/* SOS・しおりの表現の行: 箱をやめ、上下の罫だけ。「見せる」は下線の文字 */
+.sheet .phl .ph{box-shadow:none}
+.ph.compact{padding:16px 0}
+.ph.compact .ph-act{border:0;flex-direction:row;gap:14px}
+.ph.compact .say.round{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-gray)}
+.showtile{width:auto;height:auto;min-height:var(--tap);padding:0 2px;background:none;color:var(--ink);border-radius:0;font-family:var(--jp);font-weight:500;font-size:.875rem;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+.showtile .ic{display:none}
+/* しおり: 入口は罫で区切った文字の行、旅程は紙の上の罫線（白い札をやめる） */
+.bk-more{gap:0;border-top:1px solid var(--line-gray);border-bottom:1px solid var(--line-gray)}
+.bk-more .chip{border-radius:0;box-shadow:none;background:none;min-height:var(--tap);padding:6px 4px}
+.bk-more .chip + .chip{box-shadow:inset 1px 0 0 var(--line-gray)}
+.tl{background:none;box-shadow:none;border-radius:0;border-top:1px solid var(--line-gray);border-bottom:1px solid var(--line-gray);padding-left:30px}
+.tl::before{width:1px;background:var(--ink)}
+.tl li::before{box-shadow:inset 0 0 0 1px var(--ink);width:9px;height:9px;left:-14px;top:8px}
+/* フレーズ: 検索までを短く */
+#v-phrases .vign{height:112px}
+/* ポスターの上の見出し帯: 丸と SOS にすりガラスの箱を付けない */
+@media (max-width:899px){:root[data-tab="home"]:not(.hd-solid):has(#v-home > .home-a:first-child > .affiche:first-child) .hd :is(.me-chip,.sos-btn){background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}}
+.aa-btn[aria-pressed="true"]{box-shadow:none;text-decoration:underline;text-underline-offset:5px}
+/* 地図の絵はダークでも明るいままなので、駅名の下地と字の色は両方のモードで紙と墨に固定 */
+.jm-lb b,.jm-lb i{background:rgba(244,239,229,.86)}
+.jm-lb b,.jm-pt.todo .jm-lb b{color:#2B2824}
+.jm-lb i{color:#4F4941}
+.jm-here{background:#2B2824!important;color:#F4EFE5!important}

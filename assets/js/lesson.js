@@ -442,7 +442,8 @@
     const perfect = !missed || !missed.length;
     const cheer = r.stamped ? "Félicitations !" : perfect ? "Parfait !" : "Bien joué !";
     const art = App.lessonArt(l.id), ap = (DATA.photos || {})[art];
-    box.innerHTML = `${ap ? `<figure class="got"><img src="${ap.src}" alt="" decoding="async" style="object-position:${ap.pos}"><figcaption><small>この絵を手に入れました</small><span class="aff-cr" lang="fr">${App.creditHtml(art)}</span></figcaption></figure>` : ""}<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
+    const got = ap ? `<figure class="got"><img src="${ap.src}" alt="" decoding="async" style="object-position:${ap.pos}"><figcaption><small>この絵を手に入れました</small><span class="aff-cr" lang="fr">${App.creditHtml(art)}</span></figcaption></figure>` : "";
+    box.innerHTML = `<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>${got}`;
     const seg = el("div", "segs"); seg.setAttribute("role", "img"); seg.setAttribute("aria-label", `この駅 ${p.d} / ${p.n}`);
     for (let i = 0; i < p.n; i++) seg.appendChild(el("i", i < p.d ? "on" : ""));
     box.appendChild(seg);

@@ -94,15 +94,15 @@
     });
     /* 家族 */
     const nSt = (o) => Object.keys(o || {}).length;
-    const fam = Store.profiles().map((p) => ({ n: p.name, c: Store.lineOf(p.color).c, k: nSt(Store.raw.get("p:" + p.id + ":stamps", {})) }))
-      .concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c, k: (c.st || []).length })));
+    const fam = Store.profiles().map((p) => ({ n: p.name, c: Store.lineOf(p.color).c, l: Store.lineOf(p.color).line, k: nSt(Store.raw.get("p:" + p.id + ":stamps", {})) }))
+      .concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c, l: Store.lineOf(c.c).line, k: (c.st || []).length })));
     const rows = Math.ceil(sts.length / cols);
     let fx = 80; const fy = Math.min(H - 150, y0 + (rows - 1) * (size + 18) + size + 100);   /* 見出しが最後の列のスタンプに重ならない位置 */
     g.font = "700 30px 'Zen Maru Gothic', sans-serif"; g.textAlign = "left";
     g.fillStyle = "#5D6680"; g.fillText("EN FAMILLE", fx, fy - 70);
     for (const f of fam.slice(0, 5)) {
       g.fillStyle = f.c; g.beginPath(); g.arc(fx + 30, fy, 30, 0, Math.PI * 2); g.fill();
-      g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Zen Maru Gothic', sans-serif"; g.fillText(App.ini ? App.ini(f.n) : f.n.slice(0, 1), fx + 30, fy + 2);
+      g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Zen Maru Gothic', sans-serif"; g.fillText(String(f.l), fx + 30, fy + 2);
       g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Zen Maru Gothic', sans-serif"; g.fillText(f.n, fx + 70, fy - 12);
       const wN = g.measureText(f.n).width;
       g.fillStyle = "#5D6680"; g.font = "600 22px Jost, 'Zen Maru Gothic', sans-serif"; g.fillText(`${f.k} / ${sts.length} 駅`, fx + 70, fy + 22);
@@ -151,7 +151,7 @@
       const here = sts2[Math.min(m.idx, sts2.length - 1)];
       li.innerHTML = `${App.roundel(m.c, "av-rdl")}
         <div class="m-t"><b>${esc(m.name)}${m.me ? '<small class="tag me">あなた</small>' : m.card ? '<small class="tag">リンクで受け取り</small>' : '<small class="tag">この端末</small>'}</b>
-        <span class="m-here">${App.medal(here.id, "m-medal")}<span><small>いまの駅</small>${esc(here.ja)}<span class="fr-s">${esc(here.fr)}</span></span></span>
+        <span class="m-here">${App.medal(here.id, "m-medal")}<span><small>いまの駅</small>${esc(here.ja)}<span class="fr-s" lang="fr">${esc(App.titleFr(here.fr))}</span></span></span>
         <small>${m.streak ? m.streak + " 日続けて練習" : "これから"}${m.card ? " · " + (() => { const d = new Date(typeof m.at === "number" ? m.at : Date.parse(m.at) || 0); return d.getMonth() + 1 + "/" + d.getDate(); })() + " 時点" : ""}</small></div>`;
       if (m.card) li.querySelector(".m-t").appendChild(button("linkbtn", "<span>外す</span>", () => {
         const card = Store.family()[m.id];
