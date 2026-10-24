@@ -132,26 +132,26 @@
     const root = $("v-family");
     const me = Store.cur(); if (!me) return;
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<p class="eyebrow">FAMILLE</p><h1>家族とパスポート</h1>`));
+    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-family.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">En famille</p><h1>家族とパスポート</h1>`));
 
     /* 家族だからできる練習: 1 台を渡し合って、店員とお客の役で会話する（家族の画面のいちばん上） */
     const duo = el("section", "duo-cta");
-    duo.innerHTML = `<p class="eyebrow">EN FAMILLE · 一緒に</p><h2>1 台を渡し合って、会話を練習</h2><p>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら声に出します。</p>`;
+    duo.innerHTML = `<p class="eyebrow"><i class="fr-lbl" lang="fr">En famille</i> · 一緒に</p><h2>1 台を渡し合って、会話を練習</h2><p>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら声に出します。</p>`;
     duo.appendChild(button("btn big board", icon("chat") + "<span>家族で会話を始める</span>", () => App.goTab("practice", "talk")));
     root.appendChild(duo);
 
     /* 家族の進み具合 */
     const fam = el("section", "fam card");
-    fam.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">LA FAMILLE</p><h2>家族の進み具合</h2></div>`));
+    fam.appendChild(el("div", "pp-hd", `<div><p class="eyebrow fr-lbl" lang="fr">La famille</p><h2>家族の進み具合</h2></div>`));
     const total = Course.stations().length - 1;
     const ul = el("ul", "members");
     const sts2 = Course.stations();
     for (const m of members().sort((a, b) => (b.me ? 1 : 0) - (a.me ? 1 : 0))) {
       const li = el("li", "member");
       const here = sts2[Math.min(m.idx, sts2.length - 1)];
-      li.innerHTML = `<span class="av" style="${App.avStyle(m.c)}">${esc(App.ini(m.name))}</span>
+      li.innerHTML = `${App.roundel(m.c, "av-rdl")}
         <div class="m-t"><b>${esc(m.name)}${m.me ? '<small class="tag me">あなた</small>' : m.card ? '<small class="tag">リンクで受け取り</small>' : '<small class="tag">この端末</small>'}</b>
-        <span class="m-here">${App.photo(here.id, "m-ph")}<span><small>いまの駅</small>${esc(here.ja)}<span class="fr-s">${esc(here.fr)}</span></span></span>
+        <span class="m-here">${App.medal(here.id, "m-medal")}<span><small>いまの駅</small>${esc(here.ja)}<span class="fr-s">${esc(here.fr)}</span></span></span>
         <small>${m.streak ? m.streak + " 日続けて練習" : "これから"}${m.card ? " · " + (() => { const d = new Date(typeof m.at === "number" ? m.at : Date.parse(m.at) || 0); return d.getMonth() + 1 + "/" + d.getDate(); })() + " 時点" : ""}</small></div>`;
       if (m.card) li.querySelector(".m-t").appendChild(button("linkbtn", "<span>外す</span>", () => {
         const card = Store.family()[m.id];
@@ -169,11 +169,14 @@
     fam.appendChild(el("p", "hint", "記録は各自のスマホに保存されます。家族の進み具合は、送られてきたリンクを開くとここに並びます。"));
     root.appendChild(fam);
 
+    /* わたしの美術館 */
+    root.appendChild(museum());
+
     /* わたしのパスポート */
     const stamps = LS.get("stamps", {});
     const pass = el("section", "passport card");
     const sts = Course.stations().filter((s) => !s.terminus);
-    pass.innerHTML = `<div class="pp-hd"><div><p class="eyebrow">PASSEPORT DE LANGUE</p><h2>${esc(me.name)} のパスポート</h2></div><span class="pp-n"><b>${Object.keys(stamps).length}</b>/ ${sts.length}</span></div>`;
+    pass.innerHTML = `<div class="pp-hd"><div><p class="eyebrow fr-lbl" lang="fr">Passeport de langue</p><h2>${esc(me.name)} のパスポート</h2></div><span class="pp-n"><b>${Object.keys(stamps).length}</b>/ ${sts.length}</span></div>`;
     const grid = el("div", "stamps");
     for (const s of sts) { const d = stamps[s.id] ? new Date(stamps[s.id]) : null; grid.appendChild(el("div", "stamp-cell" + (d ? "" : " todo"), stampSVG(s, stamps[s.id]) + `<span>${esc(s.ja)}</span><small>${d ? d.getMonth() + 1 + "/" + d.getDate() : "まだ"}</small>`)); }
     pass.appendChild(grid);
@@ -182,10 +185,10 @@
 
     /* この端末の人 */
     const dev = el("section", "card");
-    dev.appendChild(el("div", "pp-hd", `<div><p class="eyebrow">CET APPAREIL</p><h2>この端末を使う人</h2></div>`));
+    dev.appendChild(el("div", "pp-hd", `<div><p class="eyebrow fr-lbl" lang="fr">Cet appareil</p><h2>この端末を使う人</h2></div>`));
     const pl = el("div", "people");
     for (const p of Store.profiles()) {
-      const b = button("person" + (p.id === me.id ? " on" : ""), `<span class="av" style="${App.avStyle(Store.lineOf(p.color).c)}">${esc(App.ini(p.name))}</span><span>${esc(p.name)}</span>`, () => { if (p.id !== me.id) { Store.switchTo(p.id); toast(p.name + "に切り替えました"); } });
+      const b = button("person" + (p.id === me.id ? " on" : ""), `${App.roundel(p.color, "av-rdl")}<span>${esc(p.name)}</span>`, () => { if (p.id !== me.id) { Store.switchTo(p.id); toast(p.name + "に切り替えました"); } });
       b.setAttribute("aria-pressed", p.id === me.id ? "true" : "false");
       pl.appendChild(b);
     }
@@ -307,6 +310,30 @@
     sec.appendChild(el("h3", "sub", "絵の出典"));
     sec.appendChild(el("p", "hint", "駅の絵は、パリを描いた名画（著作権の切れたパブリックドメイン）の画像を Wikimedia Commons から借りています。"));
     sec.appendChild(button("btn ghost wide", icon("list") + "<span>絵の出典を見る</span>", openCredits));
+    return sec;
+  }
+
+  /* わたしの美術館: レッスンを終えるごとに、その回の名画が 1 枚ずつ並ぶ */
+  function museum() {
+    const seen = new Set(), items = [];
+    for (const s of Course.stations()) for (const l of s.lessons) {
+      const a = App.lessonArt(l.id);
+      if (seen.has(a) || !(DATA.photos || {})[a]) continue;
+      seen.add(a); items.push({ a, done: Course.isDone(l.id), s });
+    }
+    const got = items.filter((x) => x.done).length;
+    const sec = el("section", "musee card");
+    sec.innerHTML = `<div class="pp-hd"><div><p class="eyebrow fr-lbl" lang="fr">Mon musée</p><h2>わたしの美術館</h2></div><span class="pp-n"><b>${got}</b> / ${items.length} 枚</span></div>
+      <p class="hint">レッスンを 1 つ終えるたびに、その回の名画が 1 枚ここに掛かります。</p>`;
+    const g = el("div", "mu-grid");
+    for (const x of items) {
+      const p = DATA.photos[x.a];
+      if (x.done) g.appendChild(button("mu-f", `<img src="${p.src}" alt="" loading="lazy" decoding="async" style="object-position:${p.pos}">`, () => sheet(p.work, (b) => {
+        b.insertAdjacentHTML("beforeend", `<figure class="mu-big"><img src="${p.src}" alt="" decoding="async"></figure><p class="aff-cr" lang="fr">${App.creditHtml(x.a)}</p><p class="hint">${esc(x.s.ja)}の駅で手に入れた絵</p>`);
+      }), `${p.artist}「${p.work}」`));
+      else g.appendChild(el("span", "mu-f empty", `<span class="sr">まだの絵</span>`));
+    }
+    sec.appendChild(g);
     return sec;
   }
 

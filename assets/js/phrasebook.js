@@ -15,7 +15,7 @@
     let cur = LS.get("phScene", "base");
     if (!App.scene(cur)) cur = "base";
     if (!root.firstChild) {
-      root.innerHTML = `<header class="vh"><p class="eyebrow">PHRASES · ${DATA.phrases.length}</p><h1>場面別フレーズ</h1></header>
+      root.innerHTML = `<header class="vh"><figure class="vign" aria-hidden="true"><img src="assets/img/il/v-phrases.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Phrases · ${DATA.phrases.length}</p><h1>場面別フレーズ</h1></header>
         <div class="search"><label class="sr" for="phQ">フレーズを探す</label>${icon("search")}<input id="phQ" type="search" placeholder="探す（水、トイレ、merci）" autocomplete="off" enterkeyhint="search"></div>
         <ul class="signs" id="phSigns" aria-label="場面"></ul><div class="listhd" id="phHead"></div><ul class="phl" id="phList"></ul>`;
       $("phQ").addEventListener("input", () => draw());
@@ -27,14 +27,14 @@
       DATA.scenes.slice().sort((a, b) => +lineOf(a.id)[0] - +lineOf(b.id)[0]).forEach((s) => {
         const n = DATA.phrases.filter((p) => p.s === s.id).length;
         const [num, col] = lineOf(s.id);
-        const b = button("pscene" + (s.id === cur && !q ? " on" : ""), `${App.photo(SCENE_ST[s.id], "ps-ph")}<span class="ps-t"><b>${esc(s.ja)}</b><span class="fr-s">${esc(s.fr)}</span><small>${s.id === cur && !q ? "前回見た場面" : n + " 表現"}</small></span>`, () => { $("phQ").value = ""; LS.set("phScene", s.id); cur = s.id; draw(); $("phHead").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); const h = $("phHead").querySelector("h2"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } });
+        const b = button("pscene" + (s.id === cur && !q ? " on" : ""), `${App.medal(SCENE_ST[s.id], "ps-medal")}<span class="ps-t"><b>${esc(s.ja)}</b><span class="fr-s">${esc(s.fr)}</span><small>${s.id === cur && !q ? "前回見た場面" : n + " 表現"}</small></span>`, () => { $("phQ").value = ""; LS.set("phScene", s.id); cur = s.id; draw(); $("phHead").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); const h = $("phHead").querySelector("h2"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } });
         b.setAttribute("aria-pressed", s.id === cur && !q ? "true" : "false");
         b.setAttribute("aria-label", `${s.ja}（${s.fr}）、${n} 表現`);
         const li = el("li"); li.appendChild(b); signs.appendChild(li);
       });
       let items, title;
       if (q) { items = DATA.phrases.filter((p) => norm(p.fr + " " + p.ja + " " + p.kana + " " + (p.n || "")).includes(q)); title = `<h2>「${esc($("phQ").value.trim())}」<small>${items.length} 件</small></h2>`; }
-      else { const s = App.scene(cur); items = DATA.phrases.filter((p) => p.s === cur); title = `${App.photo(SCENE_ST[cur], "lh-ph")}<h2><span class="fr">${esc(s.fr)}</span><small>${esc(s.ja)}</small></h2>`; }
+      else { const s = App.scene(cur); items = DATA.phrases.filter((p) => p.s === cur); title = `${App.medal(SCENE_ST[cur], "lh-medal")}<h2><span class="fr">${esc(s.fr)}</span><small>${esc(s.ja)}</small></h2>`; }
       $("phHead").innerHTML = "";
       if (!q) { const up = button("btn ghost small up", icon("back") + "<span>場面一覧</span>", () => { $("phSigns").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); }); $("phHead").appendChild(up); }
       $("phHead").insertAdjacentHTML("beforeend", title);

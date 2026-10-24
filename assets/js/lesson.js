@@ -33,9 +33,9 @@
     return set;
   }
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
-  function stband(s, label) {
+  function stband(s, label, art) {
     const b = el("div", "stband");
-    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(s.id, "sb-art")}<b>N° ${String(s.num).padStart(2, "0")}</b><span>${esc(App.titleFr(s.fr))}</span>`; }
+    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(art || s.id, "sb-art")}${App.medal(s.id, "sb-medal")}<span class="sb-t"><b>${s.num} 番目の駅</b><span>${esc(App.titleFr(s.fr))}</span></span>`; }
     else b.innerHTML = `<span>${esc(App.titleFr(label || s.fr))}</span>`;
     b.setAttribute("aria-hidden", "true");
     return b;
@@ -85,9 +85,9 @@
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
     const nn = String(s.num).padStart(2, "0"), all = String(st.length - 1).padStart(2, "0");
-    box.innerHTML = `<figure class="aff-art arr-art">${App.photo(s.id)}<figcaption class="aff-kick" lang="fr">Station ${nn} / ${all}</figcaption></figure>
+    box.innerHTML = `<figure class="aff-art arr-art">${App.photo(App.lessonArt(l.id))}${App.medal(s.id, "arr-medal")}</figure>
       <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
-      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(s.id)}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>
+      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(l.id))}</p></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</small></span>
         <span class="ride-st cur"><i></i><small>${esc(App.titleFr(s.fr))}</small></span>
@@ -125,7 +125,7 @@
       save2({ phase: "learn", i }); setP(i + 1);
       const p = items[i];
       body.innerHTML = "";
-      body.appendChild(stband(s));   /* 駅の絵の帯は進み具合のすぐ下に固定。中央に寄せるのは帯より下の中身だけ */
+      body.appendChild(stband(s, null, App.lessonArt(l.id)));   /* 駅の絵の帯は進み具合のすぐ下に固定。中央に寄せるのは帯より下の中身だけ */
       const card = el("div", "lcard");
       card.insertAdjacentHTML("beforeend", `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`);
       const fr = el("p", "l-fr fr", esc(p.fr)); fr.setAttribute("data-head", "");
@@ -157,7 +157,7 @@
       setP(retry ? items.length + quiz.length * ((qi + 1) / list.length) : items.length + qi + 1);
       const q = list[qi];
       body.innerHTML = "";
-      body.appendChild(stband(s));
+      body.appendChild(stband(s, null, App.lessonArt(l.id)));
       const box = el("div", "quiz");
       const head = el("p", "eyebrow q-head", retry ? "もう一度 · " + (q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする")
         : q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする");
@@ -441,7 +441,8 @@
     const p = Course.stationProgress(s);
     const perfect = !missed || !missed.length;
     const cheer = r.stamped ? "Félicitations !" : perfect ? "Parfait !" : "Bien joué !";
-    box.innerHTML = `<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
+    const art = App.lessonArt(l.id), ap = (DATA.photos || {})[art];
+    box.innerHTML = `${ap ? `<figure class="got"><img src="${ap.src}" alt="" decoding="async" style="object-position:${ap.pos}"><figcaption><small>この絵を手に入れました</small><span class="aff-cr" lang="fr">${App.creditHtml(art)}</span></figcaption></figure>` : ""}<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
     const seg = el("div", "segs"); seg.setAttribute("role", "img"); seg.setAttribute("aria-label", `この駅 ${p.d} / ${p.n}`);
     for (let i = 0; i < p.n; i++) seg.appendChild(el("i", i < p.d ? "on" : ""));
     box.appendChild(seg);
@@ -483,7 +484,7 @@
       const body = el("div", "stage-body"); root.appendChild(body);
       const box0 = el("div", "arrive"); box0.innerHTML = `<div class="sign big"><span>${kind === "rehearse" ? "RÉPÉTITION" : "RÉVISION"}</span></div><p class="eyebrow">${esc(sub)}</p><h1 data-head>${esc(title)}</h1><p class="lede">${items.length} 問 · 約 ${Math.max(2, Math.round(items.length * 0.5))} 分${kind === "rehearse" ? " · その日に出会う順番で" : ""}</p>`;
       const scenes = [...new Set(items.map((p) => p.s))].slice(0, 4);
-      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.photo(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
+      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.medal(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
       body.appendChild(box0);
       footer(body).appendChild(button("btn big wide", "<span>はじめる</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Commencer</small>" + icon("arrow"), () => ask(0)));
       const results = {};

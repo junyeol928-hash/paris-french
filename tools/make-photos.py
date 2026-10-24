@@ -38,15 +38,42 @@ ART = {
     "boutique": ("Edgar Degas", "Chez la modiste", "1881"),
     "urgence": ("Pierre-Auguste Renoir", "Le Pont-Neuf", "1872"),
     "paris": ("Claude Monet", "La Rue Montorgueil, fête du 30 juin", "1878"),
+    # レッスンごとの絵（駅の 2 つ目以降のレッスン）
+    "a01": ("Édouard Manet", "La Musique aux Tuileries", "1862"),
+    "a02": ("Claude Monet", "Boulevard des Capucines", "1873"),
+    "a03": ("Pierre-Auguste Renoir", "Les Grands Boulevards", "1875"),
+    "a04": ("Camille Pissarro", "Avenue de l'Opéra, effet de neige", "1898"),
+    "a05": ("Pierre-Auguste Renoir", "La Liseuse", "1874"),
+    "a06": ("Édouard Manet", "Le Balcon", "1868"),
+    "a07": ("Édouard Manet", "Le Chemin de fer", "1873"),
+    "a08": ("Claude Monet", "Arrivée du train de Normandie", "1877"),
+    "a10": ("Camille Pissarro", "Boulevard Montmartre, la nuit", "1897"),
+    "a11": ("Gustave Caillebotte", "Intérieur, femme à la fenêtre", "1880"),
+    "a13": ("Pierre-Auguste Renoir", "La Grenouillère", "1869"),
+    "a14": ("Jean Béraud", "La Modiste sur les Champs-Élysées", "vers 1885"),
+    "a15": ("Edgar Degas", "Chez la modiste", "vers 1882"),
+    "a16": ("Georges Seurat", "Un dimanche à la Grande Jatte", "1884"),
+    "a17": ("Claude Monet", "Les Tuileries", "1876"),
+    "a18": ("Claude Monet", "Le Parc Monceau", "1878"),
+    "a19": ("Alfred Sisley", "Le Canal Saint-Martin", "1870"),
+    "a20": ("Vincent van Gogh", "Le Moulin de la Galette", "1886"),
+    "a22": ("Jean Béraud", "Le Théâtre du Vaudeville", "vers 1889"),
+    "a23": ("Claude Monet", "Le Pont-Neuf", "1871"),
+    "a24": ("Camille Pissarro", "La Place du Théâtre-Français", "1898"),
+    "a25": ("Berthe Morisot", "Jour d'été", "1879"),
+    "a26": ("Pierre-Auguste Renoir", "La Seine à Argenteuil", "1874"),
+    "a27": ("Henri de Toulouse-Lautrec", "Au Moulin Rouge", "1892"),
+    "a28": ("Claude Monet", "Saint-Germain-l'Auxerrois", "1867"),
 }
-LONG = 1200      # 長い辺の画素数（絵を画面の上いっぱいに縦長で切り抜いても粗くならない大きさ）
+LONG = 1100      # 長い辺の画素数（絵を画面の上いっぱいに縦長で切り抜いても粗くならない大きさ）
 QUALITY = 70
 
 
 def main():
     credits = json.loads((SRC / "credits.json").read_text(encoding="utf-8"))
     out = {}
-    for sid, pos in FOCUS.items():
+    for sid in ART:
+        pos = FOCUS.get(sid, "50% 50%")
         src = SRC / f"{sid}.jpg"
         if not src.exists():
             raise SystemExit(f"元の写真がありません: {src}")

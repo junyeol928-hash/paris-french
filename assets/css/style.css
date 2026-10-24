@@ -1501,3 +1501,132 @@ body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;ba
 .member .av{font-size:.8125rem;letter-spacing:-.02em}
 .stage-foot.fb{box-shadow:inset 0 1px 0 var(--ok)}
 .stage-foot.fb.ng{box-shadow:inset 0 1px 0 var(--ng)}
+
+/* ================= 第 6 版 « Promenade illustrée » — 絵地図の画家の挿絵と名画、紙と墨 ================= */
+/* 駅の印（円い挿絵） */
+.medal{display:block;border-radius:50%;overflow:hidden;background:var(--bg);box-shadow:0 0 0 1px rgba(168,135,78,.55)}
+.medal img{display:block;width:100%;height:100%;object-fit:cover}
+/* わたしの路線: 絵地図 */
+.jmap{margin:0 -20px;padding:0}
+.jmap .lm-hd{padding:0 20px 6px}
+.jm-box{position:relative;width:100%;aspect-ratio:620/1536;overflow:hidden;container-type:inline-size}
+.jm-map{position:absolute;top:0;left:calc(-200 / 620 * 100%);width:calc(1024 / 620 * 100%);height:100%;max-width:none}
+.jm-pt{position:absolute;width:calc(108 / 620 * 100%);aspect-ratio:1;transform:translate(-50%,-50%)}
+.jm-btn{all:unset;display:block;width:100%;height:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.jm-btn:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:50%}
+.jm-pt .medal{width:100%;height:100%;transition:filter .3s,opacity .3s}
+.jm-pt.todo .medal{filter:grayscale(.85) sepia(.15);opacity:.62}
+.jm-pt.now .medal{box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--ink)}
+.jm-lb{position:absolute;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:.9375rem;line-height:1.3;text-shadow:0 0 8px var(--bg),0 0 4px var(--bg),0 0 2px var(--bg)}
+.jm-lb b{display:block;font-weight:500}
+.jm-lb i{display:block;font-family:var(--bo);font-style:italic;font-size:.875rem;color:var(--muted)}
+.jm-pt.r .jm-lb{left:calc(100% + 10px)}
+.jm-pt.l .jm-lb{right:calc(100% + 10px);text-align:right}
+.jm-pt.todo .jm-lb b{color:var(--muted);font-weight:400}
+.jm-pt.now .jm-lb b{font-size:1.0625rem}
+.jm-here{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;font-size:.6875rem;letter-spacing:.06em;background:var(--ink);color:var(--bg);padding:1px 8px}
+.jm-fam{position:absolute;right:-6px;top:-6px;display:flex;gap:2px}
+.rdl{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font:500 12px/1 var(--ui);box-shadow:0 0 0 2px var(--bg)}
+/* ---------- 第 6 版の土台: 紙と墨、和文は 400／500、飾りの少ない部品 ---------- */
+:root{--bg:#F4EFE5;--surface:#FAF6EE;--ink:#2B2824;--ink-2:#4F4941;--muted:#756D62;--line-gray:#D9D1C3;--hair:#E3DCCF;--gilt:#8A7246;--rim:rgba(168,135,78,.55)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17140F;--surface:#1F1B15;--ink:#EFE8DA;--ink-2:#D2C9B8;--muted:#A69C8C;--line-gray:#3A332A;--hair:#2D2720;--gilt:#C7AE80}}
+:root[data-theme="dark"]{--bg:#17140F;--surface:#1F1B15;--ink:#EFE8DA;--ink-2:#D2C9B8;--muted:#A69C8C;--line-gray:#3A332A;--hair:#2D2720;--gilt:#C7AE80}
+body::after{display:none}
+body{background:var(--bg) url(../img/il/paper.webp) 0 0/512px 512px}
+:root[data-theme="dark"] body{background-image:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body{background-image:none}}
+.stage{background:var(--bg) url(../img/il/paper.webp) 0 0/512px 512px}
+/* 文字: 太字をやめる */
+b,strong,h1,h2,h3,.leg b,.pt-t b,.ps-t b,.ptile .pt-t b,.me-chip .nm,.aff-cartel h1,.vh h1{font-weight:500}
+h1,h2,h3,.vh h1{font-family:var(--jp);letter-spacing:.04em}
+.vh h1{font-size:1.75rem;font-weight:400}
+h2{font-size:1.25rem;font-weight:400}
+.btn,.chip,.seg button,.tool,.say,.leg b,.tabbar [role=tab]{font-weight:500}
+/* 欧文の大文字ラベルをやめ、文頭だけ大文字の斜体（Bodoni）に */
+.eyebrow{text-transform:none;letter-spacing:.04em;font-family:var(--jp);font-size:.8125rem;color:var(--muted)}
+.fr-lbl,.vh .eyebrow{font-family:var(--bo);font-style:italic;font-size:1rem;letter-spacing:0;color:var(--muted)}
+.aff-kick{font-family:var(--bo);font-style:italic;text-transform:none;letter-spacing:0;font-size:.9375rem}
+.stband span,.ptile .pt-fr,.tc-hd span:first-child{text-transform:none;letter-spacing:.02em}
+.ptile .pt-fr{font-family:var(--bo);font-style:italic;font-size:.9375rem}
+/* ボタン: 角なし・文字だけ（矢印・アイコン・仏語の添え書きをやめる） */
+.btn{border-radius:0;letter-spacing:.06em}
+.btn .ic,.btn .btn-fr{display:none}
+.btn:has(.btn-fr){justify-content:center}
+.btn.ghost{box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.board,.btn{background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.chip,.seg,.seg button,.say,.tool,.opt,.grades button,.icon-btn,.aa-btn,.sos-btn,.search input,input,select,textarea,.sheet{border-radius:0}
+.sheet{border-radius:0}
+/* 見出し帯 */
+.hd{background:color-mix(in srgb,var(--bg) 94%,transparent)}
+.hd-rdl{width:26px;height:26px;font-size:13px;box-shadow:none}
+.me-chip{gap:8px}
+.sos-btn{box-shadow:none;background:none;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;padding:0 6px;min-width:0;font-size:.8125rem}
+/* 下のタブ: 文字だけ */
+.tabbar .ti{display:none}
+.tabbar [role=tab]{font-size:.8125rem;font-weight:400;letter-spacing:.08em}
+.tabbar [role=tab][aria-selected=true]{font-weight:500;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
+.tabbar [role=tab][aria-selected=true]::before{display:none}
+.tabbar{min-height:calc(56px + env(safe-area-inset-bottom,0px))}
+/* 各タブの頭の挿絵（端から端まで、下は紙に溶ける） */
+.vh{position:relative}
+.vign{margin:-4px -20px 6px;position:relative;aspect-ratio:3/2;max-height:260px;overflow:hidden}
+.vign img{display:block;width:100%;height:100%;object-fit:cover}
+.vign::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,var(--bg))}
+:root[data-theme="dark"] .vign img{filter:brightness(.8)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vign img{filter:brightness(.8)}}
+/* フレーズの場面: 円い挿絵＋名前 */
+.pscene{text-align:center}
+.ps-medal{width:76%;aspect-ratio:1;margin:4px auto 6px}
+.pscene .ps-t{padding:0;text-align:center}
+.pscene.on{box-shadow:none}
+.pscene.on .ps-medal{box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--ink)}
+.pscene.on .ps-t{box-shadow:none;padding-left:0}
+/* レッスンの上の帯: その回の名画に、駅の印と駅名 */
+.stband.art .sb-medal{position:relative;z-index:1;width:52px;height:52px;flex:none;box-shadow:0 0 0 2px rgba(244,239,229,.9)}
+.stband.art{gap:12px;align-items:flex-end}
+.stband.art .sb-t{position:relative;z-index:1;display:grid;line-height:1.1}
+.stband.art .sb-t b{font-family:var(--jp);font-size:.75rem;font-weight:400;letter-spacing:.06em;color:rgba(255,255,255,.88)}
+.stband.art .sb-t span{font-family:var(--bo);font-style:italic;font-size:1.75rem;color:#fff;text-transform:none}
+/* 到着: 名画に駅の印を添える */
+.arr-art{position:relative}
+.arr-medal{position:absolute;right:20px;bottom:22px;width:68px;height:68px;z-index:2;box-shadow:0 0 0 3px rgba(244,239,229,.9)}
+/* わたしの路線: いまここ は駅名の下に */
+.jm-here{left:auto;top:auto;transform:none;position:static;display:inline-block;margin-top:4px}
+.jm-pt.now .jm-lb{display:flex;flex-direction:column}
+.jm-pt.now.l .jm-lb{align-items:flex-end}
+.jm-pt.now .jm-here{position:absolute;top:calc(50% + 34px)}
+.jm-pt.now.r .jm-here{left:calc(100% + 10px)}
+.jm-pt.now.l .jm-here{right:calc(100% + 10px)}
+/* 差し色は使わない: 読みのカナ・番号は墨の薄い色 */
+.kana,.l-kana,.show-kana{color:var(--muted)}
+.aff-no,.ticket .ring b,.ptile::before,.cheer,.rn{color:var(--gilt)}
+.aff-title em{color:var(--gilt)}
+/* 人の丸（路線番号）を一覧でも */
+.av-rdl{width:40px;height:40px;font-size:18px;box-shadow:none}
+.person .av-rdl{width:52px;height:52px;font-size:22px}
+.person.on .av-rdl{box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--ink)}
+/* ダークではステージにも紙の地紋を敷かない */
+:root[data-theme="dark"] .stage{background-image:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stage{background-image:none}}
+/* 欧文ラベル（斜体）の中の小見出し */
+i.fr-lbl{font-size:1rem}
+/* わたしの路線: いまここは駅の印の真下 */
+.jm-pt.now .jm-here{position:absolute;left:50%;right:auto;top:calc(100% + 4px);transform:translateX(-50%)}
+.jm-pt.now .jm-lb{display:block}
+/* わたしの美術館: 小さな額を並べる（まだの絵は空の額） */
+.mu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.mu-f{all:unset;display:block;aspect-ratio:4/5;cursor:pointer;padding:3px;background:var(--surface);box-shadow:0 0 0 1px var(--rim),0 6px 12px -8px rgba(40,30,20,.35)}
+.mu-f img{display:block;width:100%;height:100%;object-fit:cover}
+.mu-f.empty{cursor:default;background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--line-gray) 45%,transparent) 6px 7px);box-shadow:0 0 0 1px var(--line-gray)}
+.mu-f:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.mu-big{margin:4px 0 8px}.mu-big img{display:block;width:100%;height:auto;box-shadow:0 0 0 1px var(--rim)}
+/* 修了・終了: 手に入れた絵 */
+.got{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;margin:0 0 6px;padding:10px;background:var(--surface);box-shadow:0 0 0 1px var(--rim)}
+.got img{width:96px;height:120px;object-fit:cover;display:block}
+.got small{display:block;font-size:.8125rem;color:var(--muted);margin-bottom:4px}
+/* 小さな駅の印 */
+.m-medal{width:52px;height:52px;flex:none}
+.lh-medal{width:56px;height:56px}
+.mini-posters figure .medal{width:72%;aspect-ratio:1;margin:0 auto}
+.jm-pt.now{z-index:3}

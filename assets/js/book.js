@@ -22,7 +22,7 @@
     const view = arg || defaultView();
     LS.set("bkView", view);
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<p class="eyebrow">CARNET DE VOYAGE</p><h1>旅のしおり</h1>`));
+    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-carnet.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Carnet de voyage</p><h1>旅のしおり</h1>`));
     const nav = el("div", "daynav"); nav.setAttribute("role", "tablist"); nav.setAttribute("aria-label", "しおりのページ");
     DATA.days.forEach((d, i) => {
       const dt = dayDate(i);

@@ -6,7 +6,7 @@
   function render(arg) {
     const root = $("v-practice");
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<p class="eyebrow">PRATIQUE</p><h1>練習</h1>`));
+    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-practice.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Pratique</p><h1>練習</h1>`));
     const plan = Course.reviewPlan();
     const done = LS.get("done", {});
     const lsOk = DATA.listen.filter((x) => done[x.id] > 0).length;
@@ -55,7 +55,7 @@
       const next = () => {
         if (!queue.length) {
           body.innerHTML = "";
-          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow">RÉVISION</p><h1>復習おわり</h1><p class="lede">${n} 枚めくりました。${again ? "忘れた " + again + " 枚は、また近いうちに出てきます。" : "全部覚えていました。"}</p>`;
+          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow fr-lbl" lang="fr">Révision</p><h1>復習おわり</h1><p class="lede">${n} 枚めくりました。${again ? "忘れた " + again + " 枚は、また近いうちに出てきます。" : "全部覚えていました。"}</p>`;
           body.appendChild(r); sfx.chime();
           body.appendChild(el("div", "stage-foot")).appendChild(button("btn big wide", "<span>閉じる</span>", () => close()));
           return;
@@ -138,7 +138,7 @@
         fill.style.width = (i / qs.length) * 100 + "%";
         if (i >= qs.length) {
           body.innerHTML = "";
-          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow">ÉCOUTE</p><h1>${ok} / ${qs.length} 問 正解</h1><p class="lede">${ok === qs.length ? "全問正解。次は別の場面も。" : mode === "nums" ? "70〜99 は「60＋10」「4×20」で数えます。ゆっくり再生で耳を慣らしましょう。" : "間違えた問題は「間違えた問題」にまとまります。"}</p>`;
+          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow fr-lbl" lang="fr">Écoute</p><h1>${ok} / ${qs.length} 問 正解</h1><p class="lede">${ok === qs.length ? "全問正解。次は別の場面も。" : mode === "nums" ? "70〜99 は「60＋10」「4×20」で数えます。ゆっくり再生で耳を慣らしましょう。" : "間違えた問題は「間違えた問題」にまとまります。"}</p>`;
           body.appendChild(r); sfx.chime();
           const f = el("div", "stage-foot"); f.appendChild(button("btn big wide", "<span>もう 10 問</span>", () => listenRun(mode, pick, o))); f.appendChild(button("btn ghost wide", "<span>閉じる</span>", () => close())); body.appendChild(f);
           return;

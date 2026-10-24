@@ -50,12 +50,12 @@
       const others = Store.profiles();
       const w = el("div", "ob welcome");
       w.innerHTML = `<figure class="ob-hero">${App.photo("welcome")}<figcaption lang="fr">${App.creditHtml("welcome")}</figcaption></figure>
-        <p class="eyebrow">PARIS · EN FAMILLE</p><h1 class="fr hello">Bonjour&nbsp;!</h1>
+        <p class="eyebrow fr-lbl" lang="fr">Paris, en famille</p><h1 class="fr hello">Bonjour&nbsp;!</h1>
         <p class="lede">家族でパリへ。フランス語ゼロから、旅で困らないところまで。1 日 5 分、駅をひとつずつ進みます。</p>`;
       if (others.length) {
         w.appendChild(el("p", "ob-q", "この端末を使うのは誰ですか？"));
         const pl = el("div", "people");
-        for (const p of others) pl.appendChild(button("person", `<span class="av" style="${App.avStyle(Store.lineOf(p.color).c)}">${esc(App.initials(p.name, others.map((x) => x.name)))}</span><span>${esc(p.name)}</span>`, () => { Store.switchTo(p.id); finish(true, true); }));
+        for (const p of others) pl.appendChild(button("person", `${App.roundel(p.color, "av-rdl")}<span>${esc(p.name)}</span>`, () => { Store.switchTo(p.id); finish(true, true); }));
         w.appendChild(pl);
         w.appendChild(button("btn ghost wide", icon("plus") + "<span>新しく始める</span>", () => go(1)));
       } else w.appendChild(button("btn big wide primary", "<span>はじめる</span>" + icon("arrow"), () => go(1)));
@@ -107,7 +107,7 @@
       const w = el("div", "ob done");
       w.style.setProperty("--c", l.c);
       w.innerHTML = `<svg class="ob-open" viewBox="0 0 320 160" aria-hidden="true"><path class="track" d="M20 80 H300"/><path class="run" d="M20 80 H300"/><circle cx="20" cy="80" r="10"/><circle cx="300" cy="80" r="14" class="end"/><text x="300" y="124" text-anchor="middle">PARIS</text></svg>
-        <p class="eyebrow">LIGNE ${l.line} · OUVERTURE</p><h1>${esc(st.name)} さんの路線が開通しました</h1><p class="lede">最初の駅は「BONJOUR（あいさつ）」。5 分で終わります。</p>`;
+        <p class="eyebrow fr-lbl" lang="fr">Ligne ${l.line} · ouverture</p><h1>${esc(st.name)} さんの路線が開通しました</h1><p class="lede">最初の駅は「BONJOUR（あいさつ）」。5 分で終わります。</p>`;
       w.appendChild(button("btn big wide primary", "<span>最初の駅へ</span>" + icon("arrow"), () => finish(true)));
       frame(w, false);
       App.sfx.chime(); App.haptic([10, 30, 10]);
@@ -132,7 +132,7 @@
       const me = Store.curId();
       const pl = el("div", "people");
       for (const p of Store.profiles()) {
-        const x = button("person" + (p.id === me ? " on" : ""), `<span class="av" style="${App.avStyle(Store.lineOf(p.color).c)}">${esc(App.ini ? App.ini(p.name) : p.name.slice(0, 1))}</span><span>${esc(p.name)}</span>`, () => { close(); if (p.id !== me) { Store.switchTo(p.id); toast(p.name + "に切り替えました"); } });
+        const x = button("person" + (p.id === me ? " on" : ""), `${App.roundel(p.color, "av-rdl")}<span>${esc(p.name)}</span>`, () => { close(); if (p.id !== me) { Store.switchTo(p.id); toast(p.name + "に切り替えました"); } });
         x.setAttribute("aria-pressed", p.id === me ? "true" : "false");
         pl.appendChild(x);
       }

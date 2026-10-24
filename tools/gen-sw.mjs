@@ -14,7 +14,9 @@ export function files() {
   const icons = existsSync(join(ROOT, "assets/img/icon")) ? readdirSync(join(ROOT, "assets/img/icon")).filter((f) => f.endsWith(".png")).map((f) => "assets/img/icon/" + f) : [];
   /* 駅の写真（data/photos.js が参照する）も旅先で電波がなくても出るように先に保存する */
   const photos = existsSync(join(ROOT, "assets/img/st")) ? readdirSync(join(ROOT, "assets/img/st")).filter((f) => f.endsWith(".webp")).sort().map((f) => "assets/img/st/" + f) : [];
-  return ["./", "index.html", ...new Set(refs), ...icons.filter((f) => !refs.includes(f)), ...photos].filter((f, i, a) => a.indexOf(f) === i);
+  /* 絵地図の挿絵（駅の印・場面の挿絵・紙の地紋）も同じく先に保存する */
+  const ills = existsSync(join(ROOT, "assets/img/il")) ? readdirSync(join(ROOT, "assets/img/il")).filter((f) => f.endsWith(".webp")).sort().map((f) => "assets/img/il/" + f) : [];
+  return ["./", "index.html", ...new Set(refs), ...icons.filter((f) => !refs.includes(f)), ...photos, ...ills].filter((f, i, a) => a.indexOf(f) === i);
 }
 
 const list = files();
