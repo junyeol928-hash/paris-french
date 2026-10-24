@@ -15,11 +15,12 @@
 
   /* 人の路線色。RATP の路線色から、互いに明るさも違う 5 色 */
   const LINES = [
-    { id: "violet", name: "ヴィオレ", line: "4", c: "#9B2F8F" },
+    /* 実際のメトロの路線番号の順（1・2・4・5・6 号線の色） */
     { id: "jaune", name: "ジョーヌ", line: "1", c: "#E5A800" },
     { id: "bleu", name: "ブルー", line: "2", c: "#1F5FAF" },
-    { id: "vert", name: "ヴェール", line: "6", c: "#3F9160" },
+    { id: "violet", name: "ヴィオレ", line: "4", c: "#9B2F8F" },
     { id: "orange", name: "オランジュ", line: "5", c: "#D9701C" },
+    { id: "vert", name: "ヴェール", line: "6", c: "#3F9160" },
   ];
   const lineOf = (id) => LINES.find((l) => l.id === id) || LINES[0];
 

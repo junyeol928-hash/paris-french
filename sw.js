@@ -1,5 +1,5 @@
 /* tools/gen-sw.mjs が生成する。手で編集しない */
-const VERSION = "0ae0ad0568d0";
+const VERSION = "2800ed37369d";
 const CORE = "paris-fr-" + VERSION;
 const FONTS = "paris-fr-fonts";
 const FILES = ["./","index.html","manifest.webmanifest","assets/img/icon/favicon-32.png","assets/img/icon/apple-touch-icon.png","assets/css/style.css","data/phrases.js","data/listen.js","data/pron.js","data/days.js","data/dialogs.js","data/audio.js","assets/js/srs.js","assets/js/numbers.js","assets/js/store.js","assets/js/core.js","assets/js/speech.js","assets/js/course.js","assets/js/lesson.js","assets/js/home.js","assets/js/phrasebook.js","assets/js/practice.js","assets/js/book.js","assets/js/family.js","assets/js/onboard.js","assets/js/pwa.js","assets/js/main.js","assets/img/icon/icon-192.png","assets/img/icon/icon-512.png","assets/img/icon/maskable-512.png"];
