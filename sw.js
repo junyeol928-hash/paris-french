@@ -1,5 +1,5 @@
 /* tools/gen-sw.mjs が生成する。手で編集しない */
-const VERSION = "c6555fc842c8";
+const VERSION = "beaf9544ad7e";
 const CORE = "paris-fr-" + VERSION;
 const FONTS = "paris-fr-fonts";
 const FILES = ["./","index.html","manifest.webmanifest","assets/img/icon/favicon-32.png","assets/img/icon/apple-touch-icon.png","assets/css/style.css","data/phrases.js","data/listen.js","data/pron.js","data/days.js","data/dialogs.js","data/audio.js","data/photos.js","assets/js/srs.js","assets/js/numbers.js","assets/js/store.js","assets/js/core.js","assets/js/speech.js","assets/js/course.js","assets/js/lesson.js","assets/js/home.js","assets/js/phrasebook.js","assets/js/practice.js","assets/js/book.js","assets/js/family.js","assets/js/onboard.js","assets/js/pwa.js","assets/js/main.js","assets/img/icon/icon-192.png","assets/img/icon/icon-512.png","assets/img/icon/maskable-512.png","assets/img/st/aeroport.webp","assets/img/st/bonjour.webp","assets/img/st/boutique.webp","assets/img/st/cafe.webp","assets/img/st/carte.webp","assets/img/st/comprendre.webp","assets/img/st/hotel.webp","assets/img/st/lire.webp","assets/img/st/metro.webp","assets/img/st/musee.webp","assets/img/st/paris.webp","assets/img/st/resto.webp","assets/img/st/taxi.webp","assets/img/st/urgence.webp","assets/img/st/welcome.webp"];
