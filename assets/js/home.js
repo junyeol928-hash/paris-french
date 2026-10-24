@@ -204,10 +204,11 @@
     const me = Store.cur();
     const row = el("div", "news-act");
     row.appendChild(button("btn small cheer-btn", icon("star") + "<span>応援する</span>", () => {
-      markSeen(news); c.remove();
       const url = Store.cardUrl(me.id, true);
-      if (navigator.share) navigator.share({ title: `${me.name}から応援`, text: `Bravo ! ${me.name}から応援が届きました。`, url }).catch(() => {});
-      else App.goTab("family");
+      const done = () => { markSeen(news); c.remove(); };
+      /* 送れたときだけお知らせを消す。共有をやめた・失敗したときは残して、もう一度押せるように */
+      if (navigator.share) navigator.share({ title: `${me.name}から応援`, text: `Bravo ! ${me.name}から応援が届きました。`, url }).then(done).catch(() => {});
+      else { done(); App.goTab("family"); }
     }, "応援する（Bravo を送る）"));
     c.appendChild(button("icon-btn news-x", icon("close"), () => { markSeen(news); c.remove(); }, "お知らせを閉じる"));
     c.appendChild(row);
