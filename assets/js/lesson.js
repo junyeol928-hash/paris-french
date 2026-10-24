@@ -35,7 +35,8 @@
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
   function stband(s, label) {
     const b = el("div", "stband");
-    b.innerHTML = `${s && !label ? `<b>N° ${String(s.num).padStart(2, "0")}</b>` : ""}<span>${esc(App.titleFr(label || s.fr))}</span>`;
+    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(s.id, "sb-art")}<b>N° ${String(s.num).padStart(2, "0")}</b><span>${esc(App.titleFr(s.fr))}</span>`; }
+    else b.innerHTML = `<span>${esc(App.titleFr(label || s.fr))}</span>`;
     b.setAttribute("aria-hidden", "true");
     return b;
   }
@@ -433,7 +434,7 @@
     const p = Course.stationProgress(s);
     const perfect = !missed || !missed.length;
     const cheer = r.stamped ? "Félicitations !" : perfect ? "Parfait !" : "Bien joué !";
-    box.innerHTML = `<p class="cheer fr">${cheer}</p><p class="eyebrow">${r.stamped ? "駅を修了 · STATION COMPLÈTE" : "レッスン終了"}</p><h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
+    box.innerHTML = `<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
     const seg = el("div", "segs"); seg.setAttribute("role", "img"); seg.setAttribute("aria-label", `この駅 ${p.d} / ${p.n}`);
     for (let i = 0; i < p.n; i++) seg.appendChild(el("i", i < p.d ? "on" : ""));
     box.appendChild(seg);

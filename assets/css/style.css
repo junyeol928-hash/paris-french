@@ -1206,3 +1206,29 @@ html[data-size="lg"] .aff-art{height:min(64vw,300px)}
 html[data-size="lg"] .aff-q{display:none}
 @media (min-width:900px){.aff-art{height:min(34vh,320px)}.aff-q{display:none}}
 .bub-t{border-radius:6px}.bub.s .bub-t{border-bottom-left-radius:0}.bub.me .bub-t{border-bottom-right-radius:0}
+/* ---------- 第 5 版・レビュー 4 回目 ---------- */
+/* 課題の上の駅名は、その駅の絵の細い帯（端から端まで） */
+.stband.art{position:relative;height:76px;margin:0 -20px 14px!important;padding:0 20px 10px;align-items:flex-end;border-bottom:0;overflow:hidden;color:#fff}
+.stband.art .sb-art{position:absolute;inset:0;border-radius:0}
+.stband.art .sb-art img{width:100%;height:100%;object-fit:cover}
+.stband.art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,11,8,.62),rgba(14,11,8,.12) 70%)}
+.stband.art b,.stband.art span{position:relative;z-index:1;color:#fff}
+.stband.art span{font-family:var(--bo);font-style:italic;font-weight:400;font-size:1.625rem;letter-spacing:0;text-transform:none;line-height:1}
+.stband.art b{color:rgba(255,255,255,.85)}
+/* 会話: チャットの吹き出しではなく台本の頁（左の色の帯と話し手） */
+.bub-t{background:none;box-shadow:inset 3px 0 0 var(--line-gray);border-radius:0!important;padding:6px 0 6px 14px}
+.bub.me .bub-t{background:none;color:var(--ink);box-shadow:inset 3px 0 0 var(--line)}
+.bub.me .ja{color:var(--muted);opacity:1}
+/* 確認問題: 選択肢を空いた所の中ほどに */
+.stage-body > .quiz{margin-block:auto}
+/* 修了: 表現の行と下のボタンの間をあける */
+.missed{margin-bottom:20px}
+/* 下の操作欄は左右の余白まで紙で覆う（後ろの文字が端からのぞかないように） */
+.stage-foot:not(.fb){margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+/* 学ぶ画面: 本文・再生・マイクをひとまとまりにして中央へ */
+.stage-body > .lcard{margin-block:auto 0}
+.stage-body > .lcard + .speakbox{margin-bottom:auto}
+/* 答えたあとは選択肢を答えの帯の近くへ */
+.stage-body > .quiz.answered{margin-top:auto;margin-bottom:0}
+/* 並べ替えの札も四角く */
+.tile{border-radius:4px}
