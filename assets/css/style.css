@@ -23,7 +23,7 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#13100D; --tile:#1A1612; --surface:#1C1814; --surface-2:#221D18; --sunken:#0E0C09;
-  --ink:#F1EADD; --ink-2:#D3C9B7; --muted:#A3988A; --faint:#7A7062; --line-gray:#3A3229; --hair:#2C261F;
+  --ink:#F1EADD; --ink-2:#D3C9B7; --muted:#A3988A; --faint:#7A7062; --line-gray:#4A4136; --hair:#2C261F;
   --navy:#2A241D; --navy-2:#0E0C09; --ok:#5DBB85; --ok-soft:#173326; --ng:#EF8572; --ng-soft:#3A1E1B; --amber:#F0B551;
   --shadow:0 0 0 1px var(--hair); --shadow-lift:0 0 0 1px var(--hair), 0 22px 36px -28px rgba(0,0,0,.8);
   --line-ink:var(--line-ink-d);
@@ -34,7 +34,7 @@
 }}
 :root[data-theme="dark"]{
   --bg:#13100D; --tile:#1A1612; --surface:#1C1814; --surface-2:#221D18; --sunken:#0E0C09;
-  --ink:#F1EADD; --ink-2:#D3C9B7; --muted:#A3988A; --faint:#7A7062; --line-gray:#3A3229; --hair:#2C261F;
+  --ink:#F1EADD; --ink-2:#D3C9B7; --muted:#A3988A; --faint:#7A7062; --line-gray:#4A4136; --hair:#2C261F;
   --navy:#2A241D; --navy-2:#0E0C09; --ok:#5DBB85; --ok-soft:#173326; --ng:#EF8572; --ng-soft:#3A1E1B; --amber:#F0B551;
   --shadow:0 0 0 1px var(--hair); --shadow-lift:0 0 0 1px var(--hair), 0 22px 36px -28px rgba(0,0,0,.8);
   --line-ink:var(--line-ink-d);
@@ -1232,3 +1232,31 @@ html[data-size="lg"] .aff-q{display:none}
 .stage-body > .quiz.answered{margin-top:auto;margin-bottom:0}
 /* 並べ替えの札も四角く */
 .tile{border-radius:4px}
+/* ---------- 第 5 版・レビュー 5 回目 ---------- */
+/* 絵の帯は進み具合のすぐ下に固定（端から端まで）。駅名は下の暗がりの上で大きく */
+.stage-body > .stband.art{margin:0 -20px!important;flex:none}
+.stband.art{height:84px}
+.stband.art::after{background:linear-gradient(180deg,rgba(14,11,8,0) 20%,rgba(14,11,8,.6)),linear-gradient(90deg,rgba(14,11,8,.35),rgba(14,11,8,0) 70%)}
+.stband.art span{font-size:1.875rem;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+.stage-body > .quiz:not(.answered){margin-block:auto}
+/* 復習と会話の絵も端から端まで、上に寄せる */
+.stage-body > .wall-poster{margin:0 -20px;border-radius:0;box-shadow:none}
+.stage-body > .wall-poster .photo{border-radius:0}
+.stage-body > .wall-poster:has(+ .ticketcard){margin-top:0}
+.stage-body > .wall-poster + .ticketcard{margin-block:auto}
+/* 並べ替え: 答えの枠は上下の罫、札は線囲みで影なし */
+.tiles.ans{border-radius:0;background:none;box-shadow:none;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:10px 0}
+.tiles.ans.right{box-shadow:inset 0 -3px 0 var(--ok)} .tiles.ans.wrong{box-shadow:inset 0 -3px 0 var(--ng)}
+.tile{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 40%,transparent);background:var(--surface)}
+/* 下の操作欄の上に紙のぼかし（一覧の途中で切れて見えないように） */
+.stage-foot:not(.fb)::before{content:"";position:absolute;left:0;right:0;top:-28px;height:28px;background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),var(--bg));pointer-events:none}
+/* 修了: 間違えた表現は畳んだ一覧 */
+.missed-box{border-top:1px solid var(--ink);border-bottom:1px solid var(--line-gray);margin-bottom:20px}
+.missed-box summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:var(--tap);cursor:pointer;list-style:none;font-family:var(--mi);font-weight:700;font-size:1.0625rem}
+.missed-box summary::-webkit-details-marker{display:none}
+.missed-box summary b{font-family:var(--ui);font-weight:500;font-size:.875rem;color:var(--line-ink);display:flex;align-items:center;gap:8px}
+.missed-box summary b::after{content:"";width:8px;height:8px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(45deg) translateY(-3px);transition:transform .2s}
+.missed-box[open] summary b::after{transform:rotate(-135deg)}
+.missed-box .missed{margin-bottom:0}
+/* 答えたあと: 選択肢と答えの帯を続けて読めるように */
+.stage-body:has(> .quiz.answered) > .stage-foot.fb{margin-top:16px}

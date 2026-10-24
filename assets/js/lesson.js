@@ -120,8 +120,8 @@
       save2({ phase: "learn", i }); setP(i + 1);
       const p = items[i];
       body.innerHTML = "";
+      body.appendChild(stband(s));   /* 駅の絵の帯は進み具合のすぐ下に固定。中央に寄せるのは帯より下の中身だけ */
       const card = el("div", "lcard");
-      card.appendChild(stband(s));
       card.insertAdjacentHTML("beforeend", `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`);
       const fr = el("p", "l-fr fr", esc(p.fr)); fr.setAttribute("data-head", "");
       card.appendChild(fr);
@@ -152,8 +152,8 @@
       setP(retry ? items.length + quiz.length * ((qi + 1) / list.length) : items.length + qi + 1);
       const q = list[qi];
       body.innerHTML = "";
+      body.appendChild(stband(s));
       const box = el("div", "quiz");
-      box.appendChild(stband(s));
       const head = el("p", "eyebrow q-head", retry ? "もう一度 · " + (q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする")
         : q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする");
       head.setAttribute("data-head", "");
@@ -439,10 +439,13 @@
     for (let i = 0; i < p.n; i++) seg.appendChild(el("i", i < p.d ? "on" : ""));
     box.appendChild(seg);
     if (missed && missed.length) {
-      box.appendChild(el("h2", "sub", "もう一度聞いておきたい表現"));
+      /* 修了の喜びを先に。間違えた表現は畳んだ一覧にして、下の操作と競わないように */
+      const dt = el("details", "missed-box");
+      dt.innerHTML = `<summary><span>もう一度聞いておきたい表現</span><b>${missed.length}</b></summary>`;
       const ul = el("ul", "missed");
       for (const m of missed) { const li = el("li"); li.innerHTML = `<span class="fr">${esc(m.fr)}</span><span class="ja">${esc(m.ja)}</span>`; li.appendChild(sayBtn(m.fr)); ul.appendChild(li); }
-      box.appendChild(ul);
+      dt.appendChild(ul);
+      box.appendChild(dt);
     }
     if (r.stamped) {
       const st = el("div", "stamp-land"); st.innerHTML = Passport.stampSVG(s, Store.LS.get("stamps", {})[s.id], true);
