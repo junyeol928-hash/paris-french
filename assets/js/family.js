@@ -277,7 +277,27 @@
       else if (PWA.canPrompt && PWA.canPrompt()) { inst.appendChild(el("h3", "sub", "ホーム画面に追加")); inst.appendChild(el("p", "hint", "アプリのように開けて、電波がない所でも使えます。")); inst.appendChild(button("btn ghost", icon("download") + "<span>ホーム画面に追加</span>", () => PWA.promptInstall())); }
       sec.appendChild(inst);
     }
+    sec.appendChild(el("h3", "sub", "写真の出典"));
+    sec.appendChild(el("p", "hint", "駅の写真は Wikimedia Commons の自由なライセンスの写真です。"));
+    sec.appendChild(button("btn ghost wide", icon("list") + "<span>写真の出典を見る</span>", openCredits));
     return sec;
+  }
+
+  /* 写真ごとの撮影者・ライセンス・元のページ。CC BY / BY-SA は表示が条件なので、どの写真も必ずここに出す */
+  function openCredits() {
+    sheet("写真の出典", (b) => {
+      b.appendChild(el("p", "hint", "どの写真も、画面に合わせて切り抜きと色の調整をしています。調整した写真も元と同じライセンスで使えます。"));
+      const ul = el("ul", "credits");
+      for (const [id, p] of Object.entries(DATA.photos)) {
+        const st = Course.station(id);
+        const li = el("li");
+        li.innerHTML = `${App.photo(id, "cr-ph")}<div><b>${esc(st ? st.ja + "（" + st.fr + "）" : id === "welcome" ? "はじめの画面" : id)}</b>
+          <span>${esc(p.title)}</span><span>撮影: ${esc(p.author || "不明")}</span>
+          <span>${p.licenseUrl ? `<a href="${esc(p.licenseUrl)}" target="_blank" rel="noopener">${esc(p.license)}</a>` : esc(p.license)} · <a href="${esc(p.source)}" target="_blank" rel="noopener">元のページ</a></span></div>`;
+        ul.appendChild(li);
+      }
+      b.appendChild(ul);
+    }, { cls: "tall" });
   }
 
   onTab("family", render);

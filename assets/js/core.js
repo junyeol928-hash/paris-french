@@ -48,7 +48,6 @@ window.DATA = window.DATA || {};
     back: "M19 12H5M11 6l-6 6 6 6",
     close: "M6 6l12 12M18 6L6 18",
     check: "M5 12.5l4.5 4.5L19 7",
-    line: "M6 3v18M6 8h8a4 4 0 010 8H6",
     list: "M5 6h14M5 12h14M5 18h9",
     cards: "M4 7h16v11H4zM4 11h16",
     book: "M8 4h11v16H8zM5 6v14h11",
@@ -68,6 +67,8 @@ window.DATA = window.DATA || {};
     search: "M11 18a7 7 0 100-14 7 7 0 000 14zM20 20l-4-4",
     phone: "M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z",
     aa: "M3 18l4-11 4 11M4.5 14h5M14 18l3-7 3 7M15 16h4",
+    line: "M3.5 6a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0M15.5 18a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0M6 8.5V10a4 4 0 004 4h4a4 4 0 014 1.5",
+    redo: "M4 12a8 8 0 0114-5.3M20 4v4h-4M20 12a8 8 0 01-14 5.3M4 20v-4h4",
   };
   const icon = (n, cls) => `<svg class="ic${cls ? " " + cls : ""}" viewBox="0 0 24 24" aria-hidden="true"><path d="${IC[n]}"/></svg>`;
 
@@ -388,6 +389,13 @@ window.DATA = window.DATA || {};
     e.preventDefault(); n.focus(); n.click();
   });
 
-  window.App = { el, esc, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
+  /* 駅の写真（data/photos.js）。飾りなので alt は空、意味は隣の文字で伝える。cls で枠の形を変える */
+  function photo(id, cls) {
+    const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
+    if (!p) return "";
+    return `<span class="photo${cls ? " " + cls : ""}"><img src="${p.src}" alt="" width="${p.w}" height="${p.h}" decoding="async" style="object-position:${p.pos}"></span>`;
+  }
+
+  window.App = { el, esc, photo, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
     onTab, goTab, currentTab, initTabs, sheet, stage, show };
 })();

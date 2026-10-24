@@ -49,7 +49,7 @@
     function welcome() {
       const others = Store.profiles();
       const w = el("div", "ob welcome");
-      w.innerHTML = `<svg class="ob-line" viewBox="0 0 320 120" aria-hidden="true"><path class="base" d="M10 90 C 80 90, 90 30, 160 30 S 240 90, 310 90" /><path d="M10 90 C 80 90, 90 30, 160 30 S 240 90, 310 90" /><circle cx="10" cy="90" r="9"/><circle cx="160" cy="30" r="9"/><circle cx="310" cy="90" r="12" class="end"/></svg>
+      w.innerHTML = `<figure class="ob-hero">${App.photo("welcome")}<figcaption>MÉTROPOLITAIN · PORTE DAUPHINE</figcaption></figure>
         <p class="eyebrow">PARIS · EN FAMILLE</p><h1 class="fr hello">Bonjour&nbsp;!</h1>
         <p class="lede">家族でパリへ。フランス語ゼロから、旅で困らないところまで。1 日 5 分、駅をひとつずつ進みます。</p>`;
       if (others.length) {

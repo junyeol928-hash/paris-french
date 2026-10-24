@@ -55,7 +55,7 @@
     const prev = st[s.idx - 1], next = st[s.idx + 1];
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
-    box.innerHTML = `<div class="train" aria-hidden="true"><svg viewBox="0 0 320 112">
+    box.innerHTML = `<div class="arr-scene">${App.photo(s.id, "arr-photo")}<div class="train" aria-hidden="true"><svg viewBox="0 0 320 112">
           <rect class="tr-in" x="96" y="22" width="44" height="64" rx="4"/><rect class="tr-in" x="196" y="22" width="44" height="64" rx="4"/>
           <path class="tr-body" fill-rule="evenodd" d="M30 12h250a30 30 0 0 1 30 30v40a12 12 0 0 1-12 12H22a12 12 0 0 1-12-12V32a20 20 0 0 1 20-20zM98 24v60h40V24zM198 24v60h40V24z"/>
           <rect class="tr-win" x="26" y="26" width="56" height="26" rx="6"/><rect class="tr-win" x="152" y="26" width="32" height="26" rx="6"/><rect class="tr-win" x="254" y="26" width="38" height="26" rx="10"/>
@@ -66,7 +66,7 @@
           <circle class="tr-lamp" cx="296" cy="74" r="5"/>
           <circle class="tr-wh" cx="64" cy="98" r="9"/><circle class="tr-wh" cx="100" cy="98" r="9"/><circle class="tr-wh" cx="226" cy="98" r="9"/><circle class="tr-wh" cx="262" cy="98" r="9"/>
           <rect class="tr-rail" x="0" y="106" width="320" height="4" rx="2"/>
-        </svg></div>
+        </svg></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
         <span class="ride-st prev"><i></i><small>${esc(prev ? prev.fr : "DÉPART")}</small></span>
         <span class="ride-st cur"><i></i><small>${esc(s.fr)}</small></span>
