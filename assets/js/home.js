@@ -95,10 +95,10 @@
       const p = Course.stationProgress(cur);
       const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? { fr: DATA.dialogs.find((d) => d.id === next.dlg).lines[0].fr } : null;
       const nn = String(cur.num).padStart(2, "0"), all = String(stations.length - 1).padStart(2, "0");
-      hero.innerHTML = `<figure class="aff-art">${App.photo(cur.id)}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
+      hero.innerHTML = `<figure class="aff-art">${App.photo(App.lessonArt(next.id))}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
         <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
-        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(cur.id)}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
-        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}
+        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(next.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
+        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p><p class="aff-qja">${esc(sample.ja)}</p>` : ""}
         <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + "全" + cur.lessons.length + "のうち" + i + "つ目"} · 約${minutes(next)}分</p>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
       hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">${Course.isDone(cur.lessons[0].id) || i > 1 ? "Continuer" : "Commencer"}</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
@@ -128,65 +128,36 @@
     ticket.appendChild(legs);
     colA.appendChild(ticket);
 
-    /* 家族の路線: 1 人 1 本。それぞれの駅から進み、終点 PARIS で合流する（順位ではなく、同じ旅に向かっている図） */
-    colB.appendChild(famLines(me, curIdx, stations));
-
-    /* 路線図 */
-    const map = el("section", "linemap");
-    map.innerHTML = `<div class="lm-hd"><h2>わたしの路線</h2><span class="muted">${Object.keys(Store.LS.get("stamps", {})).length} / ${stations.length - 1} 駅 修了</span></div>`;
-    const fam = familyAt();
-    const ol = el("ol", "stations");
-    const doneTo = (curIdx / (stations.length - 1)) * 100;
-    const from = App._doneShown == null ? doneTo : App._doneShown;
-    ol.style.setProperty("--done", from + "%");
-    if (from !== doneTo) requestAnimationFrame(() => requestAnimationFrame(() => { ol.style.setProperty("--done", doneTo + "%"); ol.classList.add("grow"); }));
-    App._doneShown = doneTo;
-    stations.forEach((s, i) => {
-      const state = s.terminus ? (curIdx >= i ? "done" : "todo") : Course.stationDone(s) ? "done" : i === curIdx ? "now" : "todo";
-      const li = el("li", "st " + state + (s.terminus ? " terminus" : ""));
-      const here = fam.filter((f) => f.idx === i);
-      const sub = s.terminus && Store.trip() ? Store.trip().start.slice(5).replace("-", "/") + " 到着" : s.ja;
-      const label = `${s.ja}（${s.fr}）。${state === "done" ? "修了" : state === "now" ? "いまの駅" : "これから"}${here.length ? "。" + here.map((f) => f.name).join("、") + "がここ" : ""}`;
-      const whoHtml = `<span class="who" aria-hidden="true">${i === curIdx ? `<span class="av sm me">${esc(ini(me.name))}</span>` : ""}${here.map((f) => `<span class="av sm" style="${App.avStyle(f.c)}">${esc(ini(f.name))}</span>`).join("")}</span>`;
-      const inner = `<i class="dot" aria-hidden="true"></i>${whoHtml}<span class="st-t"><b>${s.terminus ? "PARIS" : esc(s.ja)}</b><small><span class="fr-s">${s.terminus ? esc(sub) : esc(s.fr)}</span>${state === "done" && !s.terminus ? " · 修了" : state === "now" ? " · いまここ" : ""}</small></span>`;
-      if (s.terminus) { li.innerHTML = inner; li.setAttribute("aria-label", label); }
-      else li.appendChild(button("st-btn", inner, () => stationSheet(s), label));
-      ol.appendChild(li);
-    });
-    map.appendChild(ol);
-    if (!fam.length) map.appendChild(el("p", "hint", `家族を招待すると、この路線図に家族の現在地が出ます。<a href="#" data-go="family">家族のページへ</a>`));
-    colB.appendChild(map);
+    /* わたしの路線: 絵地図に、駅の印・駅名・自分と家族の現在地を重ねる */
+    colB.appendChild(journeyMap(me, curIdx, stations));
   }
 
-  function famLines(me, curIdx, stations) {
-    const last = stations.length - 1;
-    const people = [{ id: me.id, name: me.name, c: Store.lineOf(me.color).c, idx: curIdx, me: true }].concat(familyAt()).slice(0, 5);
-    const n = people.length, gap = 52, top = 40;
-    const yMid = top + ((n - 1) * gap) / 2, H = top + (n - 1) * gap + 34;
-    const X0 = 16, XB = 222, XE = 318;
-    const xOf = (idx) => X0 + (Math.min(idx, last - 1) / (last - 1)) * (XB - X0);
-    const sec = el("section", "famlines");
-    const done = people.filter((f) => f.idx >= last).length;
-    sec.innerHTML = `<div class="lm-hd"><h2>家族の路線</h2><span class="muted">${n > 1 ? "終点 PARIS で合流" : "1 人で出発"}</span></div>`;
-    let svg = `<svg viewBox="0 0 340 ${H}" role="img" aria-label="${people.map((f) => `${esc(f.name)}は ${esc(stations[Math.min(f.idx, last)].ja)}`).join("、")}">`;
-    people.forEach((f, i) => {
-      const y = top + i * gap;
-      const path = `M${X0} ${y} H${XB} C${XB + 44} ${y} ${XE - 44} ${yMid} ${XE} ${yMid}`;
-      const at = f.idx >= last;
-      const x = at ? XE : xOf(f.idx);
-      svg += `<path d="${path}" fill="none" stroke="${f.c}" stroke-opacity=".26" stroke-width="6" stroke-linecap="round"/>`;
-      svg += at ? `<path d="${path}" fill="none" stroke="${f.c}" stroke-width="6" stroke-linecap="round"/>` : `<path d="M${X0} ${y} H${x}" stroke="${f.c}" stroke-width="6" stroke-linecap="round"/>`;
-      svg += `<text class="fl-n" x="${X0}" y="${y - 19}">${esc(f.name)}<tspan class="fl-s" dx="8">${esc(stations[Math.min(f.idx, last)].ja)}</tspan></text>`;
-      if (!at) svg += `<g class="fl-av${f.me ? " me" : ""}"><circle cx="${x}" cy="${y}" r="${f.me ? 14 : 13}" fill="${f.c}"/><text x="${x}" y="${y + 4.2}" fill="${App.onColor(f.c)}">${esc(ini(f.name))}</text></g>`;
+  /* 絵地図の 14 の円の中心（map.webp 1024×1536 の px、tools の生成記録 map-centers.json より） */
+  const MAP_PTS = [[384, 80], [494, 170], [584, 270], [639, 386], [584, 499], [497, 604], [417, 711], [382, 825], [448, 932], [542, 1026], [610, 1132], [603, 1252], [508, 1350], [422, 1448]];
+  const MAP_X0 = 200, MAP_W = 620;   /* 道筋のまわりだけを切り取って見せる */
+  function journeyMap(me, curIdx, stations) {
+    const sec = el("section", "jmap");
+    const doneN = Object.keys(Store.LS.get("stamps", {})).length;
+    sec.innerHTML = `<div class="lm-hd"><h2>わたしの路線</h2><span class="muted">${stations.length - 1}駅のうち${doneN}駅</span></div>`;
+    const box = el("div", "jm-box");
+    box.innerHTML = `<img class="jm-map" src="assets/img/il/map.webp" alt="" width="1024" height="1536" decoding="async">`;
+    const fam = familyAt();
+    stations.forEach((s, i) => {
+      const [x, y] = MAP_PTS[i] || MAP_PTS[MAP_PTS.length - 1];
+      const L = ((x - MAP_X0) / MAP_W) * 100, T = (y / 1536) * 100;
+      const state = s.terminus ? (curIdx >= i ? "done" : "todo") : Course.stationDone(s) ? "done" : i === curIdx ? "now" : "todo";
+      const here = fam.filter((f) => f.idx === i);
+      const side = x > 540 ? "l" : "r";
+      const label = `${s.ja}（${s.fr}）。${state === "done" ? "修了" : state === "now" ? "いまの駅" : "これから"}${here.length ? "。" + here.map((f) => f.name).join("、") + "がここ" : ""}`;
+      const pt = el("div", `jm-pt ${state} ${side}`);
+      pt.style.left = L + "%"; pt.style.top = T + "%";
+      const inner = `${App.medal(s.id)}<span class="jm-lb"><b>${s.terminus ? "パリ到着" : esc(s.ja)}</b><i lang="fr">${esc(App.titleFr(s.fr))}</i>${state === "now" ? `<span class="jm-here">いまここ</span>` : ""}</span>${here.length ? `<span class="jm-fam">${here.map((f) => App.roundel(f.c)).join("")}</span>` : ""}`;
+      if (s.terminus) { pt.innerHTML = inner; pt.setAttribute("role", "img"); pt.setAttribute("aria-label", label); }
+      else pt.appendChild(button("jm-btn", inner, () => stationSheet(s), label));
+      box.appendChild(pt);
     });
-    svg += `<circle cx="${XE}" cy="${yMid}" r="12" class="fl-end"/><circle cx="${XE}" cy="${yMid}" r="5" class="fl-end-in"/>`;
-    svg += `<text class="fl-paris" x="${XE}" y="${yMid + 32}">PARIS</text></svg>`;
-    sec.insertAdjacentHTML("beforeend", svg);
-    if (done) sec.appendChild(el("p", "hint", `${people.filter((f) => f.idx >= last).map((f) => esc(f.name)).join("、")} は PARIS に着いています`));
-    if (n === 1) {
-      sec.appendChild(el("p", "hint", "家族を招待すると、ここに家族の路線が並び、終点 PARIS で合流します。"));
-      sec.appendChild(button("btn ghost small", icon("plus") + "<span>家族を招待する</span>", () => App.goTab("family")));
-    }
+    sec.appendChild(box);
+    if (!fam.length) sec.appendChild(el("p", "hint", `家族を招待すると、この地図に家族の現在地が出ます。<a href="#" data-go="family">家族のページへ</a>`));
     return sec;
   }
 
@@ -205,7 +176,7 @@
     const c = el("section", "news");
     c.setAttribute("role", "status");
     const first = news[0];
-    c.innerHTML = `<span class="av" style="${App.avStyle(familyAt().find((f) => f.id === first.id)?.c || "#888")}" aria-hidden="true">${esc(ini(first.name))}</span>
+    c.innerHTML = `${App.roundel(familyAt().find((f) => f.id === first.id)?.c || "", "news-rdl")}
       <p class="news-t"><b>${esc(first.name)}</b> さんが<wbr><b>${esc(first.st.ja)}</b>に<wbr>着きました${news.length > 1 ? `<wbr><span class="nw">（ほか ${news.length - 1} 人）</span>` : ""}</p>`;
     const me = Store.cur();
     const row = el("div", "news-act");
@@ -227,7 +198,7 @@
     const nowHm = new Date().toTimeString().slice(0, 5);
     const nextStop = d.stops.find(([tm]) => /^\d\d:\d\d$/.test(tm) && tm >= nowHm) || null;
     const c = el("section", "today card");
-    c.innerHTML = `<p class="eyebrow">旅行中 · À PARIS · JOUR ${i + 1}</p><h1>${esc(d.ja)}</h1><p class="muted">${date.slice(5).replace("-", "/")} · ${esc(d.fr)}</p>
+    c.innerHTML = `<p class="eyebrow">旅行中 · À Paris · Jour ${i + 1}</p><h1>${esc(d.ja)}</h1><p class="muted">${date.slice(5).replace("-", "/")} · ${esc(d.fr)}</p>
       ${nextStop ? `<div class="today-next"><span class="tl-t">${esc(nextStop[0])}</span><span><b>${esc(nextStop[1])}</b>${nextStop[2] ? `<small>${esc(nextStop[2])}</small>` : ""}</span></div>` : ""}`;
     const g = el("div", "today-act");
     g.appendChild(button("tool", icon("book") + "<span>表現</span>", () => App.goTab("book", d.id)));
@@ -244,7 +215,7 @@
     const st = tripState();
     const ch = $("hdMe");
     if (!me) return;
-    ch.innerHTML = `<span class="av" style="--c:var(--line);--oc:var(--on-line)">${esc(ini(me.name))}</span><span class="nm">${esc(me.name)}</span>`;
+    ch.innerHTML = `${App.roundel(me.color, "hd-rdl")}<span class="nm">${esc(me.name)}</span>`;
     ch.setAttribute("aria-label", `${me.name}（使う人の切り替えと設定）`);
     const c = $("hdCount");
     c.innerHTML = !st ? "" : st.kind === "before" ? `<small>出発まで</small><b><i lang="fr">J</i><i class="mn">−</i>${st.n}</b>` : st.kind === "during" ? `<small>パリ</small><b><i lang="fr">Jour </i>${st.n}</b>` : `<small>おかえり</small><b>${icon("check")}</b>`;

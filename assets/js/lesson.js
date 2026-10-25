@@ -15,7 +15,7 @@
     const dots = [];
     const at = (f) => `calc(14px + (100% - 14px) * ${f})`;
     if (total <= 16) for (let k = 1; k <= total; k++) { const d = el("b", k === mark || k === total ? "big" : ""); d.style.left = at(k / total); d.dataset.k = k; rail.appendChild(d); dots.push(d); }
-    const me = el("span", "lr-me", esc(App.ini ? App.ini(Store.cur().name) : "")); rail.appendChild(me);
+    const me = el("span", "lr-me", esc(Store.lineOf(Store.cur().color).line)); rail.appendChild(me);
     if (mark) {
       rail.classList.add("staged");
       const c1 = el("small", "lr-cap", "聞く"); c1.style.left = "14px"; rail.appendChild(c1);
@@ -33,9 +33,9 @@
     return set;
   }
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
-  function stband(s, label) {
+  function stband(s, label, art) {
     const b = el("div", "stband");
-    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(s.id, "sb-art")}<b>N° ${String(s.num).padStart(2, "0")}</b><span>${esc(App.titleFr(s.fr))}</span>`; }
+    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(art || s.id, "sb-art")}<span class="sb-t"><b>${esc(s.ja)}</b><span>${esc(App.titleFr(s.fr))}</span></span>`; }
     else b.innerHTML = `<span>${esc(App.titleFr(label || s.fr))}</span>`;
     b.setAttribute("aria-hidden", "true");
     return b;
@@ -85,14 +85,14 @@
     const i = s.lessons.indexOf(l) + 1;
     const box = el("div", "arrive");
     const nn = String(s.num).padStart(2, "0"), all = String(st.length - 1).padStart(2, "0");
-    box.innerHTML = `<figure class="aff-art arr-art">${App.photo(s.id)}<figcaption class="aff-kick" lang="fr">Station ${nn} / ${all}</figcaption></figure>
+    box.innerHTML = `<figure class="aff-art arr-art">${App.photo(App.lessonArt(l.id))}</figure>
       <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
-      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(s.id)}</p></div><b class="aff-no" aria-hidden="true">${nn}<small>/${all}</small></b></div>
+      <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(l.id))}</p></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
-        <span class="ride-st prev"><i></i><small>${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</small></span>
-        <span class="ride-st cur"><i></i><small>${esc(App.titleFr(s.fr))}</small></span>
-        <span class="ride-st nxt"><i></i><small>${esc(next ? App.titleFr(next.fr) : "")}</small></span>
-        <span class="ride-me">${esc(App.ini ? App.ini(Store.cur().name) : "")}</span></div>
+        <span class="ride-st prev"><i></i><small>${esc(prev ? prev.ja : "出発")}<em lang="fr">${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</em></small></span>
+        <span class="ride-st cur"><i></i><small>${esc(s.ja)}<em lang="fr">${esc(App.titleFr(s.fr))}</em></small></span>
+        <span class="ride-st nxt"><i></i><small>${esc(next ? next.ja : "")}<em lang="fr">${esc(next ? App.titleFr(next.fr) : "")}</em></small></span>
+        <span class="ride-me">${esc(Store.lineOf(Store.cur().color).line)}</span></div>
       <p class="eyebrow">${s.num} 番目の駅 · ${l.kind === "dlg" ? "会話の練習" : l.kind === "rules" ? "読み方のきまり" : "レッスン " + i + " / " + s.lessons.length}</p>
       <p class="lede">${esc(sub)}</p>`;
     body.appendChild(box);
@@ -125,7 +125,7 @@
       save2({ phase: "learn", i }); setP(i + 1);
       const p = items[i];
       body.innerHTML = "";
-      body.appendChild(stband(s));   /* 駅の絵の帯は進み具合のすぐ下に固定。中央に寄せるのは帯より下の中身だけ */
+      body.appendChild(stband(s, null, App.lessonArt(l.id)));   /* 駅の絵の帯は進み具合のすぐ下に固定。中央に寄せるのは帯より下の中身だけ */
       const card = el("div", "lcard");
       card.insertAdjacentHTML("beforeend", `<p class="eyebrow">${i + 1} / ${items.length} · 聞いて、まねする</p>`);
       const fr = el("p", "l-fr fr", esc(p.fr)); fr.setAttribute("data-head", "");
@@ -157,7 +157,7 @@
       setP(retry ? items.length + quiz.length * ((qi + 1) / list.length) : items.length + qi + 1);
       const q = list[qi];
       body.innerHTML = "";
-      body.appendChild(stband(s));
+      body.appendChild(stband(s, null, App.lessonArt(l.id)));
       const box = el("div", "quiz");
       const head = el("p", "eyebrow q-head", retry ? "もう一度 · " + (q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする")
         : q.type === "hear" ? "聞いて、意味を選ぶ" : q.type === "meaning" ? "フランス語で言うと？" : "単語を並べて文にする");
@@ -213,7 +213,7 @@
       const r = Course.completeLesson(l.id, results);
       const missed = items.filter((p) => results[p.id] === false);
       const ok = items.length - missed.length;
-      result(body, s, l, r, ok === items.length ? `確認問題は全問正解でした。この ${items.length} つは、明日から復習カードに出てきます。` : `確認問題 ${items.length} 問のうち ${ok} 問が 1 回目で正解。間違えた表現は「苦手な表現」に入り、復習カードでも早めにもう一度出てきます。`, close, opts, missed);
+      result(body, s, l, r, ok === items.length ? `1 回目で全問正解（${ok} / ${items.length}）。明日から復習カードに出ます。` : `1 回目で正解 ${ok} / ${items.length}。間違えた ${items.length - ok} 問は復習に入れました。`, close, opts, missed);
     }
   }
 
@@ -274,7 +274,7 @@
   /* 話してみる（音声認識が使える端末だけ）。通信が無いときは使えない旨を先に出す */
   function speakBox(text) {
     const box = el("div", "speakbox");
-    const out = el("p", "speak-out", "マイクを押して、まねして言ってみよう");
+    const out = el("p", "speak-out", "マイクを押して、まねして言ってみよう（聞くだけでも次へ進めます）");
     out.setAttribute("aria-live", "polite");
     const gate = el("span", "gate", '<i class="g l"></i><i class="post"></i><i class="g r"></i>'); gate.setAttribute("aria-hidden", "true"); gate.hidden = true;
     const mic = button("micbtn", icon("mic"), () => {
@@ -373,7 +373,7 @@
     const later = (fn, ms) => { clearTimeout(timer); const my = ++gen; timer = setTimeout(() => { if (my === gen && root.isConnected) fn(); }, ms); };
     const cancel = () => { clearTimeout(timer); gen++; };
     root.closest(".stage").addEventListener("stage-closed", cancel);
-    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.insertAdjacentHTML("beforeend", `<figure class="wall-poster">${App.photo(s.id)}<figcaption>${esc(s.fr)} · ${esc(d.ja)}</figcaption></figure>`); body.appendChild(chat); line(0); });
+    arrival(body, s, l, `${d.ja} · 店員さんの言葉を聞いて、自分の番は 2 つから選んで声に出す`, () => { body.innerHTML = ""; body.insertAdjacentHTML("beforeend", `<figure class="wall-poster">${App.photo(s.id)}<figcaption><i lang="fr">${esc(App.titleFr(s.fr))}</i> · ${esc(d.ja)}</figcaption></figure>`); body.appendChild(chat); line(0); });
     const chat = el("div", "chat"); chat.setAttribute("aria-live", "polite"); chat.setAttribute("aria-label", "会話");
     let foot = null;
     function bubble(who, fr, ja, n) {
@@ -441,7 +441,9 @@
     const p = Course.stationProgress(s);
     const perfect = !missed || !missed.length;
     const cheer = r.stamped ? "Félicitations !" : perfect ? "Parfait !" : "Bien joué !";
-    box.innerHTML = `<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>`;
+    const art = App.lessonArt(l.id), ap = (DATA.photos || {})[art];
+    const got = ap ? `<figure class="got"><img src="${ap.src}" alt="" decoding="async" style="object-position:${ap.pos}"><figcaption><small>わたしの美術館に加わりました</small><span class="aff-cr" lang="fr">${App.creditHtml(art)}</span></figcaption></figure>` : "";
+    box.innerHTML = `<p class="cheer fr">${cheer}</p>${r.stamped ? "" : `<p class="eyebrow">レッスン終了</p>`}<h1 data-head>${r.stamped ? esc(s.ja) + "の駅、修了です" : perfect ? "全部わかりました" : "よくがんばりました"}</h1><p class="lede">${esc(msg)}</p>${got}`;
     const seg = el("div", "segs"); seg.setAttribute("role", "img"); seg.setAttribute("aria-label", `この駅 ${p.d} / ${p.n}`);
     for (let i = 0; i < p.n; i++) seg.appendChild(el("i", i < p.d ? "on" : ""));
     box.appendChild(seg);
@@ -483,7 +485,7 @@
       const body = el("div", "stage-body"); root.appendChild(body);
       const box0 = el("div", "arrive"); box0.innerHTML = `<div class="sign big"><span>${kind === "rehearse" ? "RÉPÉTITION" : "RÉVISION"}</span></div><p class="eyebrow">${esc(sub)}</p><h1 data-head>${esc(title)}</h1><p class="lede">${items.length} 問 · 約 ${Math.max(2, Math.round(items.length * 0.5))} 分${kind === "rehearse" ? " · その日に出会う順番で" : ""}</p>`;
       const scenes = [...new Set(items.map((p) => p.s))].slice(0, 4);
-      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.photo(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
+      box0.insertAdjacentHTML("beforeend", `<div class="mini-posters" aria-hidden="true">${scenes.map((sc) => `<figure>${App.medal(App.SCENE_PHOTO[sc] || "bonjour")}<figcaption>${esc((App.scene(sc) || {}).ja || "")}</figcaption></figure>`).join("")}</div>`);
       body.appendChild(box0);
       footer(body).appendChild(button("btn big wide", "<span>はじめる</span><small class=\"btn-fr\" lang=\"fr\" aria-hidden=\"true\">Commencer</small>" + icon("arrow"), () => ask(0)));
       const results = {};
@@ -544,7 +546,7 @@
       const body = el("div", "stage-body"); root.appendChild(body);
       const intro = el("div", "arrive");
       intro.innerHTML = `<div class="sign big"><span>EN FAMILLE</span></div><p class="eyebrow">家族で会話</p><h1 data-head>${esc(d.ja)}</h1><p class="lede">2 人で 1 台のスマホを渡し合います。<b>店員役</b>は画面のフランス語を声に出して読み、<b>お客役</b>はそれを聞いて答えを選び、声に出して返します。</p>
-        ${(() => { const st = Course.stations().find((x) => x.lessons.some((l) => l.dlg === id)); return st ? `<figure class="wall-poster">${App.photo(st.id)}<figcaption>${esc(st.fr)} · ${esc(d.ja)}</figcaption></figure>` : ""; })()}
+        ${(() => { const st = Course.stations().find((x) => x.lessons.some((l) => l.dlg === id)); return st ? `<figure class="wall-poster">${App.photo(st.id)}<figcaption><i lang="fr">${esc(App.titleFr(st.fr))}</i> · ${esc(d.ja)}</figcaption></figure>` : ""; })()}
         <div class="duo-roles"><span class="role s">${icon("chat")}<b>店員役</b><small>読む人</small></span><span class="role c">${icon("family")}<b>お客役</b><small>答える人</small></span></div>`;
       body.appendChild(intro);
       footer(body).appendChild(button("btn big wide", "<span>店員役の人から始める</span>" + icon("arrow"), () => step(0)));

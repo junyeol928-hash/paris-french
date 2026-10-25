@@ -6,7 +6,7 @@
   function render(arg) {
     const root = $("v-practice");
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<p class="eyebrow">PRATIQUE</p><h1>練習</h1>`));
+    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-practice.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Pratique</p><h1>練習</h1>`));
     const plan = Course.reviewPlan();
     const done = LS.get("done", {});
     const lsOk = DATA.listen.filter((x) => done[x.id] > 0).length;
@@ -20,7 +20,7 @@
       { k: "rules", ic: "abc", t: "読み方のきまり", s: `${DATA.pron.length} のきまりと例`, go: () => rulesList() },
     ];
     /* 乗り換え案内の行き先のように、それぞれのフランス語の名前 */
-    const DEST = { review: "RÉVISION", listen: "ÉCOUTE", nums: "NOMBRES", weak: "ENCORE", talk: "DIALOGUE", rules: "LIRE" };
+    const DEST = { review: "Révision", listen: "Écoute", nums: "Nombres", weak: "Encore", talk: "Dialogue", rules: "Lire" };
     const LINE_C = { listen: "#1F5FAF", nums: "#E5A800", weak: "#D9701C", talk: "#3F9160", rules: "#9B2F8F" };
     const grid = el("div", "pgrid");
     for (const t of tiles) {
@@ -55,7 +55,7 @@
       const next = () => {
         if (!queue.length) {
           body.innerHTML = "";
-          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow">RÉVISION</p><h1>復習おわり</h1><p class="lede">${n} 枚めくりました。${again ? "忘れた " + again + " 枚は、また近いうちに出てきます。" : "全部覚えていました。"}</p>`;
+          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow fr-lbl" lang="fr">Révision</p><h1>復習おわり</h1><p class="lede">${n} 枚めくりました。${again ? "忘れた " + again + " 枚は、また近いうちに出てきます。" : "全部覚えていました。"}</p>`;
           body.appendChild(r); sfx.chime();
           body.appendChild(el("div", "stage-foot")).appendChild(button("btn big wide", "<span>閉じる</span>", () => close()));
           return;
@@ -64,9 +64,9 @@
         if (!p) return next();
         cnt.textContent = `残り ${queue.length + 1} 枚`;
         body.innerHTML = "";
-        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || "")} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
+        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(App.titleFr(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || ""))} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
         const card = el("div", "ticketcard");
-        card.innerHTML = `<div class="tc-hd"><span>RÉVISION · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
+        card.innerHTML = `<div class="tc-hd"><span>Révision · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
         if (mode === "s") { front.innerHTML = `<p class="hint">フランス語で言うと？</p><p class="tc-ja" data-head tabindex="-1">${esc(p.ja)}</p>`; }
         else { front.innerHTML = `<p class="hint" data-head tabindex="-1">聞いて、意味を思い浮かべる</p>`; front.appendChild(button("hearbtn", icon("say"), () => TTS.speak(p.fr), "もう一度聞く")); TTS.speak(p.fr); }
@@ -138,7 +138,7 @@
         fill.style.width = (i / qs.length) * 100 + "%";
         if (i >= qs.length) {
           body.innerHTML = "";
-          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow">ÉCOUTE</p><h1>${ok} / ${qs.length} 問 正解</h1><p class="lede">${ok === qs.length ? "全問正解。次は別の場面も。" : mode === "nums" ? "70〜99 は「60＋10」「4×20」で数えます。ゆっくり再生で耳を慣らしましょう。" : "間違えた問題は「間違えた問題」にまとまります。"}</p>`;
+          const r = el("div", "result"); r.innerHTML = `<p class="eyebrow fr-lbl" lang="fr">Écoute</p><h1>${ok} / ${qs.length} 問 正解</h1><p class="lede">${ok === qs.length ? "全問正解。次は別の場面も。" : mode === "nums" ? "70〜99 は「60＋10」「4×20」で数えます。ゆっくり再生で耳を慣らしましょう。" : "間違えた問題は「間違えた問題」にまとまります。"}</p>`;
           body.appendChild(r); sfx.chime();
           const f = el("div", "stage-foot"); f.appendChild(button("btn big wide", "<span>もう 10 問</span>", () => listenRun(mode, pick, o))); f.appendChild(button("btn ghost wide", "<span>閉じる</span>", () => close())); body.appendChild(f);
           return;

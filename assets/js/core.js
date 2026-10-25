@@ -412,9 +412,23 @@ window.DATA = window.DATA || {};
   /* 駅名標の大文字（AÉROPORT）をポスターの題の形（Aéroport）にする */
   const titleFr = (s) => { const l = String(s).toLocaleLowerCase("fr"); return l.charAt(0).toLocaleUpperCase("fr") + l.slice(1); };
 
+  /* 駅の印: 絵地図と同じ銅版画と水彩の円い挿絵（assets/img/il/m-<駅>.webp）。飾りなので alt は空 */
+  const medal = (id, cls) => `<span class="medal${cls ? " " + cls : ""}"><img src="assets/img/il/m-${id}.webp" alt="" width="480" height="480" decoding="async"></span>`;
+  /* レッスンごとの名画。駅の 1 つ目のレッスンは駅の絵、2 つ目からは別の絵（なければ駅の絵） */
+  const LESSON_ART = {
+    "bonjour-2": "a01", "lire-2": "a05", "lire-3": "a07", "comprendre-2": "a06", "aeroport-2": "a08",
+    "taxi-2": "a04", "taxi-dlg": "a10", "hotel-2": "a11", "hotel-3": "a02", "hotel-dlg": "a22",
+    "cafe-2": "a20", "cafe-3": "a27", "cafe-dlg": "a03", "metro-2": "a24", "metro-dlg": "a23",
+    "musee-2": "a28", "musee-dlg": "a17", "resto-2": "a13", "resto-3": "a26", "resto-dlg": "a25",
+    "carte-2": "a16", "carte-3": "a18", "carte-4": "a19", "boutique-2": "a14", "urgence-2": "a15", "urgence-dlg": "welcome",
+  };
+  const lessonArt = (lid) => LESSON_ART[lid] || String(lid).split("-")[0];
+  /* 人の印: その人のメトロの路線番号の丸（色の丸に数字）。頭文字の丸の代わり */
+  const roundel = (color, cls) => { const l = Store.LINES.find((x) => x.id === color || x.c === color) || Store.LINES[0]; return `<span class="rdl${cls ? " " + cls : ""}" style="background:${l.c};color:${l.id === "jaune" ? "#2B2824" : "#fff"}" aria-hidden="true">${l.line}</span>`; };
+
   /* 場面（phrases の s）→ その場面の駅の写真 id */
   const SCENE_PHOTO = { base: "bonjour", air: "aeroport", taxi: "taxi", hotel: "hotel", cafe: "cafe", resto: "resto", menu: "carte", metro: "metro", visite: "musee", shop: "boutique", urgence: "urgence" };
 
-  window.App = { el, esc, photo, credit, creditHtml, titleFr, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
+  window.App = { el, esc, photo, credit, creditHtml, titleFr, medal, lessonArt, roundel, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
     onTab, goTab, currentTab, initTabs, sheet, stage, show };
 })();

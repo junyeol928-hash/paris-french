@@ -22,7 +22,7 @@
     const view = arg || defaultView();
     LS.set("bkView", view);
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<p class="eyebrow">CARNET DE VOYAGE</p><h1>旅のしおり</h1>`));
+    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-carnet.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Carnet de voyage</p><h1>旅のしおり</h1>`));
     const nav = el("div", "daynav"); nav.setAttribute("role", "tablist"); nav.setAttribute("aria-label", "しおりのページ");
     DATA.days.forEach((d, i) => {
       const dt = dayDate(i);
@@ -34,7 +34,7 @@
     root.appendChild(nav);
     const more = el("div", "chips bk-more");
     [["sos", "困ったとき", "sos"], ["fav", "保存した表現", "star"], ["addr", "住所カード", "pin"]].forEach(([id, t, ic]) => {
-      const b = button("chip" + (id === "sos" ? " sos" : ""), icon(ic) + `<span>${t}</span>`, () => render(id));
+      const b = button("chip" + (id === "sos" ? " sos" : ""), `<span>${t}</span>`, () => render(id));
       b.setAttribute("aria-pressed", view === id ? "true" : "false"); more.appendChild(b);
     });
     root.appendChild(more);
@@ -52,6 +52,8 @@
     const dt = dayDate(i);
     body.appendChild(el("div", "bk-hd", `<p class="bk-fr fr">${esc(d.fr)}</p><h2>${dt ? `${dt.m}/${dt.d}（${dt.wd}）` : ""}${esc(d.ja)}</h2>`));
     if (!Store.trip()) body.appendChild(el("p", "hint", `旅の初日を入れると、日付つきで表示されます。<a href="#" data-go="family">設定へ</a>`));
+    /* 旅程の上にも練習の入口（その日の旅で使う表現だけで予行演習） */
+    body.appendChild(button("btn ghost wide bk-go", "<span>この日の旅を練習する</span>", () => Lesson.drill(d.ph, `${dt ? dt.m + "/" + dt.d + " " : ""}${d.ja}`, "旅の予行演習", null, "rehearse")));
     const ol = el("ol", "tl");
     for (const [t, place, note] of d.stops) ol.appendChild(el("li", null, `<span class="tl-t">${esc(t)}</span><span class="tl-p">${esc(place)}${note ? `<small>${esc(note)}</small>` : ""}</span>`));
     body.appendChild(ol);
