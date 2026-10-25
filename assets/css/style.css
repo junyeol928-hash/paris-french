@@ -1845,3 +1845,11 @@ html[data-size="lg"] .aff-q{display:block}
 html[data-size="lg"] .aff-cartel .aff-cr{font-size:.6875rem}
 /* デスクトップ: ポスターの絵に枠の線を付けない */
 @media (min-width:900px){.aff-art,.aff-art .photo{box-shadow:none}}
+/* デスクトップのポスターは角も付けない、修了の絵の下に固定ボタンのぼかし分の余白 */
+@media (min-width:900px){.aff-art{border-radius:0}}
+.got{margin-bottom:14px}
+/* ホームの学ぶ文に日本語の意味を添える（何が言えるようになるかを先に） */
+.aff-qja{margin:2px 0 0;font-size:.875rem;color:var(--ink-2)}
+html[data-size="lg"] .aff-q + .aff-qja{display:block}
+/* 一覧の「場面一覧に戻る」は操作と分かる下線の文字 */
+.listhd .up{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;letter-spacing:.02em}

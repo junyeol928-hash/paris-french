@@ -36,7 +36,7 @@
       if (q) { items = DATA.phrases.filter((p) => norm(p.fr + " " + p.ja + " " + p.kana + " " + (p.n || "")).includes(q)); title = `<h2>「${esc($("phQ").value.trim())}」<small>${items.length} 件</small></h2>`; }
       else { const s = App.scene(cur); items = DATA.phrases.filter((p) => p.s === cur); title = `${App.medal(SCENE_ST[cur], "lh-medal")}<h2><span class="fr">${esc(s.fr)}</span><small>${esc(s.ja)}</small></h2>`; }
       $("phHead").innerHTML = "";
-      if (!q) { const up = button("btn ghost small up", icon("back") + "<span>場面一覧</span>", () => { $("phSigns").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); }); $("phHead").appendChild(up); }
+      if (!q) { const up = button("btn ghost small up", icon("back") + "<span>場面一覧に戻る</span>", () => { $("phSigns").scrollIntoView({ block: "start", behavior: App.reduced() ? "auto" : "smooth" }); }); $("phHead").appendChild(up); }
       $("phHead").insertAdjacentHTML("beforeend", title);
       const list = $("phList"); list.innerHTML = "";
       if (!items.length) { list.appendChild(el("li", "empty", "見つかりませんでした。日本語でもフランス語でも探せます（例: 水、eau）")); return; }

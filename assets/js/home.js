@@ -98,7 +98,7 @@
       hero.innerHTML = `<figure class="aff-art">${App.photo(App.lessonArt(next.id))}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
         <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
         <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(next.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
-        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p>` : ""}
+        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p><p class="aff-qja">${esc(sample.ja)}</p>` : ""}
         <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + "全" + cur.lessons.length + "のうち" + i + "つ目"} · 約${minutes(next)}分</p>
         <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
       hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">${Course.isDone(cur.lessons[0].id) || i > 1 ? "Continuer" : "Commencer"}</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));

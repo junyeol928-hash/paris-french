@@ -213,7 +213,7 @@
       const r = Course.completeLesson(l.id, results);
       const missed = items.filter((p) => results[p.id] === false);
       const ok = items.length - missed.length;
-      result(body, s, l, r, ok === items.length ? `確認問題は全問正解でした。この ${items.length} つは、明日から復習カードに出てきます。` : `確認問題 ${items.length} 問のうち ${ok} 問が 1 回目で正解。間違えた表現は「苦手な表現」に入り、復習カードでも早めにもう一度出てきます。`, close, opts, missed);
+      result(body, s, l, r, ok === items.length ? `1 回目で全問正解（${ok} / ${items.length}）。明日から復習カードに出ます。` : `1 回目で正解 ${ok} / ${items.length}。間違えた ${items.length - ok} 問は復習に入れました。`, close, opts, missed);
     }
   }
 
