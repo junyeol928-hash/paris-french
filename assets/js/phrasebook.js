@@ -15,9 +15,9 @@
     let cur = LS.get("phScene", "base");
     if (!App.scene(cur)) cur = "base";
     if (!root.firstChild) {
-      root.innerHTML = `<header class="vh"><figure class="vign" aria-hidden="true"><img src="assets/img/il/v-phrases.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Phrases · ${DATA.phrases.length}</p><h1>場面別フレーズ</h1></header>
-        <div class="search"><label class="sr" for="phQ">フレーズを探す</label>${icon("search")}<input id="phQ" type="search" placeholder="探す（水、トイレ、merci）" autocomplete="off" enterkeyhint="search"></div>
+      root.innerHTML = `<div class="search"><label class="sr" for="phQ">フレーズを探す</label>${icon("search")}<input id="phQ" type="search" placeholder="探す（水、トイレ、merci）" autocomplete="off" enterkeyhint="search"></div>
         <ul class="signs" id="phSigns" aria-label="場面"></ul><div class="listhd" id="phHead"></div><ul class="phl" id="phList"></ul>`;
+      root.prepend(App.wall({ art: "cafe", title: "Phrases", ja: "場面別フレーズ", kick: `<span>${DATA.scenes.length} の場面</span><span>${DATA.phrases.length} の表現</span>` }));
       $("phQ").addEventListener("input", () => draw());
     }
     draw();

@@ -6,8 +6,8 @@
   function render(arg) {
     const root = $("v-practice");
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-practice.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Pratique</p><h1>練習</h1>`));
     const plan = Course.reviewPlan();
+    root.appendChild(App.wall({ art: "lire", title: "Pratique", ja: "練習", kick: `<span>${plan.dueTotal ? `今日の復習 ${plan.dueTotal}枚` : "毎日すこしずつ"}</span>` }));
     const done = LS.get("done", {});
     const lsOk = DATA.listen.filter((x) => done[x.id] > 0).length;
     const dlg = LS.get("dlg", {});
@@ -50,7 +50,8 @@
     stage((root, close) => {
       root.classList.add("lesson");
       const bar = el("div", "stage-bar"); bar.appendChild(button("icon-btn", icon("close"), () => close(), "やめる"));
-      const cnt = el("span", "bar-t"); bar.appendChild(cnt); root.appendChild(bar);
+      const cnt = el("span", "bar-t"); bar.appendChild(cnt);
+      const top = el("div", "stage-top"); top.append(bar, el("div", "st-art sm")); root.appendChild(top);
       const body = el("div", "stage-body"); root.appendChild(body);
       const next = () => {
         if (!queue.length) {
@@ -64,7 +65,9 @@
         if (!p) return next();
         cnt.textContent = `残り ${queue.length + 1} 枚`;
         body.innerHTML = "";
-        body.insertAdjacentHTML("beforeend", `<figure class="wall-poster sm">${App.photo(SCENE_PHOTO[p.s] || "bonjour")}<figcaption>${esc(App.titleFr(((Course.station(SCENE_PHOTO[p.s]) || {}).fr) || ""))} · ${esc((App.scene(p.s) || {}).ja || "")}</figcaption></figure>`);
+        /* その表現の場面の絵を、上の壁に掛ける */
+        const pid = SCENE_PHOTO[p.s] || "bonjour", ph = DATA.photos[pid];
+        root.querySelector(".st-art").innerHTML = ph ? `<figure class="stband art" aria-hidden="true"><img src="${ph.src}" alt="" width="${ph.w}" height="${ph.h}" decoding="async"><figcaption class="cap" lang="fr">${App.creditHtml(pid)}</figcaption></figure>` : "";
         const card = el("div", "ticketcard");
         card.innerHTML = `<div class="tc-hd"><span>Révision · ${mode === "s" ? "言う" : "聞く"}</span></div>`;
         const front = el("div", "tc-front");
@@ -132,10 +135,12 @@
     stage((root, close) => {
       root.classList.add("lesson");
       const bar = el("div", "stage-bar"); bar.appendChild(button("icon-btn", icon("close"), () => close(), "やめる"));
-      const rail = el("div", "lrail"); const fill = el("i"); rail.appendChild(fill); bar.appendChild(rail); root.appendChild(bar);
+      const rail = el("div", "lrail"); const fill = el("i"); rail.appendChild(fill); bar.appendChild(rail);
+      const cnt = el("span", "bar-t"); bar.appendChild(cnt);
+      const top = el("div", "stage-top"); top.append(bar, el("div", "st-art")); root.appendChild(top);
       const body = el("div", "stage-body"); root.appendChild(body);
       const ask = () => {
-        fill.style.width = (i / qs.length) * 100 + "%";
+        fill.style.width = (i / qs.length) * 100 + "%"; cnt.textContent = `${Math.min(i + 1, qs.length)}／${qs.length}`;
         if (i >= qs.length) {
           body.innerHTML = "";
           const r = el("div", "result"); r.innerHTML = `<p class="eyebrow fr-lbl" lang="fr">Écoute</p><h1>${ok} / ${qs.length} 問 正解</h1><p class="lede">${ok === qs.length ? "全問正解。次は別の場面も。" : mode === "nums" ? "70〜99 は「60＋10」「4×20」で数えます。ゆっくり再生で耳を慣らしましょう。" : "間違えた問題は「間違えた問題」にまとまります。"}</p>`;

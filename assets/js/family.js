@@ -30,31 +30,25 @@
   async function certificate(opts) {
     const me = Store.cur(); if (!me) return;
     try {
-      await Promise.all(["700 72px 'Zen Maru Gothic'", "700 30px 'Zen Maru Gothic'", "italic 500 56px Fraunces", "600 92px Jost", "500 20px Jost"].map((f) => document.fonts.load(f)));
+      await Promise.all(["700 72px 'Noto Sans JP'", "700 30px 'Noto Sans JP'", "500 150px 'Bodoni Moda'", "italic 500 56px 'Bodoni Moda'", "600 46px Jost", "500 20px Jost"].map((f) => document.fonts.load(f)));
       await document.fonts.ready;
     } catch (e) { /* 書体が読めなくても代わりの書体で描く */ }
     const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const g = cv.getContext("2d");
     const line = Store.lineOf(me.color).c;
-    const navy = "#1B2A5C", ink = "#14213D", paper = "#F4EFE4";
-    /* 地は画面のパスポートと同じ紙: 生成りに、路線色のごく薄い斜線 */
+    const ink = "#1A1916", paper = "#F4EFE4";
+    /* 地は生成りの紙。上に Bodoni の大きな « Paris » と、その人の路線番号の丸（画面の題と同じ組み） */
     g.fillStyle = paper; g.fillRect(0, 0, W, H);
-    g.save(); g.strokeStyle = line; g.globalAlpha = 0.07; g.lineWidth = 2;
-    for (let x = -H; x < W; x += 21) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x + H, H); g.stroke(); }
-    g.restore();
-    const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
-    /* 駅名標 PARIS */
-    g.fillStyle = navy; rr(80, 80, W - 160, 150, 18); g.fill();
-    g.strokeStyle = "#fff"; g.lineWidth = 5; rr(92, 92, W - 184, 126, 12); g.stroke();
-    g.fillStyle = "#fff"; g.font = "600 92px Jost, Futura, sans-serif"; g.textBaseline = "middle"; g.fillText("PARIS", 130, 158);
-    g.fillStyle = line; g.beginPath(); g.arc(W - 160, 155, 52, 0, Math.PI * 2); g.fill();
-    g.fillStyle = App.onColor(line); g.textAlign = "center";
-    g.font = "600 17px Jost, sans-serif"; g.fillText("LIGNE", W - 160, 130);
-    g.font = "600 46px Jost, sans-serif"; g.fillText(Store.lineOf(me.color).line, W - 160, 168); g.textAlign = "left";
+    g.fillStyle = ink; g.font = "500 150px 'Bodoni Moda', Didot, Georgia, serif"; g.textBaseline = "alphabetic"; g.fillText("Paris", 72, 210);
+    g.fillStyle = line; g.beginPath(); g.arc(W - 140, 160, 52, 0, Math.PI * 2); g.fill();
+    g.fillStyle = App.onColor(line); g.textAlign = "center"; g.textBaseline = "middle";
+    g.font = "600 17px Jost, sans-serif"; g.fillText("LIGNE", W - 140, 135);
+    g.font = "600 46px Jost, sans-serif"; g.fillText(Store.lineOf(me.color).line, W - 140, 173); g.textAlign = "left";
+    g.fillStyle = "rgba(26,25,22,.14)"; g.fillRect(80, 250, W - 160, 2);
     /* 名前と見出し */
-    g.fillStyle = ink; g.font = "italic 500 56px Fraunces, Georgia, serif"; g.fillText("Passeport de langue", 80, 310);
-    g.font = "700 72px 'Zen Maru Gothic', sans-serif"; g.fillText(me.name, 80, 400);
-    g.fillStyle = "#5D6680"; g.font = "700 34px 'Zen Maru Gothic', sans-serif";
+    g.fillStyle = ink; g.font = "italic 500 56px 'Bodoni Moda', Georgia, serif"; g.fillText("Passeport de langue", 80, 310);
+    g.font = "700 72px 'Noto Sans JP', sans-serif"; g.fillText(me.name, 80, 400);
+    g.fillStyle = "#66635B"; g.font = "700 34px 'Noto Sans JP', sans-serif";
     const t = Store.trip(); const stamps = LS.get("stamps", {});
     const sts = Course.stations().filter((s) => !s.terminus);
     g.fillText(`フランス語の路線 ${Object.keys(stamps).length} / ${sts.length} 駅${t ? " · パリ到着 " + t.start.replace(/-/g, "/") : ""}`, 80, 462);
@@ -98,17 +92,17 @@
       .concat(Object.values(Store.family()).map((c) => ({ n: c.n, c: Store.lineOf(c.c).c, l: Store.lineOf(c.c).line, k: (c.st || []).length })));
     const rows = Math.ceil(sts.length / cols);
     let fx = 80; const fy = Math.min(H - 150, y0 + (rows - 1) * (size + 18) + size + 100);   /* 見出しが最後の列のスタンプに重ならない位置 */
-    g.font = "700 30px 'Zen Maru Gothic', sans-serif"; g.textAlign = "left";
-    g.fillStyle = "#5D6680"; g.fillText("EN FAMILLE", fx, fy - 70);
+    g.font = "700 30px 'Noto Sans JP', sans-serif"; g.textAlign = "left";
+    g.fillStyle = "#66635B"; g.fillText("EN FAMILLE", fx, fy - 70);
     for (const f of fam.slice(0, 5)) {
       g.fillStyle = f.c; g.beginPath(); g.arc(fx + 30, fy, 30, 0, Math.PI * 2); g.fill();
-      g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Zen Maru Gothic', sans-serif"; g.fillText(String(f.l), fx + 30, fy + 2);
-      g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Zen Maru Gothic', sans-serif"; g.fillText(f.n, fx + 70, fy - 12);
+      g.fillStyle = App.onColor(f.c); g.textAlign = "center"; g.font = "700 26px 'Noto Sans JP', sans-serif"; g.fillText(String(f.l), fx + 30, fy + 2);
+      g.textAlign = "left"; g.fillStyle = ink; g.font = "700 28px 'Noto Sans JP', sans-serif"; g.fillText(f.n, fx + 70, fy - 12);
       const wN = g.measureText(f.n).width;
-      g.fillStyle = "#5D6680"; g.font = "600 22px Jost, 'Zen Maru Gothic', sans-serif"; g.fillText(`${f.k} / ${sts.length} 駅`, fx + 70, fy + 22);
+      g.fillStyle = "#66635B"; g.font = "600 22px Jost, 'Noto Sans JP', sans-serif"; g.fillText(`${f.k} / ${sts.length} 駅`, fx + 70, fy + 22);
       fx += 90 + Math.max(wN, g.measureText(`${f.k} / ${sts.length} 駅`).width);
     }
-    g.textAlign = "right"; g.fillStyle = line; g.font = "italic 500 64px Fraunces, Georgia, serif"; g.fillText("Bon voyage !", W - 80, H - 56);
+    g.textAlign = "right"; g.fillStyle = line; g.font = "italic 500 64px 'Bodoni Moda', Georgia, serif"; g.fillText("Bon voyage !", W - 80, H - 56);
     g.textAlign = "left";
     if (opts && opts.preview) return cv.toDataURL("image/png");   /* 確認用（画面写真のスクリプト） */
     const blob = await new Promise((r) => cv.toBlob(r, "image/png"));
@@ -132,12 +126,12 @@
     const root = $("v-family");
     const me = Store.cur(); if (!me) return;
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-family.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">En famille</p><h1>家族とパスポート</h1>`));
+    root.appendChild(App.wall({ art: "bonjour", title: "En famille", ja: "家族とパスポート", kick: `<span>${members().length}人の路線</span>` }));
 
     /* 家族だからできる練習: 1 台を渡し合って、店員とお客の役で会話する（家族の画面のいちばん上） */
     const duo = el("section", "duo-cta");
     duo.innerHTML = `<p class="eyebrow"><i class="fr-lbl" lang="fr">Ensemble</i> · 一緒に</p><h2>1 台を渡し合って、会話を練習</h2><p>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら声に出します。</p>`;
-    duo.appendChild(button("btn big board", icon("chat") + "<span>家族で会話を始める</span>", () => App.goTab("practice", "talk")));
+    duo.appendChild(button("btn big", icon("chat") + "<span>家族で会話を始める</span>", () => App.goTab("practice", "talk")));
     root.appendChild(duo);
 
     /* 家族の進み具合 */
