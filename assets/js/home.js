@@ -1,4 +1,4 @@
-/* ホーム「わたしの路線」: 次の駅のポスター（今日のレッスン）、今日の 3 つ、家族の路線（パリで合流）、路線図 */
+/* ホーム「わたしの路線」: 次の駅の名画の壁（今日のレッスン）、今日の一文、今日の 3 つ、路線（運行表・家族の現在地） */
 (function () {
   const { el, esc, button, icon, onTab, $ } = App;
 
@@ -40,7 +40,7 @@
     const done = Course.stationDone(s);
     const here = familyAt().filter((f) => f.idx === s.idx);
     App.sheet(s.ja, (b, close) => {
-      b.appendChild(el("div", "sign", `<span>${esc(s.fr)}</span><b class="roundel">${s.num}</b>`));
+      b.appendChild(el("div", "st-hd", `${App.medal(s.id, "st-medal")}<p><span class="ttl" lang="fr">${esc(App.titleFr(s.fr))}</span><small>${String(s.num).padStart(2, "0")} 番目の駅</small></p>`));
       const p = Course.stationProgress(s);
       b.appendChild(el("p", "muted", `${done ? "修了しました" : s.idx === curIdx ? "いまの駅" : s.idx < curIdx ? "通過済み" : "これからの駅"} · レッスン ${p.d} / ${p.n}${s.phraseIds.length ? " · 表現 " + s.phraseIds.length : ""}`));
       const days = tripDaysFor(s);
@@ -50,7 +50,7 @@
       }
       if (here.length) b.appendChild(el("p", "hint", here.map((f) => esc(f.name)).join("、") + " がこの駅にいます"));
       const next = s.lessons.find((l) => !Course.isDone(l.id));
-      if (next && s.idx <= curIdx) b.appendChild(button("btn big wide board", `<span>${Course.isDone(s.lessons[0].id) ? "続きから乗る" : "乗る"}</span>` + icon("arrow"), () => { close(); Lesson.start(next.id, { onClose: render }); }));
+      if (next && s.idx <= curIdx) b.appendChild(button("btn big wide", `<span>${Course.isDone(s.lessons[0].id) ? "続きから乗る" : "乗る"}</span>` + icon("arrow"), () => { close(); Lesson.start(next.id, { onClose: render }); }));
       if (done) {
         const list = el("div", "lesson-list");
         s.lessons.forEach((l, i) => list.appendChild(button("btn ghost wide", `<span>${l.kind === "dlg" ? "会話をもう一度" : l.kind === "rules" ? "きまり " + (i + 1) + " をもう一度" : "レッスン " + (i + 1) + " をもう一度"}</span>`, () => { close(); Lesson.start(l.id, { onClose: render, single: true }); })));
@@ -71,50 +71,61 @@
     const curIdx = Course.indexFor();
     const cur = stations[curIdx];
     const next = Course.nextLesson();
+    const all = stations.length - 1;
+    const away = !st ? "" : st.kind === "before" ? `出発まで ${st.n}日` : st.kind === "during" ? `パリ ${st.n}日目` : "おかえりなさい";
 
-    /* 旅行中: いちばん上は「今日の旅」。次の予定、住所カード、SOS、今日の表現をすぐ出せる */
-    if (st && st.kind === "during" && DATA.days[st.n - 1]) root.appendChild(todayTrip(st.n - 1));
-    /* 家族が駅に着いた知らせ（前に見たときより進んでいたら一度だけ） */
-    const news = familyNews();
-    const colA = el("div", "home-a"), colB = el("div", "home-b");
-    root.append(colA, colB);
-
-    /* 次の駅: 企画展のポスター。その駅の名画を上いっぱいに、駅名を大きな斜体で、下に解説札 */
-    const hero = el("section", "next affiche");
-    const ln = Store.lineOf(me.color);
-    const kick = (t) => `<p class="aff-kick" lang="fr">Ligne ${ln.line} · ${t}</p>`;
+    /* 次の駅の名画を、切らずに壁いっぱいに掛ける。題は絵の上端に重ねる */
+    const before = root.childElementCount;
     if (cur.terminus) {
-      hero.innerHTML = `<figure class="aff-art">${App.photo("paris")}${kick("Terminus")}</figure>
-        <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:6">Paris<em>.</em></p>
-        <div class="aff-cartel"><div><h1>全部の駅を通りました</h1><p class="aff-cr fr" lang="fr">${App.creditHtml("paris")}</p></div></div>
-        <p class="aff-lede">あとは旅を楽しむだけ。毎日の復習カードで、覚えた表現を忘れないように。</p>`;
-      hero.appendChild(button("btn big wide board", icon("download") + "<span>到着証明書をつくる</span>", () => Passport.certificate()));
-      hero.appendChild(button("btn ghost wide", "<span>復習カードへ</span>" + icon("arrow"), () => App.goTab("practice", "review")));
+      root.appendChild(App.wall({ art: "paris", hero: true, title: "Paris", ja: "全部の駅を通りました", kick: `<span>終点</span>${away ? `<span>${away}</span>` : ""}` }));
+    } else {
+      root.appendChild(App.wall({ art: App.lessonArt(next.id), hero: true, title: App.titleFr(cur.fr), ja: `<span class="sr">次の駅、</span>${esc(cur.ja)}`,
+        kick: `<span>つぎの駅　${cur.num}／${all}</span>${away ? `<span>${away}</span>` : ""}` }));
+    }
+    if (st && st.kind === "during" && root.children[before]) root.children[before].classList.add("brief");
+    /* 署名の動き（絵の一部分から全体へ引く）は、開いて最初の 1 回だけ。タブを行き来するたびには動かさない */
+    if (!hung && root.children[before]) { root.children[before].classList.add("hang"); hung = true; }
+
+    /* 旅行中: 白い面のいちばん上は「今日の旅」 */
+    if (st && st.kind === "during" && DATA.days[st.n - 1]) root.appendChild(todayTrip(st.n - 1));
+    const news = familyNews();
+    if (news.length) root.appendChild(newsCard(news));
+
+    if (cur.terminus) {
+      const end = el("section", "today-one");
+      end.innerHTML = `<p class="label">あとは旅を楽しむだけ</p><p class="lede">毎日の復習カードで、覚えた表現を忘れないように。</p>`;
+      root.appendChild(end);
+      const cta = el("div", "cta");
+      cta.appendChild(button("btn big wide", icon("download") + "<span>到着証明書をつくる</span>", () => Passport.certificate()));
+      cta.appendChild(button("btn ghost wide", "<span>復習カードへ</span>" + icon("arrow"), () => App.goTab("practice", "review")));
+      root.appendChild(cta);
     } else {
       const i = cur.lessons.indexOf(next) + 1;
-      const p = Course.stationProgress(cur);
-      const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? { fr: DATA.dialogs.find((d) => d.id === next.dlg).lines[0].fr } : null;
-      const nn = String(cur.num).padStart(2, "0"), all = String(stations.length - 1).padStart(2, "0");
-      hero.innerHTML = `<figure class="aff-art">${App.photo(App.lessonArt(next.id))}${kick(`<span class="k-long">Prochaine station · </span>${nn} / ${all}`)}</figure>
-        <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${cur.fr.length + 1}">${esc(App.titleFr(cur.fr))}<em>.</em></p>
-        <div class="aff-cartel"><div><h1><span class="sr">次の駅 ${esc(cur.fr)}、</span>${esc(cur.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(next.id))}</p></div><b class="aff-no" aria-label="${cur.num} 番目の駅">${nn}<small>/${all}</small></b></div>
-        ${sample ? `<p class="aff-q fr" lang="fr">« ${esc(sample.fr)} »</p><p class="aff-qja">${esc(sample.ja)}</p>` : ""}
-        <p class="aff-meta">${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり" : "レッスン") + "全" + cur.lessons.length + "のうち" + i + "つ目"} · 約${minutes(next)}分</p>
-        <div class="segs" role="img" aria-label="この駅の進み具合 ${p.d} / ${p.n}">${cur.lessons.map((x) => `<i class="${Course.isDone(x.id) ? "on" : ""}"></i>`).join("")}</div>`;
-      hero.appendChild(button("btn big wide board", `<span>${Course.isDone(cur.lessons[0].id) || i > 1 ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">${Course.isDone(cur.lessons[0].id) || i > 1 ? "Continuer" : "Commencer"}</small>` + icon("arrow"), () => Lesson.start(next.id, { onClose: render })));
+      const sample = next.kind === "learn" ? App.phrase(next.ids[0]) : next.kind === "dlg" ? DATA.dialogs.find((d) => d.id === next.dlg).lines[0] : null;
+      /* 今日の一文: この回で最初に出会う文 */
+      if (sample) {
+        const one = el("section", "today-one");
+        one.innerHTML = `<p class="label">${next.kind === "dlg" ? "今日の会話" : "今日の一文"}</p>`;
+        const row = el("div", "one-row");
+        row.appendChild(el("div", "one-t", `<p class="fr" lang="fr">${esc(sample.fr)}</p>${sample.ja ? `<p class="ja">${esc(sample.ja)}</p>` : ""}`));
+        row.appendChild(App.sayBtn(sample.fr));
+        one.appendChild(row);
+        root.appendChild(one);
+      }
+      const started = Course.isDone(cur.lessons[0].id) || i > 1;
+      const cta = el("div", "cta");
+      cta.appendChild(button("btn big wide", `<span>${started ? "続きのレッスンへ" : "レッスンを始める"}</span><small class="btn-fr" lang="fr" aria-hidden="true">${started ? "Continuer" : "Commencer"}</small>`, () => Lesson.start(next.id, { onClose: render })));
+      cta.appendChild(el("p", "cta-meta", `${next.kind === "dlg" ? "会話の練習" : (next.kind === "rules" ? "きまり " : "レッスン ") + i + "／" + cur.lessons.length}・約${minutes(next)}分`));
+      root.appendChild(cta);
     }
-    colA.appendChild(hero);
-    if (news.length) colA.appendChild(newsCard(news));
 
     /* 今日の 3 つ */
     const tk = Course.ticket();
-    const ticket = el("section", "ticket card");
-    const pct = Math.round((tk.done / tk.total) * 100);
-    ticket.innerHTML = `<div class="tk-top"><div><p class="eyebrow">今日の切符</p><h2>${tk.done === tk.total ? "今日の分は<wbr>全部できました" : "今日の3つ · あと" + (tk.total - tk.done)}</h2></div>
-      <div class="ring" style="--p:${pct}" role="img" aria-label="今日の 3 つのうち ${tk.done} つ済み"><span><b>${tk.done}</b><small>/ ${tk.total}</small></span></div></div>`;
-    const legs = el("div", "legs");
+    const ticket = el("section", "sec ticket");
+    ticket.innerHTML = `<div class="sh"><h2>${tk.done === tk.total ? "今日の分は全部できました" : "今日の3つ"}</h2><span>${tk.done}／${tk.total}</span></div>`;
+    const legs = el("div", "group legs");
     tk.legs.slice().sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0)).forEach((g) => {
-      const b = button("leg" + (g.done ? " done" : g.none ? " none" : ""), `<i aria-hidden="true">${g.done ? icon("check") : ""}</i><span><b>${esc(g.t)}</b><small>${esc(g.s)}</small></span>${icon("arrow", "go")}`, () => {
+      const b = button("leg" + (g.done ? " done" : g.none ? " none" : ""), `<i class="ck" aria-hidden="true"></i><span><b>${esc(g.t)}</b><small>${esc(g.s)}</small></span>${icon("arrow", "go")}`, () => {
         if (g.k === "lesson") { if (next) Lesson.start(next.id, { onClose: render }); }
         else if (g.k === "weak") Lesson.drill(Course.weakIds(), "苦手な表現", "もう一度", render);
         else if (g.k === "rehearse") Lesson.drill(g.reh.d.ph, `${g.reh.date.slice(5).replace("-", "/")} ${g.reh.d.ja}`, "旅の予行演習", render, "rehearse");
@@ -126,38 +137,43 @@
       legs.appendChild(b);
     });
     ticket.appendChild(legs);
-    colA.appendChild(ticket);
+    root.appendChild(ticket);
 
-    /* わたしの路線: 絵地図に、駅の印・駅名・自分と家族の現在地を重ねる */
-    colB.appendChild(journeyMap(me, curIdx, stations));
+    /* わたしの路線: 運行表のように、番号・線・駅名を縦に並べる */
+    root.appendChild(route(curIdx, stations));
   }
 
-  /* 絵地図の 14 の円の中心（map.webp 1024×1536 の px、tools の生成記録 map-centers.json より） */
-  const MAP_PTS = [[384, 80], [494, 170], [584, 270], [639, 386], [584, 499], [497, 604], [417, 711], [382, 825], [448, 932], [542, 1026], [610, 1132], [603, 1252], [508, 1350], [422, 1448]];
-  const MAP_X0 = 200, MAP_W = 620;   /* 道筋のまわりだけを切り取って見せる */
-  function journeyMap(me, curIdx, stations) {
-    const sec = el("section", "jmap");
+  let hung = false;
+  /* 路線（運行表）。ふだんはいまの駅の前後だけを見せ、「すべて見る」で全駅を開く */
+  let routeOpen = false;
+  function route(curIdx, stations) {
+    const sec = el("section", "sec route-sec");
     const doneN = Object.keys(Store.LS.get("stamps", {})).length;
-    sec.innerHTML = `<div class="lm-hd"><h2>わたしの路線</h2><span class="muted">${stations.length - 1}駅のうち${doneN}駅</span></div>`;
-    const box = el("div", "jm-box");
-    box.innerHTML = `<img class="jm-map" src="assets/img/il/map.webp" alt="" width="1024" height="1536" decoding="async">`;
+    sec.innerHTML = `<div class="sh"><h2>わたしの路線</h2><span>${stations.length - 1}駅のうち${doneN}駅</span></div>`;
+    const ol = el("ol", "route");
     const fam = familyAt();
+    const lo = Math.max(0, Math.min(curIdx - 2, stations.length - 5)), hi = lo + 4;
     stations.forEach((s, i) => {
-      const [x, y] = MAP_PTS[i] || MAP_PTS[MAP_PTS.length - 1];
-      const L = ((x - MAP_X0) / MAP_W) * 100, T = (y / 1536) * 100;
       const state = s.terminus ? (curIdx >= i ? "done" : "todo") : Course.stationDone(s) ? "done" : i === curIdx ? "now" : "todo";
       const here = fam.filter((f) => f.idx === i);
-      const side = x > 540 ? "l" : "r";
+      const li = el("li", state + (i < lo || i > hi ? " far" : ""));
       const label = `${s.ja}（${s.fr}）。${state === "done" ? "修了" : state === "now" ? "いまの駅" : "これから"}${here.length ? "。" + here.map((f) => f.name).join("、") + "がここ" : ""}`;
-      const pt = el("div", `jm-pt ${state} ${side}`);
-      pt.style.left = L + "%"; pt.style.top = T + "%";
-      const inner = `${App.medal(s.id)}<span class="jm-lb"><b>${s.terminus ? "パリ到着" : esc(s.ja)}</b><i lang="fr">${esc(App.titleFr(s.fr))}</i>${state === "now" ? `<span class="jm-here">いまここ</span>` : ""}</span>${here.length ? `<span class="jm-fam">${here.map((f) => App.roundel(f.c)).join("")}</span>` : ""}`;
-      if (s.terminus) { pt.innerHTML = inner; pt.setAttribute("role", "img"); pt.setAttribute("aria-label", label); }
-      else pt.appendChild(button("jm-btn", inner, () => stationSheet(s), label));
-      box.appendChild(pt);
+      const inner = `<span class="n">${s.terminus ? "" : String(s.num).padStart(2, "0")}</span><i class="dot" aria-hidden="true"></i><span class="rt-t"><b>${s.terminus ? "パリ到着" : esc(s.ja)}</b><small lang="fr">${esc(App.titleFr(s.fr))}</small></span>`
+        + `<span class="rt-r">${here.map((f) => App.roundel(f.c)).join("")}${state === "now" ? '<span class="tag">いまここ</span>' : state === "done" ? '<span class="st">済み</span>' : ""}</span>`;
+      if (s.terminus) li.innerHTML = `<div class="rt-row" role="img" aria-label="${esc(label)}">${inner}</div>`;
+      else li.appendChild(button("rt-row", inner, () => stationSheet(s), label));
+      ol.appendChild(li);
     });
-    sec.appendChild(box);
-    if (!fam.length) sec.appendChild(el("p", "hint", `家族を招待すると、この地図に家族の現在地が出ます。<a href="#" data-go="family">家族のページへ</a>`));
+    if (routeOpen) ol.classList.add("open");
+    sec.appendChild(ol);
+    const more = button("more", `<span>${routeOpen ? "いまの駅のまわりだけ" : `${stations.length - 1}駅すべて見る`}</span>`, () => {
+      routeOpen = !routeOpen; ol.classList.toggle("open", routeOpen);
+      more.firstChild.textContent = routeOpen ? "いまの駅のまわりだけ" : `${stations.length - 1}駅すべて見る`;
+      more.setAttribute("aria-expanded", String(routeOpen));
+    });
+    more.setAttribute("aria-expanded", String(routeOpen));
+    sec.appendChild(more);
+    if (!fam.length) sec.appendChild(el("p", "hint", `家族を招待すると、ここに家族の現在地が出ます。<a href="#" data-go="family">家族のページへ</a>`));
     return sec;
   }
 

@@ -35,9 +35,10 @@
     document.addEventListener("profile-changed", () => { applyProfile(); App.renderHeader(); goTab(App.currentTab() || "home"); });
     document.addEventListener("prefs-changed", applyProfile);
     applyProfile();
-    /* ホームの上では見出し帯を透明にして絵の上に重ねる。少し下へ送ったら紙の帯に戻す */
-    const solid = () => document.documentElement.classList.toggle("hd-solid", window.scrollY > 24);
+    /* 見出し帯は名画の壁の上では透明に重ね、壁を過ぎたら白い帯に戻す */
+    const solid = () => { const w = document.querySelector(".view:not([hidden]) > .wall"); document.documentElement.classList.toggle("hd-solid", window.scrollY > (w ? w.offsetHeight - 72 : 24)); };
     window.addEventListener("scroll", solid, { passive: true }); solid();
+    document.addEventListener("click", () => requestAnimationFrame(solid));
     /* 保存できなかったときは一度だけ知らせる（何度も出すと邪魔なので） */
     let warned = false;
     document.addEventListener("save-failed", () => { if (warned) return; warned = true; toast("記録を保存できませんでした。プライベートブラウズを切るか、端末の空きを確かめてください"); });

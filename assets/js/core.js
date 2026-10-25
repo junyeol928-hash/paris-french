@@ -312,7 +312,12 @@ window.DATA = window.DATA || {};
     /* 開いているステージから続けて開く（結果画面の「次へ」「もう 10 問」）ときは、履歴を戻さずに使い回す。
        戻すと、その popstate を新しいステージが受け取ってすぐ閉じてしまう */
     if (stageClose) stageClose(true, true);
-    const st = el("div", "stage"); st.setAttribute("role", "dialog"); st.setAttribute("aria-modal", "true"); st.setAttribute("aria-label", o.label || "練習");
+    const st = el("div", "stage"); st.setAttribute("role", "dialog");
+    /* 上の壁に敷く絵（レッスンはその回の名画、ほかはいまの駅の絵） */
+    const artId = o.art || (window.Course ? (Course.stations()[Course.indexFor()] || {}).id : "") || "paris";
+    const ap = (DATA.photos || {})[artId] || (DATA.photos || {}).paris;
+    if (ap) st.style.setProperty("--art", artUrl(ap.src));
+    st.setAttribute("aria-modal", "true"); st.setAttribute("aria-label", o.label || "練習");
     const doors = el("div", "doors", '<span class="door l"></span><span class="door r"></span>');
     const inner = el("div", "stage-in");
     st.append(inner, doors);
@@ -399,21 +404,37 @@ window.DATA = window.DATA || {};
     return `<span class="photo${cls ? " " + cls : ""}"><img src="${p.src}" alt="" width="${p.w}" height="${p.h}" decoding="async" style="object-position:${p.pos}"></span>`;
   }
 
-  /* 絵の解説札の 1 行（画家 — 作品名, 年） */
+  /* 絵の解説札の 1 行（画家　作品名, 年）。図録の作法で、画家と作品名の間は全角の空き */
   function credit(id) {
     const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
-    return p && p.artist ? `${p.artist} — ${p.work}, ${p.year}`.replace(/-/g, "‑") : "";   /* 名前の途中（Saint-Lazare）で改行しない */
+    return p && p.artist ? `${p.artist}　${p.work}, ${p.year}`.replace(/-/g, "‑") : "";   /* 名前の途中（Saint-Lazare）で改行しない */
   }
   function creditHtml(id) {
     const p = (window.DATA && DATA.photos && DATA.photos[id]) || null;
-    const nb = (t) => esc(t).replace(/-/g, "\u2011");
-    return p && p.artist ? `${nb(p.artist)} — <i>${nb(p.work)}</i>, ${esc(p.year)}` : "";
+    const nb = (t) => esc(t).replace(/-/g, "‑");
+    return p && p.artist ? `${nb(p.artist)}　<i>${nb(p.work)}</i>, ${esc(p.year)}` : "";
+  }
+  /* CSS 変数に入れる url() は、使う側（style.css）の場所から解決されるので、ページからの絶対 URL にしておく */
+  const artUrl = (src) => `url("${new URL(src, location.href).href}")`;
+  /* 名画の壁: 絵を切らずに掛け、まわりは同じ絵をぼかして延ばす（ベタ塗りにしない）。各タブの頭とホームの主役。
+     o.art 絵の id、o.title 仏語の題（Bodoni）、o.ja 和文の題、o.kick 上の小さな行（HTML）、o.hero ホーム用の大きな形 */
+  function wall(o) {
+    const P = (window.DATA && DATA.photos) || {};
+    const id = P[o.art] ? o.art : "paris";
+    const p = P[id];
+    const w = el("section", "wall" + (o.hero ? " hero" : "") + (p && p.h > p.w ? " tall" : ""));
+    if (!p) return w;
+    w.style.setProperty("--art", artUrl(p.src));
+    w.style.setProperty("--ar", (p.h / p.w).toFixed(4));
+    w.innerHTML = `<i class="shade" aria-hidden="true"></i><div class="w-intro">${o.kick ? `<p class="kick">${o.kick}</p>` : ""}<h1>${o.title ? `<span class="ttl" lang="fr">${esc(o.title)}</span>` : ""}<span class="ttl-ja">${o.ja}</span></h1></div>
+      <figure class="w-art"><img src="${p.src}" alt="" width="${p.w}" height="${p.h}" decoding="async"><figcaption class="cap" lang="fr">${creditHtml(id)}</figcaption></figure><i class="lip" aria-hidden="true"></i>`;
+    return w;
   }
   /* 駅名標の大文字（AÉROPORT）をポスターの題の形（Aéroport）にする */
   const titleFr = (s) => { const l = String(s).toLocaleLowerCase("fr"); return l.charAt(0).toLocaleUpperCase("fr") + l.slice(1); };
 
-  /* 駅の印: 絵地図と同じ銅版画と水彩の円い挿絵（assets/img/il/m-<駅>.webp）。飾りなので alt は空 */
-  const medal = (id, cls) => `<span class="medal${cls ? " " + cls : ""}"><img src="assets/img/il/m-${id}.webp" alt="" width="480" height="480" decoding="async"></span>`;
+  /* 駅の印: その駅の名画の小さな正方形（保存一覧のサムネイルの形）。飾りなので alt は空 */
+  const medal = (id, cls) => { const p = (window.DATA && DATA.photos && DATA.photos[id]) || null; return `<span class="medal${cls ? " " + cls : ""}">${p ? `<img src="${p.src}" alt="" loading="lazy" decoding="async" style="object-position:${p.pos}">` : ""}</span>`; };
   /* レッスンごとの名画。駅の 1 つ目のレッスンは駅の絵、2 つ目からは別の絵（なければ駅の絵） */
   const LESSON_ART = {
     "bonjour-2": "a01", "lire-2": "a05", "lire-3": "a07", "comprendre-2": "a06", "aeroport-2": "a08",
@@ -429,6 +450,6 @@ window.DATA = window.DATA || {};
   /* 場面（phrases の s）→ その場面の駅の写真 id */
   const SCENE_PHOTO = { base: "bonjour", air: "aeroport", taxi: "taxi", hotel: "hotel", cafe: "cafe", resto: "resto", menu: "carte", metro: "metro", visite: "musee", shop: "boutique", urgence: "urgence" };
 
-  window.App = { el, esc, photo, credit, creditHtml, titleFr, medal, lessonArt, roundel, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
+  window.App = { el, esc, photo, credit, creditHtml, wall, artUrl, titleFr, medal, lessonArt, roundel, SCENE_PHOTO, onColor, avStyle, contrast, mix, inkOn, initials, modal, shuffle, $, button, icon, IC, toast, sfx, haptic, reduced, TTS, sayBtn, favBtn, isFav, phrase, scene, phraseRow,
     onTab, goTab, currentTab, initTabs, sheet, stage, show };
 })();

@@ -22,7 +22,8 @@
     const view = arg || defaultView();
     LS.set("bkView", view);
     root.innerHTML = "";
-    root.appendChild(el("header", "vh", `<figure class="vign" aria-hidden="true"><img src="assets/img/il/v-carnet.webp" alt="" width="1200" height="800" decoding="async"></figure><p class="eyebrow fr-lbl" lang="fr">Carnet de voyage</p><h1>旅のしおり</h1>`));
+    const d0 = dayDate(0);
+    root.appendChild(App.wall({ art: "paris", title: "Carnet", ja: "旅のしおり", kick: `<span>${d0 ? `${d0.m}月${d0.d}日から` : "旅の"} ${DATA.days.length}日間</span>` }));
     const nav = el("div", "daynav"); nav.setAttribute("role", "tablist"); nav.setAttribute("aria-label", "しおりのページ");
     DATA.days.forEach((d, i) => {
       const dt = dayDate(i);

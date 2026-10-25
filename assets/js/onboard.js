@@ -49,8 +49,9 @@
     function welcome() {
       const others = Store.profiles();
       const w = el("div", "ob welcome");
-      w.innerHTML = `<figure class="ob-hero">${App.photo("welcome")}<figcaption lang="fr">${App.creditHtml("welcome")}</figcaption></figure>
-        <p class="eyebrow fr-lbl" lang="fr">Paris, en famille</p><h1 class="fr hello">Bonjour&nbsp;!</h1>
+      const wp = DATA.photos.welcome;
+      w.innerHTML = `<figure class="ob-hero" style="--art:${esc(App.artUrl(wp.src))}"><img src="${wp.src}" alt="" width="${wp.w}" height="${wp.h}" decoding="async"><figcaption class="cap" lang="fr">${App.creditHtml("welcome")}</figcaption></figure>
+        <p class="eyebrow fr-lbl" lang="fr">Paris, en famille</p><h1 class="hello" lang="fr">Bonjour&nbsp;!</h1>
         <p class="lede">家族でパリへ。フランス語ゼロから、旅で困らないところまで。1 日 5 分、駅をひとつずつ進みます。</p>`;
       if (others.length) {
         w.appendChild(el("p", "ob-q", "この端末を使うのは誰ですか？"));
