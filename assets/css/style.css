@@ -1785,3 +1785,33 @@ body,.stage{background-image:linear-gradient(rgba(244,239,229,.6),rgba(244,239,2
 .stband.art .sb-t{gap:4px}
 .jm-pt{width:calc(120 / 620 * 100%)}
 .jm-pt.todo .medal{opacity:1;filter:grayscale(.9) sepia(.12) contrast(.78) brightness(1.1)}
+
+/* ---------- 第 6 版・レビュー 4 回目 ---------- */
+/* 進み具合: 区切りの丸は墨のまま（路線色は自分の点だけ）。到着の小さな路線は、今の駅の丸そのものを自分の色にする */
+.lrail b.on,.lrail b.big.on{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.lrail b.big.on{box-shadow:inset 0 0 0 3px var(--ink)}
+.lr-me{width:16px;height:16px;top:5.5px;margin-left:-8px}
+.ride-me{display:none}
+.ride-st.cur i{background:var(--line);box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--ink)}
+/* レッスンの帯: 白い字の下を左から暗く（空の明るい所でも読める） */
+.stband.art::after{background:linear-gradient(90deg,rgba(10,8,6,.62),rgba(10,8,6,.18) 62%,rgba(10,8,6,0)),linear-gradient(0deg,rgba(10,8,6,.45),rgba(10,8,6,0) 70%)}
+.stband.art .sb-t b{color:#fff}
+/* 会話の絵の見出し: 和文は立てたまま、仏語だけ斜体 */
+.wall-poster figcaption{font-family:var(--jp);font-style:normal;font-size:.875rem;letter-spacing:.02em}
+.wall-poster figcaption i{font-family:var(--bo);font-style:italic;font-size:1.125rem;letter-spacing:0}
+/* 地図: 挿絵は元の大きさに戻して線が見えるように。地図の金の円は紙色の輪で覆い、外に細い墨の輪 */
+.jm-pt{width:calc(106 / 620 * 100%)}
+.jm-pt .medal{box-shadow:0 0 0 4px #F4EFE5,0 0 0 5px rgba(43,40,36,.45)}
+.jm-pt.now .medal{box-shadow:0 0 0 4px #F4EFE5,0 0 0 6px #2B2824}
+/* 修了で手に入れた絵: 切り抜かずに全体を見せる */
+.got img{width:auto;max-width:100%;height:auto;max-height:34vh;object-fit:contain;margin:0 auto}
+/* ホーム: 作品の情報は 1 行の小さな解説札に（駅名と開始ボタンを先に読ませる） */
+.aff-cartel .aff-cr{font-size:.6875rem;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.aff-cartel .aff-cr br{display:none}
+html[data-size="lg"] .aff-cartel .aff-cr{font-size:.6rem}
+.aff-cartel > div{min-width:0}
+/* 帯の重なり順を明示（絵 → 暗がり → 字） */
+.stband.art .sb-art{z-index:0}
+.stband.art::after{z-index:1;pointer-events:none}
+.stband.art .sb-t{z-index:2;gap:2px}
+.stband.art .sb-t span{line-height:1}
