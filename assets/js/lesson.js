@@ -35,7 +35,7 @@
   /* カードの上辺に付ける小さな駅名標（いまどの駅のレッスンか） */
   function stband(s, label, art) {
     const b = el("div", "stband");
-    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(art || s.id, "sb-art")}<span class="sb-t"><b>${s.num} 番目の駅</b><span>${esc(App.titleFr(s.fr))}</span></span>`; }
+    if (s && !label) { b.classList.add("art"); b.innerHTML = `${App.photo(art || s.id, "sb-art")}<span class="sb-t"><b>${esc(s.ja)}</b><span>${esc(App.titleFr(s.fr))}</span></span>`; }
     else b.innerHTML = `<span>${esc(App.titleFr(label || s.fr))}</span>`;
     b.setAttribute("aria-hidden", "true");
     return b;

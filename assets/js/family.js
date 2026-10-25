@@ -136,7 +136,7 @@
 
     /* 家族だからできる練習: 1 台を渡し合って、店員とお客の役で会話する（家族の画面のいちばん上） */
     const duo = el("section", "duo-cta");
-    duo.innerHTML = `<p class="eyebrow"><i class="fr-lbl" lang="fr">En famille</i> · 一緒に</p><h2>1 台を渡し合って、会話を練習</h2><p>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら声に出します。</p>`;
+    duo.innerHTML = `<p class="eyebrow"><i class="fr-lbl" lang="fr">Ensemble</i> · 一緒に</p><h2>1 台を渡し合って、会話を練習</h2><p>1 人が店員、1 人がお客。カフェやホテルの場面を、家族で役を替えながら声に出します。</p>`;
     duo.appendChild(button("btn big board", icon("chat") + "<span>家族で会話を始める</span>", () => App.goTab("practice", "talk")));
     root.appendChild(duo);
 

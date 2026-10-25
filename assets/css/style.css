@@ -1743,3 +1743,45 @@ h1,h2,h3,.vh h1{letter-spacing:.02em}
 .jm-lb b,.jm-pt.todo .jm-lb b{color:#2B2824}
 .jm-lb i{color:#4F4941}
 .jm-here{background:#2B2824!important;color:#F4EFE5!important}
+
+/* ---------- 第 6 版・レビュー 3 回目 ---------- */
+/* ダークでも金を残さない（古いダークの --gilt 定義より詳細度を上げる） */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gilt:var(--muted);--gilt-2:var(--line-gray)}}
+:root[data-theme="dark"]{--gilt:var(--muted);--gilt-2:var(--line-gray)}
+/* 大きな文字: 絵の上の白い小見出しの下を深く暗くする */
+html[data-size="lg"] .aff-art::after{background:linear-gradient(180deg,rgba(10,8,6,.6),rgba(10,8,6,.25) 40%,rgba(10,8,6,0) 60%)}
+/* 挿絵に描き込まれた金の輪は見せず、輪は CSS の罫で付ける */
+.medal img{transform:scale(1.06)}
+/* 美術館: 額は絵に沿わせて余白を均一に、行の下をそろえる */
+.mu-grid{align-items:end}
+.mu-im{aspect-ratio:auto;padding:6px}
+.mu-im img{height:auto;object-fit:fill}
+/* レッスン中: 名画の帯は低く（学ぶ文を上へ。大きく鑑賞するのは到着の画面） */
+.stage-body > .stband.art{flex:0 0 auto;height:120px;min-height:0;max-height:none}
+/* 地図: 和文と仏語を 1 枚の紙にまとめる */
+.jm-lb{background:rgba(244,239,229,.88);padding:2px 7px 3px}
+.jm-lb b,.jm-lb i{background:none;padding:0}
+/* 進み具合の自分の印は番号なしの点（人の路線番号「4」と問題・駅の番号を混同させない） */
+.lr-me,.ride-me{font-size:0;width:14px;height:14px;margin-left:-7px}
+.ride-me{left:calc(50% - 7px);top:16px;margin-left:0}
+/* ホームの駅番号は小さな進み具合の情報に */
+.aff-no{font-size:1.75rem}
+html[data-size="lg"] .aff-no{font-size:1.5rem}
+.aff-no::before{content:"駅 ";font-family:var(--jp);font-size:.75rem;color:var(--muted)}
+/* 紙の地紋を薄く（広い余白で斑点が続かないように） */
+body,.stage{background-image:linear-gradient(rgba(244,239,229,.6),rgba(244,239,229,.6)),url(../img/il/paper.webp);background-size:auto,512px 512px}
+:root[data-theme="dark"] body,:root[data-theme="dark"] .stage{background-image:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body,:root:not([data-theme="light"]) .stage{background-image:none}}
+/* 保存の星は墨 */
+.fav.on{color:var(--ink)}
+/* フレーズ一覧の操作: 箱と黒塗りをやめ、上の罫と区切りの細線、文字とアイコンだけ */
+.ph-act{border:0;border-top:1px solid var(--line-gray);border-radius:0}
+.ph-act .tool.say{background:none;color:var(--ink)}
+.note,.lcard .note{box-shadow:none;padding:4px 0}
+/* 会話の絵の見出しもほかと同じ斜体に、署名に重ならない上側へ */
+.wall-poster figcaption{top:12px;bottom:auto;font-family:var(--bo);font-style:italic;font-weight:400;font-size:1.125rem;letter-spacing:0}
+.wall-poster .photo::after{background:linear-gradient(0deg,transparent 50%,rgba(8,12,24,.55))}
+.lr-me{top:7px}
+.stband.art .sb-t{gap:4px}
+.jm-pt{width:calc(120 / 620 * 100%)}
+.jm-pt.todo .medal{opacity:1;filter:grayscale(.9) sepia(.12) contrast(.78) brightness(1.1)}
