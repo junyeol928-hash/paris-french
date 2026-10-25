@@ -42,14 +42,21 @@
     /* 保存できなかったときは一度だけ知らせる（何度も出すと邪魔なので） */
     let warned = false;
     document.addEventListener("save-failed", () => { if (warned) return; warned = true; toast("記録を保存できませんでした。プライベートブラウズを切るか、端末の空きを確かめてください"); });
-    /* 新しい版が届いたら、使っている途中で勝手に再読み込みせず、知らせてから更新する */
+    /* 新しい版が届いたら自動で切り替える（家族が何もしなくても新しい版になる）。
+       レッスン・シート・入力の途中は消さないよう、終わるのを待ってから切り替える。記録は端末に残るので消えない */
     document.addEventListener("pwa-update", () => {
-      App.sheet("新しい版があります", (b, close) => {
-        b.appendChild(App.el("p", null, "アプリが新しくなりました。更新すると、新しい表現や直した所が使えます。記録はそのまま残ります。"));
-        b.appendChild(App.button("btn big wide", "<span>更新する</span>", () => { close(); window.PWA && PWA.applyUpdate(); }));
-        b.appendChild(App.button("btn ghost wide", "<span>あとで</span>", close));
-      });
+      const busy = () => document.documentElement.classList.contains("staged") || !!document.querySelector(".sheet")
+        || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || "") || !Store.cur();
+      const apply = () => {
+        try { sessionStorage.setItem("fr:updated", "1"); } catch (e) { /* 保存できなくても更新はする */ }
+        if (window.PWA) PWA.applyUpdate();
+      };
+      if (!busy()) { apply(); return; }
+      const iv = setInterval(() => { if (!busy()) { clearInterval(iv); apply(); } }, 3000);
     });
+    try {
+      if (sessionStorage.getItem("fr:updated")) { sessionStorage.removeItem("fr:updated"); setTimeout(() => toast("新しい版に更新しました。記録はそのまま残っています"), 800); }
+    } catch (e) { /* sessionStorage が使えない環境では知らせない */ }
     if (link.card) {
       const r = Store.addFamilyCard(link.card);
       /* 応援つきのカード: 声つきで「Bravo !」 */
