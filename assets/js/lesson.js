@@ -89,9 +89,9 @@
       <p class="aff-title fr" lang="fr" aria-hidden="true" style="--n:${s.fr.length + 1}">${esc(App.titleFr(s.fr))}<em>.</em></p>
       <div class="aff-cartel"><div><h1 data-head><span class="sr">${esc(s.fr)}、</span>${esc(s.ja)}</h1><p class="aff-cr fr" lang="fr">${App.creditHtml(App.lessonArt(l.id))}</p></div></div>
       <div class="ride" aria-hidden="true"><span class="ride-line"></span>
-        <span class="ride-st prev"><i></i><small>${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</small></span>
-        <span class="ride-st cur"><i></i><small>${esc(App.titleFr(s.fr))}</small></span>
-        <span class="ride-st nxt"><i></i><small>${esc(next ? App.titleFr(next.fr) : "")}</small></span>
+        <span class="ride-st prev"><i></i><small>${esc(prev ? prev.ja : "出発")}<em lang="fr">${esc(App.titleFr(prev ? prev.fr : "DÉPART"))}</em></small></span>
+        <span class="ride-st cur"><i></i><small>${esc(s.ja)}<em lang="fr">${esc(App.titleFr(s.fr))}</em></small></span>
+        <span class="ride-st nxt"><i></i><small>${esc(next ? next.ja : "")}<em lang="fr">${esc(next ? App.titleFr(next.fr) : "")}</em></small></span>
         <span class="ride-me">${esc(Store.lineOf(Store.cur().color).line)}</span></div>
       <p class="eyebrow">${s.num} 番目の駅 · ${l.kind === "dlg" ? "会話の練習" : l.kind === "rules" ? "読み方のきまり" : "レッスン " + i + " / " + s.lessons.length}</p>
       <p class="lede">${esc(sub)}</p>`;

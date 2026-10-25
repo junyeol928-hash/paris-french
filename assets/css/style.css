@@ -1815,3 +1815,33 @@ html[data-size="lg"] .aff-cartel .aff-cr{font-size:.6rem}
 .stband.art::after{z-index:1;pointer-events:none}
 .stband.art .sb-t{z-index:2;gap:2px}
 .stband.art .sb-t span{line-height:1}
+/* 到着の小さな路線: 日本語の場面名が主、仏語は小さな斜体 */
+.ride-st small{display:grid;justify-items:inherit;font-family:var(--jp);font-size:.75rem;letter-spacing:.02em;line-height:1.35;color:var(--ink-2);max-width:9em;text-align:center}
+.ride-st.prev small{justify-items:start;text-align:left}
+.ride-st.nxt small{justify-items:end;text-align:right}
+.ride-st small em{font-family:var(--bo);font-style:italic;font-size:.8125rem;color:var(--muted)}
+.ride{height:96px}
+/* 学ぶ文の例は大きな文字でもデスクトップでも出す（何を言えるようになるかを先に） */
+html[data-size="lg"] .aff-q{display:block}
+@media (min-width:900px){.aff-q{display:block}}
+/* 修了: スタンプを小さく、絵と解説札が最初の画面に収まるように */
+.stamp-land .stamp{max-width:92px}
+.got img{max-height:24vh}
+/* 修了: 「美術館に加わりました」と作品名を絵の上に（下の固定ボタンに隠れない） */
+.got{display:flex;flex-direction:column-reverse;gap:8px}
+.got figcaption{margin:0;display:grid;gap:2px}
+.got small{font-size:.8125rem;color:var(--ink-2)}
+
+/* ---------- 第 6 版・レビュー 5 回目 ---------- */
+/* 帯の和文は立てる（古い .stband.art span の斜体が親の span から移っていた） */
+.stband.art .sb-t{font-style:normal}
+.stband.art .sb-t b{font-style:normal;font-family:var(--jp)}
+/* 答えたあとの正誤の札は下端に付ける（帯を低くして余った高さを、札の上で吸う） */
+.stage-body:has(> .quiz.answered) > .stage-foot.fb{margin-top:auto}
+/* 修了の絵と解説札は中央にそろえ、絵は少し低く */
+.got{align-items:center;text-align:center}
+.got img{max-height:22vh}
+/* 大きな文字モードで作品情報を通常より小さくしない（省略で収める） */
+html[data-size="lg"] .aff-cartel .aff-cr{font-size:.6875rem}
+/* デスクトップ: ポスターの絵に枠の線を付けない */
+@media (min-width:900px){.aff-art,.aff-art .photo{box-shadow:none}}
