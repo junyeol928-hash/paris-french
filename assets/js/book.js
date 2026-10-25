@@ -52,6 +52,8 @@
     const dt = dayDate(i);
     body.appendChild(el("div", "bk-hd", `<p class="bk-fr fr">${esc(d.fr)}</p><h2>${dt ? `${dt.m}/${dt.d}（${dt.wd}）` : ""}${esc(d.ja)}</h2>`));
     if (!Store.trip()) body.appendChild(el("p", "hint", `旅の初日を入れると、日付つきで表示されます。<a href="#" data-go="family">設定へ</a>`));
+    /* 旅程の上にも練習の入口（その日の旅で使う表現だけで予行演習） */
+    body.appendChild(button("btn ghost wide bk-go", "<span>この日の旅を練習する</span>", () => Lesson.drill(d.ph, `${dt ? dt.m + "/" + dt.d + " " : ""}${d.ja}`, "旅の予行演習", null, "rehearse")));
     const ol = el("ol", "tl");
     for (const [t, place, note] of d.stops) ol.appendChild(el("li", null, `<span class="tl-t">${esc(t)}</span><span class="tl-p">${esc(place)}${note ? `<small>${esc(note)}</small>` : ""}</span>`));
     body.appendChild(ol);

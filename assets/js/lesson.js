@@ -274,7 +274,7 @@
   /* 話してみる（音声認識が使える端末だけ）。通信が無いときは使えない旨を先に出す */
   function speakBox(text) {
     const box = el("div", "speakbox");
-    const out = el("p", "speak-out", "マイクを押して、まねして言ってみよう");
+    const out = el("p", "speak-out", "マイクを押して、まねして言ってみよう（聞くだけでも次へ進めます）");
     out.setAttribute("aria-live", "polite");
     const gate = el("span", "gate", '<i class="g l"></i><i class="post"></i><i class="g r"></i>'); gate.setAttribute("aria-hidden", "true"); gate.hidden = true;
     const mic = button("micbtn", icon("mic"), () => {

@@ -1853,3 +1853,6 @@ html[data-size="lg"] .aff-cartel .aff-cr{font-size:.6875rem}
 html[data-size="lg"] .aff-q + .aff-qja{display:block}
 /* 一覧の「場面一覧に戻る」は操作と分かる下線の文字 */
 .listhd .up{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;letter-spacing:.02em}
+/* 大きな文字: タブの字も大きく（16px、1 行に収める） */
+html[data-size="lg"] .tabbar [role=tab]{font-size:16px;padding:0}
+.bk-go{margin:0 0 6px}
