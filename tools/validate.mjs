@@ -48,6 +48,9 @@ for (const d of D.days) {
   if ("date" in d) err(`day ${d.id}: 公開サイトなので日付は持たない`);
   for (const id of d.ph) if (!pIds.has(id)) err(`day ${d.id}: フレーズ ${id} がない`);
   if (new Set(d.ph).size !== d.ph.length) err(`day ${d.id}: フレーズが重複`);
+  /* 今日のひとこと: 予行演習で先に出るよう、ph の先頭にも同じ順で入れておく */
+  const key = d.key || [];
+  if (key.some((id, i) => d.ph[i] !== id)) err(`day ${d.id}: key（今日のひとこと）は ph の先頭に同じ順で入れる`);
 }
 
 const dIds = new Set();

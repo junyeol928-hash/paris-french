@@ -268,6 +268,9 @@ main{display:block}
 .today-next{display:flex;gap:14px;align-items:center;margin-top:14px;background:var(--paper);border-radius:var(--r-s);padding:12px 14px}
 .today-next .tl-t{font:600 1.125rem var(--fr);font-variant-numeric:tabular-nums}
 .today-next small{display:block;font-size:.875rem;color:var(--muted)}
+.today-word{margin-top:14px;background:var(--paper);border-radius:var(--r-s);padding:12px 12px 12px 14px}
+.today-word .fr{font-size:1.25rem}
+.today-word .say.round{background:var(--wall)}
 .today-act{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
 .today-act .tool{flex-direction:column;justify-content:center;min-height:68px;background:var(--paper);border-radius:var(--r-s);padding:8px 4px;gap:4px}
 .today-act .tool.sos{color:var(--ng)}

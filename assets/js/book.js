@@ -53,15 +53,20 @@
     const dt = dayDate(i);
     body.appendChild(el("div", "bk-hd", `<p class="bk-fr fr">${esc(d.fr)}</p><h2>${dt ? `${dt.m}/${dt.d}（${dt.wd}）` : ""}${esc(d.ja)}</h2>`));
     if (!Store.trip()) body.appendChild(el("p", "hint", `旅の初日を入れると、日付つきで表示されます。<a href="#" data-go="family">設定へ</a>`));
+    /* 今日のひとこと: 旅行用のしおりと同じ、その日にいちばん使う数文。旅程より先に出す */
+    if (d.key && d.key.length) {
+      body.appendChild(el("div", "bk-subrow", `<h3 class="bk-sub">今日のひとこと <i class="fr-lbl" lang="fr">Les mots du jour</i></h3>`));
+      body.appendChild(list(d.key));
+    }
     /* 旅程の上にも練習の入口（その日の旅で使う表現だけで予行演習） */
     body.appendChild(button("btn ghost wide bk-go", "<span>この日の旅を練習する</span>", () => Lesson.drill(d.ph, `${dt ? dt.m + "/" + dt.d + " " : ""}${d.ja}`, "旅の予行演習", null, "rehearse")));
     const ol = el("ol", "tl");
     for (const [t, place, note] of d.stops) ol.appendChild(el("li", null, `<span class="tl-t">${esc(t)}</span><span class="tl-p">${esc(place)}${note ? `<small>${esc(note)}</small>` : ""}</span>`));
     body.appendChild(ol);
-    const hd = el("div", "bk-subrow"); hd.appendChild(el("h3", "bk-sub", "この日に使う表現"));
+    const hd = el("div", "bk-subrow"); hd.appendChild(el("h3", "bk-sub", d.key && d.key.length ? "ほかに使う表現" : "この日に使う表現"));
     hd.appendChild(button("btn ghost small", icon("cards") + "<span>この日の予行演習</span>", () => Lesson.drill(d.ph, `${dt ? dt.m + "/" + dt.d + " " : ""}${d.ja}`, "旅の予行演習", null, "rehearse")));
     body.appendChild(hd);
-    body.appendChild(list(d.ph));
+    body.appendChild(list(d.ph.filter((id) => !(d.key || []).includes(id))));
   }
   function drawSos(body) {
     const b = el("a", "sosbox"); b.href = "tel:112";

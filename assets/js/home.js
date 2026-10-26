@@ -216,6 +216,14 @@
     const c = el("section", "today card");
     c.innerHTML = `<p class="eyebrow">旅行中 · À Paris · Jour ${i + 1}</p><h1>${esc(d.ja)}</h1><p class="muted">${date.slice(5).replace("-", "/")} · ${esc(d.fr)}</p>
       ${nextStop ? `<div class="today-next"><span class="tl-t">${esc(nextStop[0])}</span><span><b>${esc(nextStop[1])}</b>${nextStop[2] ? `<small>${esc(nextStop[2])}</small>` : ""}</span></div>` : ""}`;
+    /* 今日のひとこと（しおりと同じ文）の 1 つ目を、すぐ聞けるように */
+    const kp = d.key && App.phrase(d.key[0]);
+    if (kp) {
+      const w = el("div", "one-row today-word");
+      w.appendChild(el("div", "one-t", `<p class="label">今日のひとこと</p><p class="fr" lang="fr">${esc(kp.fr)}</p><p class="ja">${esc(kp.ja)}</p>`));
+      w.appendChild(App.sayBtn(kp.fr));
+      c.appendChild(w);
+    }
     const g = el("div", "today-act");
     g.appendChild(button("tool", icon("book") + "<span>表現</span>", () => App.goTab("book", d.id)));
     const pr = Store.prefs(); const addr = [pr.hotelName, pr.hotelAddr].filter(Boolean).join("\n");
