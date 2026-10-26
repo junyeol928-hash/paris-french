@@ -31,6 +31,8 @@
   - 検証: `node --test tests/*.test.mjs` 24 pass、`node tools/validate.mjs` OK（個人情報の検査語つき）、`node tools/gen-sw.mjs --check` 最新。Playwright で 390px・ダーク・1440px・はじめて・旅行中・終点の画面と、レッスンを最後まで解く流れ・会話・読み方・予行演習・聞き取り・家族で会話・各シートを撮影し、ページエラーと 404 なし。壁の上の文字のコントラストは 40 枚 × 2 種で 4.5:1 以上（最小 5.2:1）。
   - 未検証: 実機（iPhone Safari／Android Chrome）。特に backdrop-filter・safe-area・大きな文字モードでの見え方。
 
+- 旅程の更新（2026-10-26、枝 design-v7-trip）: 旅行用のしおり（C:/Users/yeol0/Claude/Paris/paris-days/paris-days.html、2026-10-09 版）に合わせて data/days.js の時刻・行き先を更新。各日に `key`（今日のひとこと）を足し、しおりの頁の上と旅行中のホームに出す。表現を 6 つ追加（t12・t13・h17・h18・h19・v15）、音声 523 本。個人情報（名前・ホテル名・便名・予約番号・電話番号）は入れていない。
+
 ## 次に依頼すること
 - 第 7 版の実機確認（iPhone Safari／Android Chrome）: 大きな文字・読み上げ・音声認識・オフライン・ホーム画面追加、すりガラスの帯と画面上端の切り欠きまわりの見え方。
 - 第 6 版の実機確認（iPhone Safari／Android Chrome）: 大きな文字・読み上げ・音声認識・オフライン・ホーム画面追加。
