@@ -72,6 +72,8 @@ window.DATA.phrases = [
   { id: "t09", s: "taxi", fr: "Gardez la monnaie.", kana: "ガルデ ラ モネ", ja: "おつりはけっこうです" },
   { id: "t10", s: "taxi", fr: "À l'aéroport Charles-de-Gaulle, s'il vous plaît.", kana: "ア ラエロポール シャルル ドゥ ゴール スィル ヴ プレ", ja: "シャルル・ド・ゴール空港までお願いします", n: "ターミナルの番号は搭乗券で確認して、続けて言う（terminal un / deux）" },
   { id: "t11", s: "taxi", fr: "Pouvez-vous nous appeler un taxi ?", kana: "プヴェ ヴ ヌ ザプレ アン タクスィ", ja: "タクシーを呼んでもらえますか？" },
+  { id: "t12", s: "taxi", fr: "À la place des Abbesses, s'il vous plaît.", kana: "ア ラ プラス デ ザベス スィル ヴ プレ", ja: "アベス広場までお願いします", n: "モンマルトルへはここから。坂の上の Sacré-Cœur（サクレ・クール）までなら Au Sacré-Cœur" },
+  { id: "t13", s: "taxi", fr: "Au terminal un, s'il vous plaît.", kana: "オ テルミナル アン スィル ヴ プレ", ja: "第 1 ターミナルまでお願いします", n: "空港へ行くときは t10 のあとに続けて言う。番号は搭乗券で確認" },
 
   /* ---- ホテル ---- */
   { id: "h01", s: "hotel", fr: "J'ai réservé une chambre pour trois personnes.", kana: "ジェ レゼルヴェ ユヌ シャンブル プール トロワ ペルソヌ", ja: "3 人部屋を予約しています", n: "名前を聞かれたら、予約した名前をローマ字で言うか、予約の画面を見せる" },
@@ -90,6 +92,9 @@ window.DATA.phrases = [
   { id: "h14", s: "hotel", fr: "Je voudrais régler la note.", kana: "ジュ ヴドレ レグレ ラ ノット", ja: "チェックアウト（精算）をお願いします", n: "Check-out, s'il vous plaît でも通じる" },
   { id: "h15", s: "hotel", fr: "Un taxi pour quinze heures, s'il vous plaît.", kana: "アン タクスィ プール カンズール スィル ヴ プレ", ja: "15 時にタクシーをお願いします" },
   { id: "h16", s: "hotel", fr: "Vous avez un plan du quartier ?", kana: "ヴ ザヴェ アン プラン デュ カルティエ", ja: "この辺りの地図はありますか？" },
+  { id: "h17", s: "hotel", fr: "Bonsoir, nous avons une réservation.", kana: "ボンソワール ヌ ザヴォン ズュヌ レゼルヴァスィオン", ja: "こんばんは、予約しています", n: "名前を聞かれたら、予約した人の名字を言う。続けて Voici nos passeports（パスポートです）" },
+  { id: "h18", s: "hotel", fr: "Je viens récupérer mes bagages.", kana: "ジュ ヴィアン レキュペレ メ バガージュ", ja: "荷物を取りに来ました", n: "預けたときの番号札を見せながら" },
+  { id: "h19", s: "hotel", fr: "Merci pour tout. Au revoir !", kana: "メルスィ プール トゥ オ ルヴォワール", ja: "いろいろありがとう。さようなら", n: "最後にホテルの人へ" },
 
   /* ---- カフェ・パン屋 ---- */
   { id: "c01", s: "cafe", fr: "Un café, s'il vous plaît.", kana: "アン カフェ スィル ヴ プレ", ja: "コーヒーをください", n: "フランスで café と言うと小さなエスプレッソが出てくる" },
@@ -189,6 +194,7 @@ window.DATA.phrases = [
   { id: "v12", s: "visite", fr: "C'est ici, la fin de la file ?", kana: "セ ティスィ ラ ファン ドゥ ラ フィル", ja: "ここが列の最後ですか？" },
   { id: "v13", s: "visite", fr: "C'est magnifique !", kana: "セ マニフィック", ja: "すばらしい！" },
   { id: "v14", s: "visite", fr: "Pour aller à la tour Eiffel, s'il vous plaît ?", kana: "プーラレ ア ラ トゥール エフェル スィル ヴ プレ", ja: "エッフェル塔へはどう行けばいいですか？" },
+  { id: "v15", s: "visite", fr: "J'ai une réservation à quatorze heures quarante-cinq.", kana: "ジェ ユヌ レゼルヴァスィオン ア カトルズール カラント サンク", ja: "14 時 45 分に予約しています", n: "時刻は「数＋heures＋分」。9 時なら neuf heures、15 時なら quinze heures" },
 
   /* ---- 買い物 ---- */
   { id: "s01", s: "shop", fr: "Je regarde seulement, merci.", kana: "ジュ ルガルド スルマン メルスィ", ja: "見ているだけです" },
